@@ -1,400 +1,297 @@
-## Problem 1 – Vectors and linear transformations
+## Problem 2 – Parametric trajectory, velocity, and acceleration
 
 ### Given
 
-We are given two vectors in $\mathbb{R}^3$:
+The trajectory is given in parametric form by
 
 $$
-\vec{a} = (2,-1,3), \qquad \vec{b} = (1,4,-2)
+\vec{r}(t)=(t^2,\sin t,5).
 $$
 
-and the matrix
+We need to:
 
-$$
-A=
-\begin{pmatrix}
-2 & 1 & 0 \\
-0 & 1 & -1 \\
-1 & 0 & 1
-\end{pmatrix}.
-$$
-
-We will compute the vector lengths, the normalized vector, the dot product, the angle, the cross product, the parallelogram area, the product $A\vec{a}$, the determinant of $A$, and the orientation of the transformation.
+1. determine the velocity vector $$\vec{v}(t)=\dfrac{d\vec{r}}{dt}$$,
+2. determine the acceleration vector $$\vec{a}(t)=\dfrac{d^2\vec{r}}{dt^2}$$,
+3. calculate $$|\vec{v}(1)|$$,
+4. calculate $$\vec{v}\cdot\vec{a}$$,
+5. calculate $$\vec{v}\times\vec{a}$$.
 
 ---
 
-## 1. Lengths of the vectors
+## 1. Velocity vector
 
-The length of a vector $(x,y,z)$ is
+The velocity is the derivative of the position vector:
+
+$$
+\vec{v}(t)=\frac{d\vec{r}}{dt}.
+$$
+
+Since
+
+$$
+\vec{r}(t)=(t^2,\sin t,5),
+$$
+
+we differentiate each component separately:
+
+- $$\dfrac{d}{dt}(t^2)=2t,$$
+- $$\dfrac{d}{dt}(\sin t)=\cos t,$$
+- $$\dfrac{d}{dt}(5)=0.$$
+
+Therefore,
+
+$$
+\boxed{\vec{v}(t)=(2t,\cos t,0)}.
+$$
+
+---
+
+## 2. Acceleration vector
+
+The acceleration is the derivative of the velocity vector:
+
+$$
+\vec{a}(t)=\frac{d\vec{v}}{dt}.
+$$
+
+Using
+
+$$
+\vec{v}(t)=(2t,\cos t,0),
+$$
+
+we again differentiate component by component:
+
+- $$\dfrac{d}{dt}(2t)=2,$$
+- $$\dfrac{d}{dt}(\cos t)=-\sin t,$$
+- $$\dfrac{d}{dt}(0)=0.$$
+
+So,
+
+$$
+\boxed{\vec{a}(t)=(2,-\sin t,0)}.
+$$
+
+---
+
+## 3. Speed at $$t=1$$
+
+First evaluate the velocity vector at $$t=1$$:
+
+$$
+\vec{v}(1)=(2\cdot1,\cos1,0)=(2,\cos1,0).
+$$
+
+The magnitude of a vector $$(x,y,z)$$ is
 
 $$
 |(x,y,z)|=\sqrt{x^2+y^2+z^2}.
 $$
 
-For $\vec{a}=(2,-1,3)$:
-
-$$
-|\vec{a}|=\sqrt{2^2+(-1)^2+3^2}
-=\sqrt{4+1+9}
-=\sqrt{14}.
-$$
-
-So,
-
-$$
-\boxed{|\vec{a}|=\sqrt{14}}.
-$$
-
-For $\vec{b}=(1,4,-2)$:
-
-$$
-|\vec{b}|=\sqrt{1^2+4^2+(-2)^2}
-=\sqrt{1+16+4}
-=\sqrt{21}.
-$$
-
-Thus,
-
-$$
-\boxed{|\vec{b}|=\sqrt{21}}.
-$$
-
----
-
-## 2. Normalized vector $\hat{a}$
-
-The normalized vector is defined by
-
-$$
-\hat{a}=\frac{\vec{a}}{|\vec{a}|}.
-$$
-
-Since $|\vec{a}|=\sqrt{14}$, we get
-
-$$
-\hat{a}=\frac{(2,-1,3)}{\sqrt{14}}
-=
-\left(
-\frac{2}{\sqrt{14}},
--\frac{1}{\sqrt{14}},
-\frac{3}{\sqrt{14}}
-\right).
-$$
-
 Hence,
 
 $$
-\boxed{
-\hat{a}=
-\left(
-\frac{2}{\sqrt{14}},
--\frac{1}{\sqrt{14}},
-\frac{3}{\sqrt{14}}
-\right)
-}.
+|\vec{v}(1)|=\sqrt{2^2+(\cos1)^2+0^2}.
 $$
 
----
-
-## 3. Dot product and the angle between the vectors
-
-The dot product is
+So we get
 
 $$
-\vec{a}\cdot\vec{b}
-=2\cdot1+(-1)\cdot4+3\cdot(-2).
-$$
-
-Now calculate term by term:
-
-$$
-\vec{a}\cdot\vec{b}=2-4-6=-8.
+|\vec{v}(1)|=\sqrt{4+\cos^2 1}.
 $$
 
 Therefore,
 
 $$
-\boxed{\vec{a}\cdot\vec{b}=-8}.
-$$
-
-The angle $\theta$ between the vectors satisfies
-
-$$
-\cos\theta=\frac{\vec{a}\cdot\vec{b}}{|\vec{a}||\vec{b}|}.
-$$
-
-Substituting the known values:
-
-$$
-\cos\theta=\frac{-8}{\sqrt{14}\sqrt{21}}
-=\frac{-8}{\sqrt{294}}.
-$$
-
-So the angle is
-
-$$
-\theta=\arccos\left(\frac{-8}{\sqrt{294}}\right).
+\boxed{|\vec{v}(1)|=\sqrt{4+\cos^2 1}}.
 $$
 
 Numerically,
 
 $$
-\theta \approx 117.9^\circ.
+\cos 1 \approx 0.5403,
+\qquad
+\cos^2 1 \approx 0.2919,
 $$
 
-Thus,
+thus
 
 $$
-\boxed{
-\theta=\arccos\left(\frac{-8}{\sqrt{294}}\right)\approx117.9^\circ
-}.
-$$
-
----
-
-## 4. Cross product and the area of the parallelogram
-
-The cross product is
-
-$$
-\vec{a}\times\vec{b}
-=
-\begin{pmatrix}
-a_2b_3-a_3b_2 \\
-a_3b_1-a_1b_3 \\
-a_1b_2-a_2b_1
-\end{pmatrix}.
-$$
-
-For $\vec{a}=(2,-1,3)$ and $\vec{b}=(1,4,-2)$:
-
-$$
-\vec{a}\times\vec{b}
-=
-\begin{pmatrix}
-(-1)(-2)-3\cdot4 \\
-3\cdot1-2(-2) \\
-2\cdot4-(-1)\cdot1
-\end{pmatrix}
-=
-\begin{pmatrix}
-2-12 \\
-3+4 \\
-8+1
-\end{pmatrix}
-=
-\begin{pmatrix}
--10 \\
-7 \\
-9
-\end{pmatrix}.
+|\vec{v}(1)|\approx \sqrt{4.2919}\approx 2.07.
 $$
 
 So,
 
 $$
-\boxed{\vec{a}\times\vec{b}=(-10,7,9)}.
-$$
-
-The area of the parallelogram is the magnitude of the cross product:
-
-$$
-|\vec{a}\times\vec{b}|
-=\sqrt{(-10)^2+7^2+9^2}
-=\sqrt{100+49+81}
-=\sqrt{230}.
-$$
-
-Therefore,
-
-$$
-\boxed{\text{Area}=\sqrt{230}\approx15.17}.
+\boxed{|\vec{v}(1)|\approx 2.07}.
 $$
 
 ---
 
-## 5. Calculation of $A\vec{a}$
+## 4. Dot product $$\vec{v}\cdot\vec{a}$$
 
-We multiply the matrix by the vector:
-
-$$
-A\vec{a}
-=
-\begin{pmatrix}
-2 & 1 & 0 \\
-0 & 1 & -1 \\
-1 & 0 & 1
-\end{pmatrix}
-\begin{pmatrix}
-2 \\
--1 \\
-3
-\end{pmatrix}.
-$$
-
-Now compute each row:
+We use the formulas
 
 $$
-\begin{aligned}
-\text{Row 1: } & 2\cdot2+1\cdot(-1)+0\cdot3=4-1=3, \\
-\text{Row 2: } & 0\cdot2+1\cdot(-1)-1\cdot3=-1-3=-4, \\
-\text{Row 3: } & 1\cdot2+0\cdot(-1)+1\cdot3=2+3=5.
-\end{aligned}
+\vec{v}(t)=(2t,\cos t,0),
+\qquad
+\vec{a}(t)=(2,-\sin t,0).
 $$
 
-Thus,
+The dot product is
 
 $$
-A\vec{a}
-=
-\begin{pmatrix}
-3 \\
--4 \\
-5
-\end{pmatrix}.
+\vec{v}\cdot\vec{a}
+=(2t)(2)+(\cos t)(-\sin t)+0\cdot0.
+$$
+
+This simplifies to
+
+$$
+\vec{v}\cdot\vec{a}=4t-\sin t\cos t.
 $$
 
 Hence,
 
 $$
-\boxed{A\vec{a}=(3,-4,5)}.
+\boxed{\vec{v}\cdot\vec{a}=4t-\sin t\cos t}.
 $$
 
 ---
 
-## 6. Determinant of the matrix
+## 5. Cross product $$\vec{v}\times\vec{a}$$
 
-We compute the determinant by expanding along the first row:
+We compute
 
 $$
-\det A=
+\vec{v}\times\vec{a}
+=
 \begin{vmatrix}
-2 & 1 & 0 \\
-0 & 1 & -1 \\
-1 & 0 & 1
+\mathbf{i} & \mathbf{j} & \mathbf{k} \\
+2t & \cos t & 0 \\
+2 & -\sin t & 0
 \end{vmatrix}.
 $$
 
-So,
+Now expand the determinant:
 
 $$
-\det A
+\vec{v}\times\vec{a}
 =
-2
+\mathbf{i}
 \begin{vmatrix}
-1 & -1 \\
-0 & 1
+\cos t & 0 \\
+-\sin t & 0
 \end{vmatrix}
 -
-1
+\mathbf{j}
 \begin{vmatrix}
-0 & -1 \\
-1 & 1
+2t & 0 \\
+2 & 0
 \end{vmatrix}
 +
-0
+\mathbf{k}
 \begin{vmatrix}
-0 & 1 \\
-1 & 0
+2t & \cos t \\
+2 & -\sin t
 \end{vmatrix}.
 $$
 
-Now evaluate the $2\times2$ determinants:
+The first two determinants are zero:
 
 $$
 \begin{vmatrix}
-1 & -1 \\
-0 & 1
-\end{vmatrix}
-=1\cdot1-(-1)\cdot0=1,
+\cos t & 0 \\
+-\sin t & 0
+\end{vmatrix}=0,
+\qquad
+\begin{vmatrix}
+2t & 0 \\
+2 & 0
+\end{vmatrix}=0.
 $$
+
+For the last one:
 
 $$
 \begin{vmatrix}
-0 & -1 \\
-1 & 1
+2t & \cos t \\
+2 & -\sin t
 \end{vmatrix}
-=0\cdot1-(-1)\cdot1=1.
+=(2t)(-\sin t)-(\cos t)(2)
+=-2t\sin t-2\cos t.
 $$
 
 Therefore,
 
 $$
-\det A = 2\cdot1 - 1\cdot1 + 0 = 1.
+\vec{v}\times\vec{a}=(0,0,-2t\sin t-2\cos t).
 $$
 
 So,
 
 $$
-\boxed{\det A=1}.
+\boxed{\vec{v}\times\vec{a}=(0,0,-2t\sin t-2\cos t)}.
+$$
+
+We can also factor out $$-2$$:
+
+$$
+\boxed{\vec{v}\times\vec{a}=(0,0,-2(t\sin t+\cos t))}.
 $$
 
 ---
 
-## 7. Orientation of the transformation
+## 6. Geometric interpretation
 
-A linear transformation preserves orientation if its determinant is positive.
-
-Since
+The trajectory is
 
 $$
-\det A=1>0,
+\vec{r}(t)=(t^2,\sin t,5).
 $$
 
-the transformation preserves the orientation of space.
-
-Thus,
+Since the third coordinate is constant, the motion takes place entirely in the plane
 
 $$
-\boxed{\text{The transformation preserves orientation}.}
+z=5.
 $$
+
+The velocity vector
+
+$$
+\vec{v}(t)=(2t,\cos t,0)
+$$
+
+is tangent to the trajectory, and the acceleration vector
+
+$$
+\vec{a}(t)=(2,-\sin t,0)
+$$
+
+describes how the velocity changes along the motion.
+
+Because both vectors have zero third component, their cross product points in the $$z$$-direction, which is consistent with motion in a horizontal plane.
 
 ---
 
 ## Final answers
 
 $$
-\boxed{|\vec{a}|=\sqrt{14}}, \qquad
-\boxed{|\vec{b}|=\sqrt{21}}
+\boxed{\vec{v}(t)=(2t,\cos t,0)}
 $$
 
 $$
-\boxed{
-\hat{a}=
-\left(
-\frac{2}{\sqrt{14}},
--\frac{1}{\sqrt{14}},
-\frac{3}{\sqrt{14}}
-\right)
-}
+\boxed{\vec{a}(t)=(2,-\sin t,0)}
 $$
 
 $$
-\boxed{\vec{a}\cdot\vec{b}=-8}
+\boxed{|\vec{v}(1)|=\sqrt{4+\cos^2 1}\approx2.07}
 $$
 
 $$
-\boxed{
-\theta=\arccos\left(\frac{-8}{\sqrt{294}}\right)\approx117.9^\circ
-}
+\boxed{\vec{v}\cdot\vec{a}=4t-\sin t\cos t}
 $$
 
 $$
-\boxed{\vec{a}\times\vec{b}=(-10,7,9)}
-$$
-
-$$
-\boxed{\text{Area}=\sqrt{230}\approx15.17}
-$$
-
-$$
-\boxed{A\vec{a}=(3,-4,5)}
-$$
-
-$$
-\boxed{\det A=1}
-$$
-
-$$
-\boxed{\text{The transformation preserves orientation}.}
+\boxed{\vec{v}\times\vec{a}=(0,0,-2t\sin t-2\cos t)}
 $$
