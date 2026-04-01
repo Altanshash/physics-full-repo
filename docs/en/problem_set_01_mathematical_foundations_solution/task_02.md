@@ -5,10 +5,16 @@
 The trajectory is given by
 
 $$
-\vec{r}(t) = (t^2, \sin t, 5).
+\vec{r}(t) = (t^2,\sin t,5).
 $$
 
-We will determine the velocity, the acceleration, the speed at $t=1$, the dot product $\vec{v}\cdot\vec{a}$, and the cross product $\vec{v}\times\vec{a}$.
+We need to determine:
+
+- the velocity vector $\vec{v}(t)$,
+- the acceleration vector $\vec{a}(t)$,
+- the value of $|\vec{v}(1)|$,
+- the dot product $\vec{v}\cdot\vec{a}$,
+- the cross product $\vec{v}\times\vec{a}$.
 
 ---
 
@@ -20,7 +26,13 @@ $$
 \vec{v}(t)=\frac{d\vec{r}}{dt}.
 $$
 
-Differentiate each component of $\vec{r}(t)=(t^2,\sin t,5)$:
+Since
+
+$$
+\vec{r}(t)=(t^2,\sin t,5),
+$$
+
+we differentiate each component:
 
 $$
 \frac{d}{dt}(t^2)=2t,
@@ -33,7 +45,7 @@ $$
 Therefore,
 
 $$
-\boxed{\vec{v}(t)=(2t,\cos t,0).}
+\boxed{\vec{v}(t)=(2t,\cos t,0)}.
 $$
 
 ---
@@ -46,7 +58,13 @@ $$
 \vec{a}(t)=\frac{d\vec{v}}{dt}.
 $$
 
-Differentiate each component of $\vec{v}(t)=(2t,\cos t,0)$:
+Using
+
+$$
+\vec{v}(t)=(2t,\cos t,0),
+$$
+
+we differentiate again:
 
 $$
 \frac{d}{dt}(2t)=2,
@@ -56,20 +74,20 @@ $$
 \frac{d}{dt}(0)=0.
 $$
 
-So we get
+So we obtain
 
 $$
-\boxed{\vec{a}(t)=(2,-\sin t,0).}
+\boxed{\vec{a}(t)=(2,-\sin t,0)}.
 $$
 
 ---
 
-## 3. Speed at $t=1$
+## 3. Magnitude of the velocity at $t=1$
 
-First evaluate the velocity at $t=1$:
+First compute the velocity at $t=1$:
 
 $$
-\vec{v}(1)=(2,\cos 1,0).
+\vec{v}(1)=(2\cdot 1,\cos 1,0)=(2,\cos 1,0).
 $$
 
 The magnitude of a vector $(x,y,z)$ is
@@ -94,7 +112,7 @@ $$
 \boxed{|\vec{v}(1)|=\sqrt{4+\cos^2 1}}.
 $$
 
-Using $\cos 1\approx 0.5403$, we obtain
+Using $\cos 1\approx 0.5403$, we get
 
 $$
 |\vec{v}(1)|\approx \sqrt{4.2919}\approx 2.07.
@@ -103,7 +121,7 @@ $$
 So,
 
 $$
-\boxed{|\vec{v}(1)|\approx 2.07.}
+\boxed{|\vec{v}(1)|\approx 2.07}.
 $$
 
 ---
@@ -118,7 +136,7 @@ $$
 \vec{a}(t)=(2,-\sin t,0).
 $$
 
-The dot product is computed component by component:
+The dot product is found by multiplying corresponding components and adding them:
 
 $$
 \vec{v}\cdot\vec{a}
@@ -135,17 +153,17 @@ $$
 Thus,
 
 $$
-\boxed{\vec{v}\cdot\vec{a}=4t-\sin t\cos t.}
+\boxed{\vec{v}\cdot\vec{a}=4t-\sin t\cos t}.
 $$
 
 ---
 
 ## 5. Cross product $\vec{v}\times\vec{a}$
 
-We use the component formula for the cross product. For two vectors
+For two vectors
 
 $$
-(u_1,u_2,u_3)\times (w_1,w_2,w_3)
+(u_1,u_2,u_3)\times(w_1,w_2,w_3)
 =
 \left(
 u_2w_3-u_3w_2,\;
@@ -162,7 +180,7 @@ $$
 \vec{a}(t)=(2,-\sin t,0).
 $$
 
-So:
+Now compute each component.
 
 ### First component
 
@@ -188,22 +206,22 @@ v_1a_2-v_2a_1
 (2t)(-\sin t)-(\cos t)(2).
 $$
 
-Simplify:
+So,
 
 $$
 v_1a_2-v_2a_1=-2t\sin t-2\cos t.
 $$
 
-Therefore, the cross product is
+Therefore,
 
 $$
-\boxed{\vec{v}\times\vec{a}=(0,0,-2t\sin t-2\cos t).}
+\boxed{\vec{v}\times\vec{a}=(0,0,-2t\sin t-2\cos t)}.
 $$
 
-We can also factor out $-2$:
+We may also write it as
 
 $$
-\boxed{\vec{v}\times\vec{a}=(0,0,-2(t\sin t+\cos t)).}
+\boxed{\vec{v}\times\vec{a}=(0,0,-2(t\sin t+\cos t))}.
 $$
 
 ---
