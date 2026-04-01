@@ -74,8 +74,10 @@ $$
 \vec{r}(t) = \vec{r}(0) + \int_0^t \vec{v}(\tau)\,d\tau
 $$
 
+Since $\vec{r}(0) = (0,0)$, we get
+
 $$
-\vec{r}(t) = \int_0^t (1 + 3\tau, -1 + \tau)\,d\tau
+\vec{r}(t) = \int_0^t (1 + 3\tau,\,-1 + \tau)\,d\tau
 $$
 
 Integrate each component:
@@ -91,11 +93,7 @@ $$
 Thus,
 
 $$
-\vec{r}(t) =
-\left(
-t + \frac{3}{2}t^2,\;
-- t + \frac{1}{2}t^2
-\right)
+\vec{r}(t) = \left(t + \frac{3}{2}t^2,\,-t + \frac{1}{2}t^2\right)
 $$
 
 ---
