@@ -5,153 +5,205 @@
 The trajectory is given by
 
 $$
-\vec{r}(t) = (t^2, \sin t, 5)
+\vec{r}(t) = (t^2, \sin t, 5).
 $$
+
+We will determine the velocity, the acceleration, the speed at $t=1$, the dot product $\vec{v}\cdot\vec{a}$, and the cross product $\vec{v}\times\vec{a}$.
 
 ---
 
 ## 1. Velocity vector
 
-The velocity is the derivative of the position:
+The velocity is the derivative of the position vector:
 
 $$
-\vec{v}(t) = \frac{d\vec{r}}{dt}
+\vec{v}(t)=\frac{d\vec{r}}{dt}.
 $$
 
-Differentiate each component:
+Differentiate each component of $\vec{r}(t)=(t^2,\sin t,5)$:
 
 $$
-\vec{v}(t) = (2t, \cos t, 0)
+\frac{d}{dt}(t^2)=2t,
+\qquad
+\frac{d}{dt}(\sin t)=\cos t,
+\qquad
+\frac{d}{dt}(5)=0.
+$$
+
+Therefore,
+
+$$
+\boxed{\vec{v}(t)=(2t,\cos t,0).}
 $$
 
 ---
 
 ## 2. Acceleration vector
 
-The acceleration is the derivative of velocity:
+The acceleration is the derivative of the velocity vector:
 
 $$
-\vec{a}(t) = \frac{d\vec{v}}{dt}
+\vec{a}(t)=\frac{d\vec{v}}{dt}.
 $$
 
-Differentiate again:
+Differentiate each component of $\vec{v}(t)=(2t,\cos t,0)$:
 
 $$
-\vec{a}(t) = (2, -\sin t, 0)
+\frac{d}{dt}(2t)=2,
+\qquad
+\frac{d}{dt}(\cos t)=-\sin t,
+\qquad
+\frac{d}{dt}(0)=0.
+$$
+
+So we get
+
+$$
+\boxed{\vec{a}(t)=(2,-\sin t,0).}
 $$
 
 ---
 
 ## 3. Speed at $t=1$
 
-First compute velocity:
+First evaluate the velocity at $t=1$:
 
 $$
-\vec{v}(1) = (2, \cos 1, 0)
+\vec{v}(1)=(2,\cos 1,0).
 $$
 
-Magnitude:
+The magnitude of a vector $(x,y,z)$ is
 
 $$
-|\vec{v}(1)| = \sqrt{2^2 + (\cos 1)^2}
-= \sqrt{4 + \cos^2 1}
+|(x,y,z)|=\sqrt{x^2+y^2+z^2}.
 $$
 
-Approximation:
+Hence,
 
 $$
-|\vec{v}(1)| \approx 2.07
-$$
-
----
-
-## 4. Dot product
-
-$$
-\vec{v}\cdot\vec{a}
-= (2t)(2) + (\cos t)(-\sin t)
-$$
-
-$$
-\vec{v}\cdot\vec{a} = 4t - \sin t \cos t
-$$
-
----
-
-## 5. Cross product
-
-We compute
-
-$$
-\vec{v}\times\vec{a}
+|\vec{v}(1)|
 =
-\begin{vmatrix}
-\mathbf{i} & \mathbf{j} & \mathbf{k} \\
-2t & \cos t & 0 \\
-2 & -\sin t & 0
-\end{vmatrix}
-$$
-
-Expand:
-
-$$
-\vec{v}\times\vec{a}
+\sqrt{2^2+(\cos 1)^2+0^2}
 =
-\mathbf{i}
-\begin{vmatrix}
-\cos t & 0 \\
--\sin t & 0
-\end{vmatrix}
--
-\mathbf{j}
-\begin{vmatrix}
-2t & 0 \\
-2 & 0
-\end{vmatrix}
-+
-\mathbf{k}
-\begin{vmatrix}
-2t & \cos t \\
-2 & -\sin t
-\end{vmatrix}
-$$
-
-First two determinants:
-
-$$
-\begin{vmatrix}
-\cos t & 0 \\
--\sin t & 0
-\end{vmatrix}
-= 0
-$$
-
-$$
-\begin{vmatrix}
-2t & 0 \\
-2 & 0
-\end{vmatrix}
-= 0
-$$
-
-Last determinant:
-
-$$
-\begin{vmatrix}
-2t & \cos t \\
-2 & -\sin t
-\end{vmatrix}
-= (2t)(-\sin t) - (\cos t)(2)
-$$
-
-$$
-= -2t\sin t - 2\cos t
+\sqrt{4+\cos^2 1}.
 $$
 
 Therefore,
 
 $$
-\vec{v}\times\vec{a} = (0, 0, -2t\sin t - 2\cos t)
+\boxed{|\vec{v}(1)|=\sqrt{4+\cos^2 1}}.
+$$
+
+Using $\cos 1\approx 0.5403$, we obtain
+
+$$
+|\vec{v}(1)|\approx \sqrt{4.2919}\approx 2.07.
+$$
+
+So,
+
+$$
+\boxed{|\vec{v}(1)|\approx 2.07.}
+$$
+
+---
+
+## 4. Dot product $\vec{v}\cdot\vec{a}$
+
+We have
+
+$$
+\vec{v}(t)=(2t,\cos t,0),
+\qquad
+\vec{a}(t)=(2,-\sin t,0).
+$$
+
+The dot product is computed component by component:
+
+$$
+\vec{v}\cdot\vec{a}
+=
+(2t)(2)+(\cos t)(-\sin t)+0\cdot 0.
+$$
+
+Simplifying gives
+
+$$
+\vec{v}\cdot\vec{a}=4t-\sin t\cos t.
+$$
+
+Thus,
+
+$$
+\boxed{\vec{v}\cdot\vec{a}=4t-\sin t\cos t.}
+$$
+
+---
+
+## 5. Cross product $\vec{v}\times\vec{a}$
+
+We use the component formula for the cross product. For two vectors
+
+$$
+(u_1,u_2,u_3)\times (w_1,w_2,w_3)
+=
+\left(
+u_2w_3-u_3w_2,\;
+u_3w_1-u_1w_3,\;
+u_1w_2-u_2w_1
+\right).
+$$
+
+Here,
+
+$$
+\vec{v}(t)=(2t,\cos t,0),
+\qquad
+\vec{a}(t)=(2,-\sin t,0).
+$$
+
+So:
+
+### First component
+
+$$
+v_2a_3-v_3a_2
+=
+(\cos t)(0)-(0)(-\sin t)=0.
+$$
+
+### Second component
+
+$$
+v_3a_1-v_1a_3
+=
+(0)(2)-(2t)(0)=0.
+$$
+
+### Third component
+
+$$
+v_1a_2-v_2a_1
+=
+(2t)(-\sin t)-(\cos t)(2).
+$$
+
+Simplify:
+
+$$
+v_1a_2-v_2a_1=-2t\sin t-2\cos t.
+$$
+
+Therefore, the cross product is
+
+$$
+\boxed{\vec{v}\times\vec{a}=(0,0,-2t\sin t-2\cos t).}
+$$
+
+We can also factor out $-2$:
+
+$$
+\boxed{\vec{v}\times\vec{a}=(0,0,-2(t\sin t+\cos t)).}
 $$
 
 ---
@@ -159,21 +211,21 @@ $$
 ## Final answers
 
 $$
-\vec{v}(t) = (2t, \cos t, 0)
+\boxed{\vec{v}(t)=(2t,\cos t,0)}
 $$
 
 $$
-\vec{a}(t) = (2, -\sin t, 0)
+\boxed{\vec{a}(t)=(2,-\sin t,0)}
 $$
 
 $$
-|\vec{v}(1)| = \sqrt{4 + \cos^2 1} \approx 2.07
+\boxed{|\vec{v}(1)|=\sqrt{4+\cos^2 1}\approx 2.07}
 $$
 
 $$
-\vec{v}\cdot\vec{a} = 4t - \sin t \cos t
+\boxed{\vec{v}\cdot\vec{a}=4t-\sin t\cos t}
 $$
 
 $$
-\vec{v}\times\vec{a} = (0, 0, -2t\sin t - 2\cos t)
+\boxed{\vec{v}\times\vec{a}=(0,0,-2t\sin t-2\cos t)}
 $$
