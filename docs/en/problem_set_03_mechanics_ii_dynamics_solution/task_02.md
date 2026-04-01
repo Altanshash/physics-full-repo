@@ -8,9 +8,9 @@ The coefficient of kinetic friction is $\mu$.
 We need to:
 
 - determine all forces acting on the body,
-- derive the acceleration $\vec{a}$,
+- derive the acceleration,
 - calculate the time of descent from height $h$,
-- determine the final velocity $\vec{v}$,
+- determine the final velocity,
 - check the consistency with the energy balance.
 
 ---
@@ -19,37 +19,30 @@ We need to:
 
 Three forces act on the body:
 
-1. **Gravity**
-
-$$
-\vec{F}_g = m\vec{g}
-$$
-
-It acts vertically downward.
+1. **Gravitational force**
+   $$
+   \vec{F}_g = m\vec{g}
+   $$
 
 2. **Normal force**
-
-$$
-\vec{N}
-$$
-
-It acts perpendicular to the plane.
+   $$
+   \vec{N}
+   $$
+   perpendicular to the plane.
 
 3. **Kinetic friction**
-
-$$
-\vec{F}_f
-$$
-
-It acts along the plane, opposite to the direction of motion.
+   $$
+   \vec{F}_f
+   $$
+   directed opposite to the motion along the plane.
 
 ---
 
-## 2. Decomposition of gravity
+## 2. Components of gravity
 
-Resolve the gravitational force into components relative to the plane.
+We decompose the gravitational force into components parallel and perpendicular to the plane.
 
-The component parallel to the plane is
+The component along the plane is
 
 $$
 F_{\parallel} = mg \sin\alpha
@@ -61,57 +54,58 @@ $$
 F_{\perp} = mg \cos\alpha
 $$
 
-Since there is no motion perpendicular to the plane, the normal force is
+Since the body does not move perpendicular to the surface, the normal force is
 
 $$
 N = mg \cos\alpha
 $$
 
-The kinetic friction force is
+The kinetic friction force has magnitude
 
 $$
 F_f = \mu N = \mu mg \cos\alpha
 $$
 
-Because friction acts up the plane, the net force along the plane is
+Because friction acts upward along the plane, the net force along the plane is
 
 $$
-F_{\text{net}} = mg \sin\alpha - \mu mg \cos\alpha
+F_{\text{net}} = mg\sin\alpha - \mu mg\cos\alpha
 $$
 
 ---
 
 ## 3. Acceleration
 
-Using Newton’s second law along the plane:
+Apply Newton’s second law along the plane:
 
 $$
-ma = mg \sin\alpha - \mu mg \cos\alpha
+ma = mg\sin\alpha - \mu mg\cos\alpha
 $$
 
 Divide both sides by $m$:
 
 $$
-a = g \sin\alpha - \mu g \cos\alpha
+a = g\sin\alpha - \mu g\cos\alpha
 $$
 
-Thus, the acceleration is
+Therefore,
 
 $$
-\boxed{a = g(\sin\alpha - \mu \cos\alpha)}
+\boxed{a = g(\sin\alpha - \mu\cos\alpha)}
 $$
 
-The body moves downward only if
+For the body to slide downward, we need
 
 $$
-\sin\alpha > \mu \cos\alpha
+\sin\alpha > \mu\cos\alpha
 $$
 
 ---
 
 ## 4. Time of descent from height $h$
 
-If the vertical height of the incline is $h$, then the distance traveled along the plane is
+Let $h$ be the vertical height of the incline.  
+Then the distance traveled along the plane is
 
 $$
 s = \frac{h}{\sin\alpha}
@@ -123,7 +117,7 @@ $$
 v_0 = 0
 $$
 
-Using the kinematic relation
+Using the kinematic formula
 
 $$
 s = \frac{1}{2}at^2
@@ -140,24 +134,24 @@ Substitute the expression for acceleration:
 $$
 \frac{h}{\sin\alpha}
 =
-\frac{1}{2}g(\sin\alpha - \mu \cos\alpha)t^2
+\frac{1}{2}g(\sin\alpha - \mu\cos\alpha)t^2
 $$
 
-Solve for $t^2$:
+Now solve for $t^2$:
 
 $$
 t^2
 =
-\frac{2h}{g \sin\alpha \, (\sin\alpha - \mu \cos\alpha)}
+\frac{2h}{g\sin\alpha(\sin\alpha - \mu\cos\alpha)}
 $$
 
-Therefore, the descent time is
+Hence, the descent time is
 
 $$
 \boxed{
 t =
 \sqrt{
-\frac{2h}{g \sin\alpha \, (\sin\alpha - \mu \cos\alpha)}
+\frac{2h}{g\sin\alpha(\sin\alpha - \mu\cos\alpha)}
 }
 }
 $$
@@ -166,13 +160,13 @@ $$
 
 ## 5. Final velocity
 
-Use the formula
+Use the relation
 
 $$
 v^2 = v_0^2 + 2as
 $$
 
-Since $v_0 = 0$, we have
+Since the body starts from rest, $v_0=0$, so
 
 $$
 v^2 = 2as
@@ -181,7 +175,7 @@ $$
 Substitute
 
 $$
-a = g(\sin\alpha - \mu \cos\alpha),
+a = g(\sin\alpha - \mu\cos\alpha),
 \qquad
 s = \frac{h}{\sin\alpha}
 $$
@@ -191,16 +185,24 @@ Then
 $$
 v^2
 =
-2g(\sin\alpha - \mu \cos\alpha)\frac{h}{\sin\alpha}
+2g(\sin\alpha - \mu\cos\alpha)\frac{h}{\sin\alpha}
 $$
 
-So the final velocity is
+Therefore,
+
+$$
+v^2
+=
+\frac{2gh(\sin\alpha - \mu\cos\alpha)}{\sin\alpha}
+$$
+
+and the final velocity is
 
 $$
 \boxed{
 v =
 \sqrt{
-\frac{2gh(\sin\alpha - \mu \cos\alpha)}{\sin\alpha}
+\frac{2gh(\sin\alpha - \mu\cos\alpha)}{\sin\alpha}
 }
 }
 $$
@@ -215,7 +217,7 @@ $$
 E_p = mgh
 $$
 
-As it slides down, part of this energy becomes kinetic energy, and part is lost to friction.
+At the bottom, this energy is converted into kinetic energy and work against friction.
 
 The work done by friction is
 
@@ -226,20 +228,20 @@ $$
 Substitute
 
 $$
-F_f = \mu mg \cos\alpha,
+F_f = \mu mg\cos\alpha,
 \qquad
 s = \frac{h}{\sin\alpha}
 $$
 
-Thus,
+Then
 
 $$
 W_f
 =
--\mu mg \cos\alpha \cdot \frac{h}{\sin\alpha}
+-\mu mg\cos\alpha \cdot \frac{h}{\sin\alpha}
 $$
 
-The energy balance is
+The energy equation is
 
 $$
 mgh + W_f = \frac{1}{2}mv^2
@@ -248,18 +250,15 @@ $$
 So,
 
 $$
-mgh - \mu mg \cos\alpha \cdot \frac{h}{\sin\alpha}
+mgh - \mu mg\cos\alpha \cdot \frac{h}{\sin\alpha}
 =
 \frac{1}{2}mv^2
 $$
 
-Factor out $mgh$:
+Factor out $mgh$ on the left:
 
 $$
-mgh
-\left(
-1 - \mu \frac{\cos\alpha}{\sin\alpha}
-\right)
+mgh\left(1 - \mu\frac{\cos\alpha}{\sin\alpha}\right)
 =
 \frac{1}{2}mv^2
 $$
@@ -267,10 +266,7 @@ $$
 Multiply both sides by $\frac{2}{m}$:
 
 $$
-2gh
-\left(
-1 - \mu \frac{\cos\alpha}{\sin\alpha}
-\right)
+2gh\left(1 - \mu\frac{\cos\alpha}{\sin\alpha}\right)
 =
 v^2
 $$
@@ -280,34 +276,33 @@ Rewrite the expression:
 $$
 v^2
 =
-\frac{2gh(\sin\alpha - \mu \cos\alpha)}{\sin\alpha}
+\frac{2gh(\sin\alpha - \mu\cos\alpha)}{\sin\alpha}
 $$
 
-This is exactly the same result as obtained from kinematics.
-
-So the result is consistent with the energy balance.
+This is exactly the same result as obtained from kinematics.  
+Therefore, the result is consistent with the energy balance.
 
 ---
 
 ## Final answers
 
 $$
-N = mg \cos\alpha
+\boxed{N = mg\cos\alpha}
 $$
 
 $$
-F_f = \mu mg \cos\alpha
+\boxed{F_f = \mu mg\cos\alpha}
 $$
 
 $$
-\boxed{a = g(\sin\alpha - \mu \cos\alpha)}
+\boxed{a = g(\sin\alpha - \mu\cos\alpha)}
 $$
 
 $$
 \boxed{
 t =
 \sqrt{
-\frac{2h}{g \sin\alpha \, (\sin\alpha - \mu \cos\alpha)}
+\frac{2h}{g\sin\alpha(\sin\alpha - \mu\cos\alpha)}
 }
 }
 $$
@@ -316,7 +311,7 @@ $$
 \boxed{
 v =
 \sqrt{
-\frac{2gh(\sin\alpha - \mu \cos\alpha)}{\sin\alpha}
+\frac{2gh(\sin\alpha - \mu\cos\alpha)}{\sin\alpha}
 }
 }
 $$
