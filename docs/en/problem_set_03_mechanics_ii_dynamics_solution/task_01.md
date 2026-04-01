@@ -219,11 +219,7 @@ $$
 $$
 
 $$
-\vec{r}(t) =
-\left(
-t + \frac{3}{2}t^2,\;
-- t + \frac{1}{2}t^2
-\right)
+\vec{r}(t) = \left(t + \frac{3}{2}t^2,\,-t + \frac{1}{2}t^2\right)
 $$
 
 $$
