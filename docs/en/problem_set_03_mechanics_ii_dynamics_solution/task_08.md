@@ -2,7 +2,7 @@
 
 ### Problem statement
 
-We consider the equation of motion
+We consider the equation
 
 $$
 m\ddot{x} + kx = 0
@@ -10,9 +10,9 @@ $$
 
 Determine:
 
-- solve the equation,
-- determine the natural frequency,
-- write down the energy as a function of time,
+- the solution,
+- the natural frequency,
+- the energy,
 - show that energy is conserved,
 - interpret the motion in phase space.
 
@@ -20,89 +20,47 @@ Determine:
 
 ## Solution
 
-### 1. Differential equation
+### 1. Rewrite the equation
 
-The given equation is
-
-$$
-m\ddot{x} + kx = 0
-$$
-
-Divide both sides by $m$:
+Divide by $m$:
 
 $$
 \ddot{x} + \frac{k}{m}x = 0
 $$
 
-Introduce the notation
+Introduce
 
 $$
 \omega_0^2 = \frac{k}{m}
 $$
 
-Then the equation becomes
+Then
 
 $$
 \ddot{x} + \omega_0^2 x = 0
 $$
 
-This is the standard equation of a harmonic oscillator.
-
 ---
 
-### 2. General solution
+### 2. Solve the equation
 
-We look for a solution of the form
-
-$$
-x(t) = e^{\lambda t}
-$$
-
-Then
+The standard solution of
 
 $$
-\dot{x}(t) = \lambda e^{\lambda t},
-\qquad
-\ddot{x}(t) = \lambda^2 e^{\lambda t}
+\ddot{x} + \omega_0^2 x = 0
 $$
 
-Substitute into the differential equation:
+is
 
 $$
-\lambda^2 e^{\lambda t} + \omega_0^2 e^{\lambda t} = 0
-$$
-
-Since $e^{\lambda t} \neq 0$, we get the characteristic equation
-
-$$
-\lambda^2 + \omega_0^2 = 0
-$$
-
-So the roots are
-
-$$
-\lambda = \pm i\omega_0
-$$
-
-Therefore, the general real solution is
-
-$$
-\boxed{
 x(t) = A\cos(\omega_0 t) + B\sin(\omega_0 t)
-}
 $$
 
-where $A$ and $B$ are constants determined by the initial conditions.
-
-An equivalent form is
+So,
 
 $$
-\boxed{
-x(t) = C\cos(\omega_0 t + \varphi)
-}
+\boxed{x(t) = A\cos(\omega_0 t) + B\sin(\omega_0 t)}
 $$
-
-where $C$ is the amplitude and $\varphi$ is the phase constant.
 
 ---
 
@@ -114,280 +72,135 @@ $$
 \omega_0^2 = \frac{k}{m}
 $$
 
-we obtain the natural angular frequency
+we get
 
 $$
-\boxed{
-\omega_0 = \sqrt{\frac{k}{m}}
-}
+\boxed{\omega_0 = \sqrt{\frac{k}{m}}}
 $$
 
-The ordinary frequency is
+The period is
 
 $$
-\boxed{
-f = \frac{\omega_0}{2\pi} = \frac{1}{2\pi}\sqrt{\frac{k}{m}}
-}
-$$
-
-and the period is
-
-$$
-\boxed{
-T = \frac{2\pi}{\omega_0} = 2\pi\sqrt{\frac{m}{k}}
-}
+\boxed{T = \frac{2\pi}{\omega_0} = 2\pi\sqrt{\frac{m}{k}}}
 $$
 
 ---
 
 ### 4. Velocity
 
-Differentiate the position:
-
-$$
-x(t) = A\cos(\omega_0 t) + B\sin(\omega_0 t)
-$$
-
-Then
+Differentiate $x(t)$:
 
 $$
 \dot{x}(t) = -A\omega_0\sin(\omega_0 t) + B\omega_0\cos(\omega_0 t)
 $$
 
-So the velocity is
+Thus,
 
 $$
-\boxed{
-v(t) = \dot{x}(t) = -A\omega_0\sin(\omega_0 t) + B\omega_0\cos(\omega_0 t)
-}
-$$
-
-If we use the form $x(t)=C\cos(\omega_0 t+\varphi)$, then
-
-$$
-\boxed{
-v(t) = -C\omega_0\sin(\omega_0 t+\varphi)
-}
+\boxed{\dot{x}(t) = -A\omega_0\sin(\omega_0 t) + B\omega_0\cos(\omega_0 t)}
 $$
 
 ---
 
-### 5. Energy as a function of time
+### 5. Energy
 
-The total mechanical energy is the sum of kinetic and potential energy:
-
-$$
-E(t) = T(t) + U(t)
-$$
-
-The kinetic energy is
+The total energy is
 
 $$
-T(t) = \frac{1}{2}m\dot{x}^2
-$$
-
-The potential energy is
-
-$$
-U(t) = \frac{1}{2}kx^2
-$$
-
-Therefore,
-
-$$
-\boxed{
 E(t) = \frac{1}{2}m\dot{x}^2 + \frac{1}{2}kx^2
-}
 $$
 
-Using the form
+So,
 
 $$
-x(t) = C\cos(\omega_0 t+\varphi),
-\qquad
-\dot{x}(t) = -C\omega_0\sin(\omega_0 t+\varphi)
+\boxed{E(t) = \frac{1}{2}m\dot{x}^2 + \frac{1}{2}kx^2}
 $$
-
-we get
-
-$$
-E(t)
-=
-\frac{1}{2}mC^2\omega_0^2\sin^2(\omega_0 t+\varphi)
-+
-\frac{1}{2}kC^2\cos^2(\omega_0 t+\varphi)
-$$
-
-Since
-
-$$
-\omega_0^2 = \frac{k}{m}
-$$
-
-it follows that
-
-$$
-m\omega_0^2 = k
-$$
-
-So the energy becomes
-
-$$
-E(t)
-=
-\frac{1}{2}kC^2\sin^2(\omega_0 t+\varphi)
-+
-\frac{1}{2}kC^2\cos^2(\omega_0 t+\varphi)
-$$
-
-Factor out $\frac{1}{2}kC^2$:
-
-$$
-E(t)
-=
-\frac{1}{2}kC^2
-\left[
-\sin^2(\omega_0 t+\varphi) + \cos^2(\omega_0 t+\varphi)
-\right]
-$$
-
-Using
-
-$$
-\sin^2\theta + \cos^2\theta = 1
-$$
-
-we obtain
-
-$$
-\boxed{
-E(t) = \frac{1}{2}kC^2
-}
-$$
-
-So the total energy does not depend on time.
 
 ---
 
-### 6. Proof that energy is conserved
+### 6. Show that energy is conserved
 
-From the previous result,
-
-$$
-E(t) = \frac{1}{2}kC^2
-$$
-
-which is constant.
-
-Therefore,
+Differentiate the energy:
 
 $$
-\boxed{
-\frac{dE}{dt} = 0
-}
+\frac{dE}{dt} = m\dot{x}\ddot{x} + kx\dot{x}
 $$
 
-Hence, the total mechanical energy is conserved.
-
-This means that energy continuously changes form between kinetic and potential energy, but the total remains the same.
-
----
-
-### 7. Phase space interpretation
-
-In phase space, the motion is described by the pair
+Factor out $\dot{x}$:
 
 $$
-(x,v)
+\frac{dE}{dt} = \dot{x}(m\ddot{x} + kx)
 $$
 
-For the harmonic oscillator,
-
-$$
-x(t) = C\cos(\omega_0 t+\varphi)
-$$
-
-$$
-v(t) = -C\omega_0\sin(\omega_0 t+\varphi)
-$$
-
-Divide the first equation by $C$:
-
-$$
-\frac{x}{C} = \cos(\omega_0 t+\varphi)
-$$
-
-Divide the second equation by $C\omega_0$:
-
-$$
-\frac{v}{C\omega_0} = -\sin(\omega_0 t+\varphi)
-$$
-
-Now square both equations and add them:
-
-$$
-\frac{x^2}{C^2} + \frac{v^2}{C^2\omega_0^2}
-=
-\cos^2(\omega_0 t+\varphi) + \sin^2(\omega_0 t+\varphi)
-= 1
-$$
-
-Therefore, the phase trajectory is
-
-$$
-\boxed{
-\frac{x^2}{C^2} + \frac{v^2}{C^2\omega_0^2} = 1
-}
-$$
-
-This is an ellipse in the $(x,v)$ plane.
-
-So in phase space:
-
-- the oscillator moves along a closed curve,
-- the motion is periodic,
-- each energy value corresponds to one ellipse.
-
----
-
-## Conclusion
-
-The harmonic oscillator satisfies the equation
+But from the equation of motion,
 
 $$
 m\ddot{x} + kx = 0
 $$
 
-Its solution is
+Therefore,
 
 $$
-\boxed{
-x(t) = A\cos(\omega_0 t) + B\sin(\omega_0 t)
-}
+\frac{dE}{dt} = 0
 $$
 
-with natural angular frequency
+Hence,
 
 $$
-\boxed{
-\omega_0 = \sqrt{\frac{k}{m}}
-}
-$$
-
-The total mechanical energy is
-
-$$
-\boxed{
-E(t) = \frac{1}{2}m\dot{x}^2 + \frac{1}{2}kx^2 = \frac{1}{2}kC^2
-}
+\boxed{E = \text{constant}}
 $$
 
 So the energy is conserved.
 
-In phase space, the motion is represented by the ellipse
+---
+
+### 7. Phase space interpretation
+
+In phase space, the motion is described by $(x,\dot{x})$.
+
+For the harmonic oscillator, the trajectory is a closed curve.  
+Using the energy equation,
 
 $$
-\boxed{
-\frac{x^2}{C^2} + \frac{v^2}{C^2\omega_0^2} = 1
-}
+\frac{1}{2}m\dot{x}^2 + \frac{1}{2}kx^2 = E
 $$
+
+we can rewrite it as
+
+$$
+\frac{k}{2}x^2 + \frac{m}{2}\dot{x}^2 = E
+$$
+
+This is the equation of an ellipse in the $(x,\dot{x})$ plane.
+
+So the phase trajectory is closed, which means the motion is periodic.
+
+---
+
+## Conclusion
+
+The solution is
+
+$$
+\boxed{x(t) = A\cos(\omega_0 t) + B\sin(\omega_0 t)}
+$$
+
+with
+
+$$
+\boxed{\omega_0 = \sqrt{\frac{k}{m}}}
+$$
+
+The energy is
+
+$$
+\boxed{E(t) = \frac{1}{2}m\dot{x}^2 + \frac{1}{2}kx^2}
+$$
+
+and it is conserved:
+
+$$
+\boxed{\frac{dE}{dt} = 0}
+$$
+
+In phase space, the motion is represented by an ellipse.
