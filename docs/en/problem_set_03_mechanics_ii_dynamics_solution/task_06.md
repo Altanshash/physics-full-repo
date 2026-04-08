@@ -32,23 +32,23 @@ $$
 m\frac{dv}{dt} = F
 $$
 
-and substituting the drag force $F=-kv$, we get
+and substituting the drag force, we obtain
 
 $$
 m\frac{dv}{dt} = -kv
 $$
 
-or equivalently,
+or
 
 $$
 \frac{dv}{dt} = -\frac{k}{m}v
 $$
 
-This is a first-order differential equation with separable variables.
+This is a separable differential equation.
 
 ---
 
-### 2. Solution for the velocity
+### 2. Velocity as a function of time
 
 Separate the variables:
 
@@ -65,16 +65,16 @@ $$
 This gives
 
 $$
-\ln |v| = -\frac{k}{m}t + C
+\ln|v| = -\frac{k}{m}t + C
 $$
 
-Exponentiating both sides, we obtain
+Exponentiating:
 
 $$
 v(t) = Ce^{-kt/m}
 $$
 
-Now apply the initial condition $v(0)=v_0$:
+Now use the initial condition $v(0)=v_0$:
 
 $$
 v_0 = Ce^0 = C
@@ -83,36 +83,40 @@ $$
 Hence,
 
 $$
-\boxed{
-v(t)=v_0e^{-kt/m}
-}
+\boxed{v(t)=v_0e^{-kt/m}}
 $$
 
 So the velocity decreases exponentially with time.
 
 ---
 
-### 3. Solution for the position
+### 3. Position as a function of time
 
-Since velocity is the derivative of position,
+Since
 
 $$
-\frac{dx}{dt}=v(t)=v_0e^{-kt/m}
+\frac{dx}{dt}=v(t),
+$$
+
+we have
+
+$$
+\frac{dx}{dt}=v_0e^{-kt/m}
 $$
 
 Integrate from $0$ to $t$:
 
 $$
-x(t)=\int_0^t v_0e^{-k\tau/m}\,d\tau
+x(t)-x(0)=\int_0^t v_0e^{-k\tau/m}\,d\tau
 $$
 
-Take $v_0$ outside the integral:
+Because $x(0)=0$, this becomes
 
 $$
 x(t)=v_0\int_0^t e^{-k\tau/m}\,d\tau
 $$
 
-Now integrate:
+Now compute the integral:
 
 $$
 \int e^{-k\tau/m}\,d\tau
@@ -143,7 +147,7 @@ v_0
 \right)
 $$
 
-So,
+Thus,
 
 $$
 \boxed{
@@ -183,29 +187,31 @@ So the body gradually slows down and eventually comes to rest.
 
 ### 5. Comparison with motion without drag
 
-If there is no drag, then the force is zero:
+If there is no drag, then
 
 $$
 F=0
 $$
 
-Hence, Newton’s second law gives
+and Newton’s second law gives
 
 $$
 m\frac{dv}{dt}=0
 $$
 
-which means
+So the velocity remains constant:
 
 $$
 v(t)=v_0
 $$
 
-So without drag, the velocity remains constant and the motion is uniform:
+Then the position is
 
 $$
 x(t)=v_0t
 $$
+
+This is uniform motion.
 
 With linear drag, the motion is different:
 
@@ -217,17 +223,20 @@ $$
 x(t)=\frac{mv_0}{k}\left(1-e^{-kt/m}\right)
 $$
 
-Thus:
+Therefore:
 
-- without drag, the body moves forever with constant speed,
+- without drag, the speed stays constant,
 - with drag, the speed decreases exponentially,
-- with drag, the position approaches the finite limit
+- without drag, the distance grows without bound,
+- with drag, the position approaches a finite limit.
+
+Indeed,
 
 $$
 \lim_{t\to\infty}x(t)=\frac{mv_0}{k}
 $$
 
-So in the presence of linear drag, the body travels only a finite distance.
+So in the presence of linear drag, the body travels only a finite total distance.
 
 ---
 
@@ -239,28 +248,22 @@ $$
 m\frac{dv}{dt}=-kv
 $$
 
-Its solution for velocity is
+The velocity is
 
 $$
-\boxed{
-v(t)=v_0e^{-kt/m}
-}
+\boxed{v(t)=v_0e^{-kt/m}}
 $$
 
 The position is
 
 $$
-\boxed{
-x(t)=\frac{mv_0}{k}\left(1-e^{-kt/m}\right)
-}
+\boxed{x(t)=\frac{mv_0}{k}\left(1-e^{-kt/m}\right)}
 $$
 
 Also,
 
 $$
-\boxed{
-\lim_{t\to\infty}v(t)=0
-}
+\boxed{\lim_{t\to\infty}v(t)=0}
 $$
 
-Compared with motion without drag, linear resistance causes the velocity to decay exponentially and limits the total distance traveled.
+Thus, linear drag causes the body to slow down exponentially and eventually stop, unlike motion without drag, where the velocity remains constant.
