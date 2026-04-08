@@ -1,31 +1,36 @@
 ## Problem 5 – Momentum and one-dimensional head-on collision
 
-### Given
+### Problem statement
 
-Two bodies with masses $m_1$ and $m_2$ move along one straight line.  
-The collision is elastic.
+Two bodies with masses $m_1$ and $m_2$ move along the same straight line.  
+Their initial velocities are $u_1$ and $u_2$.  
+After the collision, their velocities become $v_1$ and $v_2$.
 
-Initial velocities:
+Assume that the collision is perfectly elastic.
 
-$$
-u_1,\qquad u_2
-$$
+Determine:
 
-Final velocities:
-
-$$
-v_1,\qquad v_2
-$$
+- the conservation laws for the collision,
+- the velocities $v_1$ and $v_2$ after the collision,
+- the special case when $m_1 = m_2$,
+- the limit case when $m_2 \gg m_1$,
+- the physical interpretation of the result.
 
 ---
 
-## 1. Conservation laws
+## Solution
 
-For an elastic one-dimensional collision, momentum and kinetic energy are conserved:
+### 1. Conservation laws
+
+For a one-dimensional elastic collision, both momentum and kinetic energy are conserved.
+
+Momentum conservation:
 
 $$
 m_1u_1 + m_2u_2 = m_1v_1 + m_2v_2
 $$
+
+Kinetic energy conservation:
 
 $$
 \frac{1}{2}m_1u_1^2 + \frac{1}{2}m_2u_2^2
@@ -33,71 +38,136 @@ $$
 \frac{1}{2}m_1v_1^2 + \frac{1}{2}m_2v_2^2
 $$
 
-A useful additional relation is
+For an elastic collision, the relative velocity also changes sign:
 
 $$
 u_1 - u_2 = -(v_1 - v_2)
 $$
 
-or
+This can be written as
 
 $$
 u_1 - u_2 = v_2 - v_1
 $$
 
----
-
-## 2. Velocities after the collision
-
-From the relative velocity relation,
+Hence,
 
 $$
 v_2 = v_1 + u_1 - u_2
 $$
 
-Substitute this into momentum conservation:
+---
+
+### 2. Finding $v_1$
+
+Start from momentum conservation:
+
+$$
+m_1u_1 + m_2u_2 = m_1v_1 + m_2v_2
+$$
+
+Substitute
+
+$$
+v_2 = v_1 + u_1 - u_2
+$$
+
+Then
 
 $$
 m_1u_1 + m_2u_2 = m_1v_1 + m_2(v_1 + u_1 - u_2)
 $$
 
-Expand:
+Expand the right-hand side:
 
 $$
-m_1u_1 + m_2u_2 = (m_1+m_2)v_1 + m_2u_1 - m_2u_2
+m_1u_1 + m_2u_2 = m_1v_1 + m_2v_1 + m_2u_1 - m_2u_2
 $$
 
-Rearrange:
+Group the terms with $v_1$:
 
 $$
-(m_1-m_2)u_1 + 2m_2u_2 = (m_1+m_2)v_1
+m_1u_1 + m_2u_2 = (m_1 + m_2)v_1 + m_2u_1 - m_2u_2
 $$
 
-Hence,
+Move the remaining terms to the left:
 
 $$
-\boxed{
-v_1 = \frac{(m_1-m_2)u_1 + 2m_2u_2}{m_1+m_2}
-}
+m_1u_1 - m_2u_1 + m_2u_2 + m_2u_2 = (m_1 + m_2)v_1
 $$
 
-Now use
+So,
+
+$$
+(m_1 - m_2)u_1 + 2m_2u_2 = (m_1 + m_2)v_1
+$$
+
+Therefore,
+
+$$
+v_1 = \frac{(m_1 - m_2)u_1 + 2m_2u_2}{m_1 + m_2}
+$$
+
+---
+
+### 3. Finding $v_2$
+
+Use
 
 $$
 v_2 = v_1 + u_1 - u_2
 $$
 
-After simplification,
+Substitute the expression for $v_1$:
+
+$$
+v_2
+=
+\frac{(m_1 - m_2)u_1 + 2m_2u_2}{m_1 + m_2}
++ u_1 - u_2
+$$
+
+Write everything over the common denominator $m_1 + m_2$:
+
+$$
+v_2
+=
+\frac{(m_1 - m_2)u_1 + 2m_2u_2 + (m_1 + m_2)u_1 - (m_1 + m_2)u_2}{m_1 + m_2}
+$$
+
+Now simplify the numerator:
+
+$$
+(m_1 - m_2)u_1 + (m_1 + m_2)u_1 = 2m_1u_1
+$$
+
+$$
+2m_2u_2 - (m_1 + m_2)u_2 = (m_2 - m_1)u_2
+$$
+
+So,
+
+$$
+v_2 = \frac{2m_1u_1 + (m_2 - m_1)u_2}{m_1 + m_2}
+$$
+
+Thus, the final velocities are
 
 $$
 \boxed{
-v_2 = \frac{2m_1u_1 + (m_2-m_1)u_2}{m_1+m_2}
+v_1 = \frac{(m_1 - m_2)u_1 + 2m_2u_2}{m_1 + m_2}
+}
+$$
+
+$$
+\boxed{
+v_2 = \frac{2m_1u_1 + (m_2 - m_1)u_2}{m_1 + m_2}
 }
 $$
 
 ---
 
-## 3. Case $m_1 = m_2$
+### 4. Special case: $m_1 = m_2$
 
 Let
 
@@ -108,14 +178,16 @@ $$
 Then
 
 $$
-v_1 = \frac{(m-m)u_1 + 2mu_2}{2m} = u_2
+v_1 = \frac{(m - m)u_1 + 2mu_2}{2m} = u_2
 $$
 
+and
+
 $$
-v_2 = \frac{2mu_1 + (m-m)u_2}{2m} = u_1
+v_2 = \frac{2mu_1 + (m - m)u_2}{2m} = u_1
 $$
 
-So, for equal masses, the bodies exchange velocities:
+Therefore, if the masses are equal, the two bodies exchange velocities:
 
 $$
 \boxed{v_1 = u_2,\qquad v_2 = u_1}
@@ -123,33 +195,45 @@ $$
 
 ---
 
-## 4. Limit case $m_2 \gg m_1$
+### 5. Limit case: $m_2 \gg m_1$
 
 From the formula for $v_1$:
 
 $$
-v_1 = \frac{(m_1-m_2)u_1 + 2m_2u_2}{m_1+m_2}
+v_1 = \frac{(m_1 - m_2)u_1 + 2m_2u_2}{m_1 + m_2}
 $$
 
 if $m_2 \gg m_1$, then approximately
 
 $$
-\boxed{v_1 \approx -u_1 + 2u_2}
+v_1 \approx -u_1 + 2u_2
 $$
 
 From the formula for $v_2$:
 
 $$
-v_2 = \frac{2m_1u_1 + (m_2-m_1)u_2}{m_1+m_2}
+v_2 = \frac{2m_1u_1 + (m_2 - m_1)u_2}{m_1 + m_2}
 $$
 
 if $m_2 \gg m_1$, then
 
 $$
-\boxed{v_2 \approx u_2}
+v_2 \approx u_2
 $$
 
-A common special case is $u_2=0$. Then
+So, in this limit,
+
+$$
+\boxed{v_1 \approx -u_1 + 2u_2,\qquad v_2 \approx u_2}
+$$
+
+A very important special case is when the heavy body is initially at rest:
+
+$$
+u_2 = 0
+$$
+
+Then
 
 $$
 \boxed{v_1 \approx -u_1,\qquad v_2 \approx 0}
@@ -157,33 +241,43 @@ $$
 
 ---
 
-## 5. Physical interpretation
+### 6. Physical interpretation
 
-- In an elastic collision, both momentum and kinetic energy are conserved.
-- If the masses are equal, the bodies swap velocities.
-- If one body is much heavier, its velocity changes very little.
-- A light body hitting a very heavy body behaves almost like a ball bouncing from a wall.
+The result is physically meaningful:
+
+- in an elastic collision, both momentum and kinetic energy are conserved,
+- if the masses are equal, the bodies exchange velocities,
+- if one body is much heavier, its velocity changes very little,
+- a light body hitting a very heavy body behaves almost like a ball bouncing from a rigid wall.
 
 ---
 
-## Final answers
+## Conclusion
+
+For a one-dimensional elastic collision, the final velocities are
 
 $$
 \boxed{
-v_1 = \frac{(m_1-m_2)u_1 + 2m_2u_2}{m_1+m_2}
+v_1 = \frac{(m_1 - m_2)u_1 + 2m_2u_2}{m_1 + m_2}
 }
 $$
 
 $$
 \boxed{
-v_2 = \frac{2m_1u_1 + (m_2-m_1)u_2}{m_1+m_2}
+v_2 = \frac{2m_1u_1 + (m_2 - m_1)u_2}{m_1 + m_2}
 }
 $$
 
-$$
-\boxed{v_1 = u_2,\qquad v_2 = u_1 \text{ when } m_1=m_2}
-$$
+If $m_1 = m_2$, the bodies exchange velocities:
 
 $$
-\boxed{v_1 \approx -u_1 + 2u_2,\qquad v_2 \approx u_2 \text{ when } m_2 \gg m_1}
+\boxed{v_1 = u_2,\qquad v_2 = u_1}
 $$
+
+If $m_2 \gg m_1$, then approximately
+
+$$
+\boxed{v_1 \approx -u_1 + 2u_2,\qquad v_2 \approx u_2}
+$$
+
+These results agree with the physical interpretation of elastic collisions.
