@@ -4,19 +4,23 @@
 
 We consider the equation of motion
 
-$m \dfrac{dv}{dt} = -mg - kv$
+$$
+m \frac{dv}{dt} = -mg - kv
+$$
 
 with initial conditions
 
-$v(0)=v_0$, $x(0)=0$.
+$$
+v(0) = v_0, \qquad x(0) = 0
+$$
 
 Determine:
 
 - the analytical solution,
 - the maximum height,
-- the comparison with the case without drag,
-- a numerical simulation,
-- the comparison between the analytical and numerical solutions.
+- comparison with motion without drag,
+- numerical simulation,
+- comparison of analytical and numerical results.
 
 ---
 
@@ -26,221 +30,218 @@ Determine:
 
 Starting from
 
-$m \dfrac{dv}{dt} = -mg - kv$
+$$
+m \frac{dv}{dt} = -mg - kv
+$$
 
-divide both sides by $m$:
+divide by $m$:
 
-$\dfrac{dv}{dt} + \dfrac{k}{m}v = -g$
-
-This is a first-order linear differential equation.
-
----
-
-### 2. Analytical solution for the velocity
-
-First solve the homogeneous equation:
-
-$\dfrac{dv}{dt} + \dfrac{k}{m}v = 0$
-
-Its solution is
-
-$v_h(t)=Ce^{-kt/m}$
-
-Now look for a constant particular solution $v_p$.  
-If $v_p$ is constant, then $dv_p/dt=0$, so
-
-$\dfrac{k}{m}v_p=-g$
-
-Hence,
-
-$v_p=-\dfrac{mg}{k}$
-
-So the general solution is
-
-$v(t)=Ce^{-kt/m}-\dfrac{mg}{k}$
-
-Apply the initial condition $v(0)=v_0$:
-
-$v_0=C-\dfrac{mg}{k}$
-
-Therefore,
-
-$C=v_0+\dfrac{mg}{k}$
-
-Thus, the velocity is
-
-$v(t)=\left(v_0+\dfrac{mg}{k}\right)e^{-kt/m}-\dfrac{mg}{k}$
+$$
+\frac{dv}{dt} + \frac{k}{m} v = -g
+$$
 
 ---
 
-### 3. Position as a function of time
+### 2. Velocity solution
 
-Since
+Solve the homogeneous equation:
 
-$\dfrac{dx}{dt}=v(t)$
+$$
+\frac{dv}{dt} + \frac{k}{m} v = 0
+$$
 
-we integrate the velocity:
+$$
+v_h(t) = C e^{-kt/m}
+$$
 
-$x(t)=\int_0^t v(\tau)\,d\tau$
+Particular solution:
 
-Substitute the formula for velocity:
+$$
+\frac{k}{m} v_p = -g
+\quad \Rightarrow \quad
+v_p = -\frac{mg}{k}
+$$
 
-$x(t)=\int_0^t \left[\left(v_0+\dfrac{mg}{k}\right)e^{-k\tau/m}-\dfrac{mg}{k}\right]d\tau$
+General solution:
 
-Split the integral:
+$$
+v(t) = C e^{-kt/m} - \frac{mg}{k}
+$$
 
-$x(t)=\left(v_0+\dfrac{mg}{k}\right)\int_0^t e^{-k\tau/m}d\tau-\dfrac{mg}{k}\int_0^t d\tau$
+Apply initial condition:
 
-Now compute the integrals:
+$$
+v(0) = v_0 = C - \frac{mg}{k}
+$$
 
-$\int_0^t e^{-k\tau/m}d\tau=\dfrac{m}{k}\left(1-e^{-kt/m}\right)$
+$$
+C = v_0 + \frac{mg}{k}
+$$
 
-and
+Final velocity:
 
-$\int_0^t d\tau=t$
+$$
+v(t) = \left(v_0 + \frac{mg}{k}\right) e^{-kt/m} - \frac{mg}{k}
+$$
 
-So we get
+---
 
-$x(t)=\dfrac{m}{k}\left(v_0+\dfrac{mg}{k}\right)\left(1-e^{-kt/m}\right)-\dfrac{mg}{k}t$
+### 3. Position function
 
-This also satisfies $x(0)=0$.
+$$
+\frac{dx}{dt} = v(t)
+$$
+
+$$
+x(t) = \int_0^t v(\tau)\, d\tau
+$$
+
+$$
+x(t) =
+\int_0^t
+\left[
+\left(v_0 + \frac{mg}{k}\right) e^{-k\tau/m}
+-
+\frac{mg}{k}
+\right]
+d\tau
+$$
+
+Compute integrals:
+
+$$
+\int_0^t e^{-k\tau/m} d\tau =
+\frac{m}{k}\left(1 - e^{-kt/m}\right)
+$$
+
+$$
+\int_0^t d\tau = t
+$$
+
+Final position:
+
+$$
+x(t) =
+\frac{m}{k}
+\left(v_0 + \frac{mg}{k}\right)
+\left(1 - e^{-kt/m}\right)
+-
+\frac{mg}{k} t
+$$
 
 ---
 
 ### 4. Maximum height
 
-The maximum height is reached when the velocity becomes zero:
+Condition:
 
-$v(t_{\max})=0$
+$$
+v(t_{\max}) = 0
+$$
 
-Using the velocity formula,
+$$
+\left(v_0 + \frac{mg}{k}\right)e^{-kt_{\max}/m}
+=
+\frac{mg}{k}
+$$
 
-$\left(v_0+\dfrac{mg}{k}\right)e^{-kt_{\max}/m}-\dfrac{mg}{k}=0$
+$$
+e^{-kt_{\max}/m}
+=
+\frac{mg}{kv_0 + mg}
+$$
 
-So,
+$$
+t_{\max}
+=
+\frac{m}{k}
+\ln\left(\frac{kv_0 + mg}{mg}\right)
+$$
 
-$\left(v_0+\dfrac{mg}{k}\right)e^{-kt_{\max}/m}=\dfrac{mg}{k}$
+Maximum height:
 
-Hence,
-
-$e^{-kt_{\max}/m}=\dfrac{mg}{kv_0+mg}$
-
-Take the natural logarithm:
-
-$-\dfrac{k}{m}t_{\max}=\ln\left(\dfrac{mg}{kv_0+mg}\right)$
-
-Therefore,
-
-$t_{\max}=\dfrac{m}{k}\ln\left(\dfrac{kv_0+mg}{mg}\right)$
-
-Now substitute this into the position formula:
-
-$x_{\max}=x(t_{\max})$
-
-So,
-
-$x_{\max}=\dfrac{m}{k}\left(v_0+\dfrac{mg}{k}\right)\left(1-e^{-kt_{\max}/m}\right)-\dfrac{mg}{k}t_{\max}$
-
-Using
-
-$e^{-kt_{\max}/m}=\dfrac{mg}{kv_0+mg}$
-
-this simplifies to
-
-$x_{\max}=\dfrac{mv_0}{k}-\dfrac{m^2g}{k^2}\ln\left(1+\dfrac{kv_0}{mg}\right)$
+$$
+x_{\max} =
+\frac{mv_0}{k}
+-
+\frac{m^2 g}{k^2}
+\ln\left(1 + \frac{k v_0}{mg}\right)
+$$
 
 ---
 
-### 5. Comparison with motion without drag
+### 5. Without drag
 
-Without drag, the equation becomes
+$$
+\frac{dv}{dt} = -g
+$$
 
-$m\dfrac{dv}{dt}=-mg$
+$$
+v(t) = v_0 - gt
+$$
 
-so
+$$
+x(t) = v_0 t - \frac{1}{2} g t^2
+$$
 
-$\dfrac{dv}{dt}=-g$
+$$
+t_{\max} = \frac{v_0}{g}
+$$
 
-With the initial condition $v(0)=v_0$, the velocity is
-
-$v(t)=v_0-gt$
-
-and the position is
-
-$x(t)=v_0t-\dfrac{1}{2}gt^2$
-
-The maximum height is reached when $v=0$, so
-
-$t_{\max}=\dfrac{v_0}{g}$
-
-and
-
-$x_{\max}=\dfrac{v_0^2}{2g}$
-
-Therefore:
-
-- without drag, the velocity decreases linearly,
-- with drag, the velocity decreases faster,
-- with drag, the body reaches a smaller maximum height.
+$$
+x_{\max} = \frac{v_0^2}{2g}
+$$
 
 ---
 
-### 6. Numerical simulation
+### 6. Numerical method
 
-To simulate the motion numerically, use the system
+$$
+\frac{dx}{dt} = v
+$$
 
-$\dfrac{dx}{dt}=v$
+$$
+\frac{dv}{dt} = -g - \frac{k}{m}v
+$$
 
-$\dfrac{dv}{dt}=-g-\dfrac{k}{m}v$
+Euler method:
 
-Using the Euler method with time step $\Delta t$:
+$$
+v_{n+1} = v_n + \Delta t \left(-g - \frac{k}{m} v_n \right)
+$$
 
-$v_{n+1}=v_n+\Delta t\left(-g-\dfrac{k}{m}v_n\right)$
-
-$x_{n+1}=x_n+\Delta t\,v_n$
-
-with initial values
-
-$x_0=0$, $v_0=v_0$
-
-This gives an approximate solution step by step.
-
----
-
-### 7. Comparison of analytical and numerical solutions
-
-The analytical solution is
-
-$v(t)=\left(v_0+\dfrac{mg}{k}\right)e^{-kt/m}-\dfrac{mg}{k}$
-
-$x(t)=\dfrac{m}{k}\left(v_0+\dfrac{mg}{k}\right)\left(1-e^{-kt/m}\right)-\dfrac{mg}{k}t$
-
-The numerical solution approaches the same result when the time step $\Delta t$ is sufficiently small.
-
-So:
-
-- for small $\Delta t$, the agreement is very good,
-- for large $\Delta t$, the numerical error becomes noticeable.
+$$
+x_{n+1} = x_n + \Delta t \, v_n
+$$
 
 ---
 
 ## Conclusion
 
-The velocity is
+$$
+v(t) =
+\left(v_0 + \frac{mg}{k}\right)e^{-kt/m} - \frac{mg}{k}
+$$
 
-$v(t)=\left(v_0+\dfrac{mg}{k}\right)e^{-kt/m}-\dfrac{mg}{k}$
+$$
+x(t) =
+\frac{m}{k}
+\left(v_0 + \frac{mg}{k}\right)
+\left(1 - e^{-kt/m}\right)
+-
+\frac{mg}{k} t
+$$
 
-The position is
+$$
+t_{\max} =
+\frac{m}{k}
+\ln\left(\frac{kv_0 + mg}{mg}\right)
+$$
 
-$x(t)=\dfrac{m}{k}\left(v_0+\dfrac{mg}{k}\right)\left(1-e^{-kt/m}\right)-\dfrac{mg}{k}t$
-
-The time to the maximum height is
-
-$t_{\max}=\dfrac{m}{k}\ln\left(\dfrac{kv_0+mg}{mg}\right)$
-
-The maximum height is
-
-$x_{\max}=\dfrac{mv_0}{k}-\dfrac{m^2g}{k^2}\ln\left(1+\dfrac{kv_0}{mg}\right)$
-
-Compared with motion without drag, the body rises for a shorter time and reaches a lower maximum height.  
-The numerical simulation agrees with the analytical solution when the time step is small enough.
+$$
+x_{\max} =
+\frac{mv_0}{k}
+-
+\frac{m^2 g}{k^2}
+\ln\left(1 + \frac{k v_0}{mg}\right)
+$$
