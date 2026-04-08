@@ -16,9 +16,9 @@ $$
 
 Determine:
 
-- the equation of motion and its solution,
+- the equation of motion and solve it,
 - the limit $\lim_{t\to\infty} v(t)$,
-- the comparison with motion without drag.
+- compare the result with motion without drag.
 
 ---
 
@@ -32,19 +32,19 @@ $$
 m\frac{dv}{dt} = F
 $$
 
-and substituting the drag force, we obtain
+Substitute the drag force:
 
 $$
 m\frac{dv}{dt} = -kv
 $$
 
-or
+So the equation of motion is
 
 $$
 \frac{dv}{dt} = -\frac{k}{m}v
 $$
 
-This is a separable differential equation.
+This is a first-order separable differential equation.
 
 ---
 
@@ -65,25 +65,25 @@ $$
 This gives
 
 $$
-\ln|v| = -\frac{k}{m}t + C
+\ln |v| = -\frac{k}{m}t + C
 $$
 
-Exponentiating:
+Exponentiating, we obtain
 
 $$
 v(t) = Ce^{-kt/m}
 $$
 
-Now use the initial condition $v(0)=v_0$:
+Now apply the initial condition $v(0)=v_0$:
 
 $$
 v_0 = Ce^0 = C
 $$
 
-Hence,
+Therefore,
 
 $$
-\boxed{v(t)=v_0e^{-kt/m}}
+v(t) = v_0e^{-kt/m}
 $$
 
 So the velocity decreases exponentially with time.
@@ -95,64 +95,49 @@ So the velocity decreases exponentially with time.
 Since
 
 $$
-\frac{dx}{dt}=v(t),
+\frac{dx}{dt} = v(t)
 $$
 
 we have
 
 $$
-\frac{dx}{dt}=v_0e^{-kt/m}
+\frac{dx}{dt} = v_0e^{-kt/m}
 $$
 
 Integrate from $0$ to $t$:
 
 $$
-x(t)-x(0)=\int_0^t v_0e^{-k\tau/m}\,d\tau
+x(t) = \int_0^t v_0e^{-k\tau/m}\,d\tau
 $$
 
-Because $x(0)=0$, this becomes
+Take $v_0$ outside the integral:
 
 $$
-x(t)=v_0\int_0^t e^{-k\tau/m}\,d\tau
+x(t) = v_0 \int_0^t e^{-k\tau/m}\,d\tau
 $$
 
-Now compute the integral:
+Now integrate:
 
 $$
-\int e^{-k\tau/m}\,d\tau
-=
--\frac{m}{k}e^{-k\tau/m}
+\int e^{-k\tau/m}\,d\tau = -\frac{m}{k}e^{-k\tau/m}
 $$
 
-Therefore,
+So,
 
 $$
-x(t)
-=
-v_0
-\left[
--\frac{m}{k}e^{-k\tau/m}
-\right]_0^t
+x(t) = v_0 \left[ -\frac{m}{k}e^{-k\tau/m} \right]_0^t
 $$
 
 Substitute the limits:
 
 $$
-x(t)
-=
-v_0
-\left(
--\frac{m}{k}e^{-kt/m}
-+\frac{m}{k}
-\right)
+x(t) = v_0 \left( -\frac{m}{k}e^{-kt/m} + \frac{m}{k} \right)
 $$
 
-Thus,
+Hence,
 
 $$
-\boxed{
-x(t)=\frac{mv_0}{k}\left(1-e^{-kt/m}\right)
-}
+x(t) = \frac{mv_0}{k}\left(1-e^{-kt/m}\right)
 $$
 
 This satisfies the initial condition $x(0)=0$.
@@ -164,24 +149,22 @@ This satisfies the initial condition $x(0)=0$.
 From the velocity formula,
 
 $$
-v(t)=v_0e^{-kt/m}
+v(t) = v_0e^{-kt/m}
 $$
 
-As $t\to\infty$,
+As $t \to \infty$,
 
 $$
-e^{-kt/m}\to 0
+e^{-kt/m} \to 0
 $$
 
 Therefore,
 
 $$
-\boxed{
-\lim_{t\to\infty} v(t)=0
-}
+\lim_{t\to\infty} v(t) = 0
 $$
 
-So the body gradually slows down and eventually comes to rest.
+So the body gradually slows down and eventually stops.
 
 ---
 
@@ -190,53 +173,57 @@ So the body gradually slows down and eventually comes to rest.
 If there is no drag, then
 
 $$
-F=0
+F = 0
 $$
 
-and Newton’s second law gives
+and Newton’s second law becomes
 
 $$
-m\frac{dv}{dt}=0
+m\frac{dv}{dt} = 0
 $$
 
-So the velocity remains constant:
+Hence,
 
 $$
-v(t)=v_0
+v(t) = v_0
 $$
 
-Then the position is
+So the velocity remains constant.
+
+The position is then
 
 $$
-x(t)=v_0t
+x(t) = v_0 t
 $$
 
 This is uniform motion.
 
-With linear drag, the motion is different:
+With linear drag, we found
 
 $$
-v(t)=v_0e^{-kt/m}
+v(t) = v_0e^{-kt/m}
 $$
 
+and
+
 $$
-x(t)=\frac{mv_0}{k}\left(1-e^{-kt/m}\right)
+x(t) = \frac{mv_0}{k}\left(1-e^{-kt/m}\right)
 $$
 
 Therefore:
 
-- without drag, the speed stays constant,
-- with drag, the speed decreases exponentially,
-- without drag, the distance grows without bound,
+- without drag, the body moves with constant velocity,
+- with drag, the velocity decreases exponentially,
+- without drag, the distance keeps increasing,
 - with drag, the position approaches a finite limit.
 
 Indeed,
 
 $$
-\lim_{t\to\infty}x(t)=\frac{mv_0}{k}
+\lim_{t\to\infty} x(t) = \frac{mv_0}{k}
 $$
 
-So in the presence of linear drag, the body travels only a finite total distance.
+So with linear drag, the body travels only a finite total distance.
 
 ---
 
@@ -245,25 +232,25 @@ So in the presence of linear drag, the body travels only a finite total distance
 The equation of motion is
 
 $$
-m\frac{dv}{dt}=-kv
+m\frac{dv}{dt} = -kv
 $$
 
 The velocity is
 
 $$
-\boxed{v(t)=v_0e^{-kt/m}}
+v(t) = v_0e^{-kt/m}
 $$
 
 The position is
 
 $$
-\boxed{x(t)=\frac{mv_0}{k}\left(1-e^{-kt/m}\right)}
+x(t) = \frac{mv_0}{k}\left(1-e^{-kt/m}\right)
 $$
 
 Also,
 
 $$
-\boxed{\lim_{t\to\infty}v(t)=0}
+\lim_{t\to\infty} v(t) = 0
 $$
 
 Thus, linear drag causes the body to slow down exponentially and eventually stop, unlike motion without drag, where the velocity remains constant.
