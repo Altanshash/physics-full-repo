@@ -26,7 +26,7 @@ Determine:
 
 ## Solution
 
-### 1. Differential equation for the velocity
+### 1. Equation for the velocity
 
 Start from
 
@@ -46,35 +46,29 @@ This is a first-order linear differential equation.
 
 ### 2. Analytical solution for the velocity
 
-We solve
-
-$$
-\frac{dv}{dt} + \frac{k}{m}v = -g
-$$
-
 The homogeneous equation is
 
 $$
 \frac{dv}{dt} + \frac{k}{m}v = 0
 $$
 
-whose solution is
+Its solution is
 
 $$
 v_h(t)=Ce^{-kt/m}
 $$
 
-Now find a constant particular solution $v_p$.  
-If $v_p$ is constant, then $\dfrac{dv_p}{dt}=0$, so
+Now look for a constant particular solution $v_p$.  
+If $v_p$ is constant, then $dv_p/dt=0$, so
 
 $$
-\frac{k}{m}v_p=-g
+\frac{k}{m}v_p = -g
 $$
 
 Hence,
 
 $$
-v_p=-\frac{mg}{k}
+v_p = -\frac{mg}{k}
 $$
 
 Therefore, the general solution is
@@ -86,21 +80,19 @@ $$
 Use the initial condition $v(0)=v_0$:
 
 $$
-v_0=C-\frac{mg}{k}
+v_0 = C - \frac{mg}{k}
 $$
 
-so
+So,
 
 $$
-C=v_0+\frac{mg}{k}
+C = v_0 + \frac{mg}{k}
 $$
 
 Thus,
 
 $$
-\boxed{
 v(t)=\left(v_0+\frac{mg}{k}\right)e^{-kt/m}-\frac{mg}{k}
-}
 $$
 
 ---
@@ -119,10 +111,10 @@ $$
 x(t)=\int_0^t v(\tau)\,d\tau
 $$
 
-Substitute the expression for $v(\tau)$:
+Substitute the velocity formula:
 
 $$
-x(t)=\int_0^t \left[\left(v_0+\frac{mg}{k}\right)e^{-k\tau/m}-\frac{mg}{k}\right]d\tau
+x(t)=\int_0^t \left[\left(v_0+\frac{mg}{k}\right)e^{-k\tau/m}-\frac{mg}{k}\right] d\tau
 $$
 
 Split the integral:
@@ -131,15 +123,13 @@ $$
 x(t)=\left(v_0+\frac{mg}{k}\right)\int_0^t e^{-k\tau/m}\,d\tau - \frac{mg}{k}\int_0^t d\tau
 $$
 
-Now compute each integral.
-
-First:
+Now compute the first integral:
 
 $$
 \int e^{-k\tau/m}\,d\tau = -\frac{m}{k}e^{-k\tau/m}
 $$
 
-Therefore,
+So,
 
 $$
 \int_0^t e^{-k\tau/m}\,d\tau
@@ -147,24 +137,16 @@ $$
 \frac{m}{k}\left(1-e^{-kt/m}\right)
 $$
 
-Second:
+Also,
 
 $$
 \int_0^t d\tau = t
 $$
 
-So,
+Therefore,
 
 $$
-x(t)=\left(v_0+\frac{mg}{k}\right)\frac{m}{k}\left(1-e^{-kt/m}\right)-\frac{mg}{k}t
-$$
-
-Hence,
-
-$$
-\boxed{
 x(t)=\frac{m}{k}\left(v_0+\frac{mg}{k}\right)\left(1-e^{-kt/m}\right)-\frac{mg}{k}t
-}
 $$
 
 This satisfies the initial condition $x(0)=0$.
@@ -197,7 +179,7 @@ $$
 e^{-kt_{\max}/m}=\frac{mg}{kv_0+mg}
 $$
 
-Take the natural logarithm:
+Take the logarithm:
 
 $$
 -\frac{k}{m}t_{\max}=\ln\left(\frac{mg}{kv_0+mg}\right)
@@ -206,49 +188,42 @@ $$
 Therefore,
 
 $$
-\boxed{
 t_{\max}=\frac{m}{k}\ln\left(\frac{kv_0+mg}{mg}\right)
-}
 $$
 
-Now substitute this time into the position formula to obtain the maximum height:
+Now substitute this time into the position formula:
 
 $$
 x_{\max}=x(t_{\max})
 $$
 
-So,
+Using the expression above, we get
 
 $$
-\boxed{
 x_{\max}
 =
 \frac{m}{k}\left(v_0+\frac{mg}{k}\right)\left(1-e^{-kt_{\max}/m}\right)-\frac{mg}{k}t_{\max}
-}
 $$
 
-We can simplify this using
+Since
 
 $$
-e^{-kt_{\max}/m}=\frac{mg}{kv_0+mg}
+e^{-kt_{\max}/m}=\frac{mg}{kv_0+mg},
 $$
 
-After simplification, we obtain
+this simplifies to
 
 $$
-\boxed{
 x_{\max}
 =
 \frac{mv_0}{k}
 -
-\frac{m^2g}{k^2}
-\ln\left(1+\frac{kv_0}{mg}\right)
-}
+\frac{m^2g}{k^2}\ln\left(1+\frac{kv_0}{mg}\right)
 $$
 
 ---
 
-### 5. Comparison with the case without drag
+### 5. Comparison with motion without drag
 
 Without drag, the equation becomes
 
@@ -262,13 +237,13 @@ $$
 \frac{dv}{dt}=-g
 $$
 
-With initial velocity $v_0$, the solution is
+With the initial condition $v(0)=v_0$, the solution is
 
 $$
 v(t)=v_0-gt
 $$
 
-and the position is
+Then the position is
 
 $$
 x(t)=v_0t-\frac{1}{2}gt^2
@@ -278,11 +253,15 @@ The maximum height is reached when $v=0$:
 
 $$
 0=v_0-gt
-\quad \Rightarrow \quad
+$$
+
+Thus,
+
+$$
 t_{\max}=\frac{v_0}{g}
 $$
 
-Then
+and
 
 $$
 x_{\max}=\frac{v_0^2}{2g}
@@ -290,15 +269,15 @@ $$
 
 Therefore:
 
-- without drag, the motion is described by a parabola in time,
-- with drag, the upward motion slows down faster,
-- with drag, the maximum height is smaller.
+- without drag, the velocity decreases linearly,
+- with drag, the velocity decreases faster because of the extra term $-kv$,
+- with drag, the maximum height is smaller than in the drag-free case.
 
 ---
 
 ### 6. Numerical simulation
 
-To simulate the motion numerically, we use the system
+To simulate the motion numerically, use the system
 
 $$
 \frac{dx}{dt}=v
@@ -308,7 +287,7 @@ $$
 \frac{dv}{dt}=-g-\frac{k}{m}v
 $$
 
-A simple Euler method with time step $\Delta t$ can be used:
+Using the Euler method with time step $\Delta t$:
 
 $$
 v_{n+1}=v_n+\Delta t\left(-g-\frac{k}{m}v_n\right)
@@ -318,19 +297,19 @@ $$
 x_{n+1}=x_n+\Delta t\,v_n
 $$
 
-Starting from
+with initial values
 
 $$
-x_0=0,\qquad v_0=v_0
+x_0=0, \qquad v_0=v_0
 $$
 
-we compute the values step by step until the body returns to the ground or until the desired final time is reached.
+This gives an approximate numerical solution step by step.
 
 ---
 
-### 7. Comparison between analytical and numerical solutions
+### 7. Analytical and numerical comparison
 
-The analytical solution gives exact formulas for $v(t)$ and $x(t)$:
+The analytical solution is
 
 $$
 v(t)=\left(v_0+\frac{mg}{k}\right)e^{-kt/m}-\frac{mg}{k}
@@ -340,12 +319,12 @@ $$
 x(t)=\frac{m}{k}\left(v_0+\frac{mg}{k}\right)\left(1-e^{-kt/m}\right)-\frac{mg}{k}t
 $$
 
-The numerical solution approximates the same motion step by step.
+The numerical solution approaches the same result when the time step $\Delta t$ is sufficiently small.
 
-If the time step $\Delta t$ is small, the numerical solution is very close to the analytical one.  
-For larger $\Delta t$, the numerical approximation becomes less accurate.
+So:
 
-Thus, the numerical simulation confirms the analytical result.
+- for small $\Delta t$, the agreement is very good,
+- for larger $\Delta t$, the numerical error becomes more visible.
 
 ---
 
@@ -354,39 +333,30 @@ Thus, the numerical simulation confirms the analytical result.
 The analytical velocity is
 
 $$
-\boxed{
 v(t)=\left(v_0+\frac{mg}{k}\right)e^{-kt/m}-\frac{mg}{k}
-}
 $$
 
 The analytical position is
 
 $$
-\boxed{
 x(t)=\frac{m}{k}\left(v_0+\frac{mg}{k}\right)\left(1-e^{-kt/m}\right)-\frac{mg}{k}t
-}
 $$
 
 The time to the maximum height is
 
 $$
-\boxed{
 t_{\max}=\frac{m}{k}\ln\left(\frac{kv_0+mg}{mg}\right)
-}
 $$
 
 The maximum height is
 
 $$
-\boxed{
 x_{\max}
 =
 \frac{mv_0}{k}
 -
-\frac{m^2g}{k^2}
-\ln\left(1+\frac{kv_0}{mg}\right)
-}
+\frac{m^2g}{k^2}\ln\left(1+\frac{kv_0}{mg}\right)
 $$
 
 Compared with motion without drag, the body rises for a shorter time and reaches a lower maximum height.  
-The numerical simulation agrees with the analytical solution when a sufficiently small time step is used.
+The numerical simulation confirms the analytical solution when the time step is small enough.
