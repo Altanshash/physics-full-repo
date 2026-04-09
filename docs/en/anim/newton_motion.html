@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Newton Motion Animation</title>
+    <style>
+        body { background: #111; color: white; text-align: center; }
+        canvas { background: #000; border: 1px solid #444; }
+    </style>
+</head>
+<body>
+
+<h2>Constant Force Motion (a = (3,1))</h2>
+
+<canvas id="canvas" width="800" height="400"></canvas><br>
+<button onclick="start()">Start</button>
+<button onclick="reset()">Reset</button>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let t = 0;
+let dt = 0.02;
+let running = false;
+
+// initial conditions
+let x0 = 0, y0 = 0;
+let vx0 = 1, vy0 = -1;
+let ax = 3, ay = 1;
+
+let points = [];
+
+function getPosition(t) {
+    let x = x0 + vx0*t + 0.5*ax*t*t;
+    let y = y0 + vy0*t + 0.5*ay*t*t;
+    return {x, y};
+}
+
+function draw() {
+    ctx.clearRect(0,0,800,400);
+
+    // draw trajectory
+    ctx.beginPath();
+    for(let p of points){
+        ctx.lineTo(p.x*50+50, 350 - p.y*50);
+    }
+    ctx.strokeStyle = "cyan";
+    ctx.stroke();
+
+    // draw particle
+    let pos = getPosition(t);
+    ctx.beginPath();
+    ctx.arc(pos.x*50+50, 350 - pos.y*50, 5, 0, Math.PI*2);
+    ctx.fillStyle = "red";
+    ctx.fill();
+}
+
+function update() {
+    if(!running) return;
+
+    t += dt;
+    let pos = getPosition(t);
+    points.push(pos);
+
+    draw();
+    requestAnimationFrame(update);
+}
+
+function start(){
+    running = true;
+    update();
+}
+
+function reset(){
+    t = 0;
+    points = [];
+    running = false;
+    draw();
+}
+
+draw();
+</script>
+
+</body>
+</html>
