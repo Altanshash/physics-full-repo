@@ -2,19 +2,19 @@
 
 ### Problem statement
 
-Consider motion in the one-dimensional potential
+Given the potential
 
 $$
-U(x) = \frac{k}{2}x^2 + \lambda x^4
+U(x)=\frac{k}{2}x^2+\lambda x^4
 $$
 
-Determine:
+Find:
 
 - the force,
 - the equation of motion,
-- a numerical solution for selected parameters,
-- the effect of the initial energy on the type of motion,
-- a visualization of $x(t)$ and the phase portrait.
+- the numerical form of the system,
+- the effect of initial energy,
+- the plots of $x(t)$ and the phase portrait.
 
 ---
 
@@ -22,24 +22,26 @@ Determine:
 
 ### 1. Force
 
-The force is the negative derivative of the potential:
+The force is
 
 $$
-F(x) = -\frac{dU}{dx}
+F(x)=-\frac{dU}{dx}
 $$
 
-Differentiate:
+Differentiate the potential:
 
 $$
-\frac{dU}{dx} = kx + 4\lambda x^3
+\frac{dU}{dx}=\frac{d}{dx}\left(\frac{k}{2}x^2+\lambda x^4\right)
+$$
+
+$$
+\frac{dU}{dx}=kx+4\lambda x^3
 $$
 
 Therefore,
 
 $$
-\boxed{
-F(x) = -kx - 4\lambda x^3
-}
+\boxed{F(x)=-kx-4\lambda x^3}
 $$
 
 ---
@@ -49,59 +51,108 @@ $$
 Using Newton’s second law,
 
 $$
-m\ddot{x} = F(x)
+m\ddot{x}=F(x)
 $$
 
-we get
+Substitute the force:
 
 $$
-m\ddot{x} = -kx - 4\lambda x^3
+m\ddot{x}=-kx-4\lambda x^3
 $$
 
-or equivalently,
+Move everything to one side:
 
 $$
-\boxed{
-m\ddot{x} + kx + 4\lambda x^3 = 0
-}
-$$
-
-This is a nonlinear oscillator because of the term $x^3$.
-
----
-
-### 3. First-order system for numerical simulation
-
-To solve numerically, introduce the velocity
-
-$$
-v = \dot{x}
-$$
-
-Then the second-order equation becomes a system of two first-order equations:
-
-$$
-\dot{x} = v
-$$
-
-$$
-\dot{v} = -\frac{k}{m}x - \frac{4\lambda}{m}x^3
-$$
-
-So the numerical model is
-
-$$
-\boxed{
-\dot{x} = v,\qquad
-\dot{v} = -\frac{k}{m}x - \frac{4\lambda}{m}x^3
-}
+\boxed{m\ddot{x}+kx+4\lambda x^3=0}
 $$
 
 ---
 
-### 4. Example of selected parameters
+### 3. First-order system for numerical solution
 
-For example, choose
+Let
+
+$$
+v=\dot{x}
+$$
+
+Then
+
+$$
+\dot{x}=v
+$$
+
+Also,
+
+$$
+\dot{v}=\ddot{x}
+$$
+
+From the equation of motion:
+
+$$
+m\dot{v}=-kx-4\lambda x^3
+$$
+
+Divide by $m$:
+
+$$
+\dot{v}=-\frac{k}{m}x-\frac{4\lambda}{m}x^3
+$$
+
+So the numerical system is
+
+$$
+\boxed{\dot{x}=v}
+$$
+
+$$
+\boxed{\dot{v}=-\frac{k}{m}x-\frac{4\lambda}{m}x^3}
+$$
+
+---
+
+### 4. Total energy
+
+The total energy is
+
+$$
+E=\frac{1}{2}mv^2+U(x)
+$$
+
+Substitute $U(x)$:
+
+$$
+E=\frac{1}{2}mv^2+\frac{k}{2}x^2+\lambda x^4
+$$
+
+Therefore,
+
+$$
+\boxed{E=\frac{1}{2}mv^2+\frac{k}{2}x^2+\lambda x^4}
+$$
+
+---
+
+### 5. Effect of initial energy
+
+If the initial energy is small, then $x$ is small, so the term $\lambda x^4$ is much smaller than $\frac{k}{2}x^2$.
+
+Then the motion is approximately harmonic.
+
+If the initial energy is larger, then $x$ becomes larger, and the term $\lambda x^4$ becomes important.
+
+So:
+
+- small energy → almost harmonic motion,
+- large energy → nonlinear motion,
+- larger energy → larger amplitude and more distorted phase curves.
+
+---
+
+### 6. Numerical example
+
+Choose, for example,
 
 $$
 m=1,\qquad k=1,\qquad \lambda=0.1
@@ -117,137 +168,62 @@ $$
 \dot{v}=-x-0.4x^3
 $$
 
-with initial conditions, for example,
+with initial conditions
 
 $$
 x(0)=x_0,\qquad v(0)=v_0
 $$
 
-These equations can be integrated numerically using Euler’s method, Runge–Kutta, or another standard algorithm.
-
 ---
 
-### 5. Effect of the initial energy
+### 7. What to plot
 
-The total energy is
+For the numerical solution, plot:
 
-$$
-E = \frac{1}{2}mv^2 + U(x)
-$$
-
-so here
+1. position versus time:
 
 $$
-E = \frac{1}{2}mv^2 + \frac{k}{2}x^2 + \lambda x^4
+x(t)
 $$
 
-Thus,
+2. phase portrait:
 
 $$
-\boxed{
-E = \frac{1}{2}mv^2 + \frac{k}{2}x^2 + \lambda x^4
-}
+(x(t),v(t))
 $$
 
-Since the potential grows for large $|x|$, the particle remains trapped in a bounded region.
-
-The effect of the initial energy is the following:
-
-- for small energy, the motion is close to harmonic,
-- for larger energy, the quartic term becomes important,
-- the oscillation becomes nonlinear,
-- the period depends on the amplitude.
-
-So increasing the initial energy changes the shape of the trajectory and makes the motion less similar to a simple harmonic oscillator.
-
----
-
-### 6. Qualitative behavior
-
-For small displacements, the quadratic term dominates:
-
-$$
-U(x)\approx \frac{k}{2}x^2
-$$
-
-and the motion behaves approximately like a harmonic oscillator.
-
-For larger displacements, the term
-
-$$
-\lambda x^4
-$$
-
-becomes significant, so the restoring force is stronger than in the purely harmonic case.
-
-Therefore, this system is a nonlinear oscillator with bounded motion.
-
----
-
-### 7. Numerical visualization
-
-A numerical simulation should produce:
-
-1. the graph of position versus time:
-   $$
-   x(t)
-   $$
-
-2. the phase portrait:
-   $$
-   (x(t),v(t))
-   $$
-
-For bounded motion, the phase portrait consists of closed curves around the equilibrium point
+For bounded motion, the phase portrait consists of closed curves around
 
 $$
 x=0,\qquad v=0
 $$
 
-For low energy, these curves are close to ellipses.  
-For higher energy, they become more distorted because of the nonlinear term.
-
 ---
 
 ## Conclusion
 
-The potential is
-
-$$
-U(x)=\frac{k}{2}x^2+\lambda x^4
-$$
-
 The force is
 
 $$
-\boxed{
-F(x)=-kx-4\lambda x^3
-}
+\boxed{F(x)=-kx-4\lambda x^3}
 $$
 
 The equation of motion is
 
 $$
-\boxed{
-m\ddot{x}+kx+4\lambda x^3=0
-}
+\boxed{m\ddot{x}+kx+4\lambda x^3=0}
 $$
 
-The equivalent first-order system is
+The first-order system is
 
 $$
-\boxed{
-\dot{x}=v,\qquad
-\dot{v}=-\frac{k}{m}x-\frac{4\lambda}{m}x^3
-}
+\boxed{\dot{x}=v,\qquad \dot{v}=-\frac{k}{m}x-\frac{4\lambda}{m}x^3}
 $$
 
 The total energy is
 
 $$
-\boxed{
-E=\frac{1}{2}mv^2+\frac{k}{2}x^2+\lambda x^4
-}
+\boxed{E=\frac{1}{2}mv^2+\frac{k}{2}x^2+\lambda x^4}
 $$
 
-The motion is bounded and nonlinear, and the phase portrait consists of closed curves whose shape depends on the initial energy.
+The motion is bounded and nonlinear.
