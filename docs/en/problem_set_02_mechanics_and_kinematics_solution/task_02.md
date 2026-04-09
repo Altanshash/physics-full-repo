@@ -3,9 +3,9 @@
 ### Problem statement
 
 A body moves in the Earth's gravitational field without air resistance.  
-It is thrown with initial velocity $v_0$ at an angle $\alpha$ to the horizontal.
+It is launched with initial speed $v_0$ at an angle $\alpha$ to the horizontal.
 
-Determine:
+Find:
 
 - the equations of motion in the horizontal and vertical directions,
 - the time of flight,
@@ -19,26 +19,24 @@ Determine:
 
 ### 1. Initial velocity components
 
-Resolve the initial velocity into horizontal and vertical components:
+The initial velocity is decomposed into two components:
 
 $$
-v_{0x}=v_0\cos\alpha
+v_{0x} = v_0 \cos\alpha
 $$
 
 $$
-v_{0y}=v_0\sin\alpha
+v_{0y} = v_0 \sin\alpha
 $$
 
-The horizontal acceleration is zero:
+The accelerations are
 
 $$
-a_x=0
+a_x = 0
 $$
 
-The vertical acceleration is
-
 $$
-a_y=-g
+a_y = -g
 $$
 
 ---
@@ -47,16 +45,16 @@ $$
 
 #### Horizontal motion
 
-Since $a_x=0$, the horizontal velocity is constant:
+Since the horizontal acceleration is zero, the horizontal velocity is constant:
 
 $$
-v_x(t)=v_0\cos\alpha
+v_x(t) = v_0 \cos\alpha
 $$
 
-Therefore, the horizontal position is
+So the horizontal position is
 
 $$
-x(t)=v_0\cos\alpha \, t
+x(t) = v_0 \cos\alpha \, t
 $$
 
 #### Vertical motion
@@ -64,39 +62,39 @@ $$
 The vertical velocity is
 
 $$
-v_y(t)=v_0\sin\alpha - gt
+v_y(t) = v_0 \sin\alpha - gt
 $$
 
 The vertical position is
 
 $$
-y(t)=v_0\sin\alpha \, t - \frac{1}{2}gt^2
+y(t) = v_0 \sin\alpha \, t - \frac{1}{2}gt^2
 $$
 
-So the equations of motion are
+Therefore,
 
 $$
 \boxed{x(t)=v_0\cos\alpha \, t}
 $$
 
 $$
-\boxed{y(t)=v_0\sin\alpha \, t - \frac{1}{2}gt^2}
+\boxed{y(t)=v_0\sin\alpha \, t-\frac{1}{2}gt^2}
 $$
 
 ---
 
 ### 3. Time of flight
 
-The body lands when it returns to the ground, so
+The projectile returns to the ground when
 
 $$
 y(t)=0
 $$
 
-Substitute the vertical position:
+Substitute the expression for $y(t)$:
 
 $$
-v_0\sin\alpha \, t - \frac{1}{2}gt^2=0
+v_0\sin\alpha \, t - \frac{1}{2}gt^2 = 0
 $$
 
 Factor out $t$:
@@ -105,22 +103,21 @@ $$
 t\left(v_0\sin\alpha - \frac{1}{2}gt\right)=0
 $$
 
-One solution is $t=0$, which is the launch time.  
-The second solution gives the time of flight:
+The nonzero solution gives the total flight time:
 
 $$
-v_0\sin\alpha - \frac{1}{2}gt=0
-$$
-
-$$
-\frac{1}{2}gt=v_0\sin\alpha
+v_0\sin\alpha - \frac{1}{2}gt = 0
 $$
 
 $$
-t=\frac{2v_0\sin\alpha}{g}
+\frac{1}{2}gt = v_0\sin\alpha
 $$
 
-Therefore,
+$$
+T = \frac{2v_0\sin\alpha}{g}
+$$
+
+So,
 
 $$
 \boxed{T=\frac{2v_0\sin\alpha}{g}}
@@ -130,29 +127,28 @@ $$
 
 ### 4. Maximum height
 
-At the highest point, the vertical velocity becomes zero:
+At the highest point, the vertical velocity is zero:
 
 $$
 v_y(t)=0
 $$
 
-So,
+Thus,
 
 $$
-v_0\sin\alpha - gt=0
+v_0\sin\alpha - gt = 0
 $$
 
-Hence,
+So the time to reach the highest point is
 
 $$
-t_h=\frac{v_0\sin\alpha}{g}
+t_h = \frac{v_0\sin\alpha}{g}
 $$
 
-Now substitute this into the vertical position formula:
+Now substitute this into $y(t)$:
 
 $$
-H_{\max}=v_0\sin\alpha \cdot \frac{v_0\sin\alpha}{g}
--\frac{1}{2}g\left(\frac{v_0\sin\alpha}{g}\right)^2
+H_{\max} = v_0\sin\alpha \cdot \frac{v_0\sin\alpha}{g} - \frac{1}{2}g\left(\frac{v_0\sin\alpha}{g}\right)^2
 $$
 
 Simplify the first term:
@@ -167,23 +163,17 @@ $$
 \frac{1}{2}\frac{v_0^2\sin^2\alpha}{g}
 $$
 
-So,
-
-$$
-H_{\max}
-=
-\frac{v_0^2\sin^2\alpha}{g}
--
-\frac{1}{2}\frac{v_0^2\sin^2\alpha}{g}
-$$
-
-$$
-H_{\max}
-=
-\frac{v_0^2\sin^2\alpha}{2g}
-$$
-
 Therefore,
+
+$$
+H_{\max} = \frac{v_0^2\sin^2\alpha}{g} - \frac{1}{2}\frac{v_0^2\sin^2\alpha}{g}
+$$
+
+$$
+H_{\max} = \frac{v_0^2\sin^2\alpha}{2g}
+$$
+
+Hence,
 
 $$
 \boxed{H_{\max}=\frac{v_0^2\sin^2\alpha}{2g}}
@@ -193,10 +183,10 @@ $$
 
 ### 5. Range
 
-The range is the horizontal distance at time $T$:
+The range is the horizontal distance traveled during the full flight time:
 
 $$
-R=x(T)
+R = x(T)
 $$
 
 Using
@@ -205,31 +195,25 @@ $$
 x(t)=v_0\cos\alpha \, t
 $$
 
-and
-
-$$
-T=\frac{2v_0\sin\alpha}{g}
-$$
-
 we get
 
 $$
-R=v_0\cos\alpha \cdot \frac{2v_0\sin\alpha}{g}
+R = v_0\cos\alpha \cdot \frac{2v_0\sin\alpha}{g}
 $$
 
 So,
 
 $$
-R=\frac{2v_0^2\sin\alpha\cos\alpha}{g}
+R = \frac{2v_0^2\sin\alpha\cos\alpha}{g}
 $$
 
-Use the identity
+Using the identity
 
 $$
-2\sin\alpha\cos\alpha=\sin 2\alpha
+\sin 2\alpha = 2\sin\alpha\cos\alpha
 $$
 
-Then
+we obtain
 
 $$
 \boxed{R=\frac{v_0^2\sin 2\alpha}{g}}
@@ -245,44 +229,32 @@ $$
 R=\frac{v_0^2\sin 2\alpha}{g}
 $$
 
-For fixed $v_0$ and $g$, the range is maximum when $\sin 2\alpha$ is maximum.
-
-The maximum value of sine is 1, so
-
-$$
-\sin 2\alpha = 1
-$$
+For fixed $v_0$ and $g$, the range is maximum when $\sin 2\alpha = 1$.
 
 This happens when
 
 $$
-2\alpha=90^\circ
-$$
-
-Hence,
-
-$$
-\alpha=45^\circ
+2\alpha = 90^\circ
 $$
 
 Therefore,
 
 $$
-\boxed{\alpha=45^\circ}
+\boxed{\alpha = 45^\circ}
 $$
 
 ---
 
 ## Conclusion
 
-The projectile motion is described by
+The equations of motion are
 
 $$
 \boxed{x(t)=v_0\cos\alpha \, t}
 $$
 
 $$
-\boxed{y(t)=v_0\sin\alpha \, t - \frac{1}{2}gt^2}
+\boxed{y(t)=v_0\sin\alpha \, t-\frac{1}{2}gt^2}
 $$
 
 The time of flight is
@@ -303,7 +275,7 @@ $$
 \boxed{R=\frac{v_0^2\sin 2\alpha}{g}}
 $$
 
-The range is maximum for
+The maximum range is obtained for
 
 $$
 \boxed{\alpha=45^\circ}
