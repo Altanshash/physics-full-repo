@@ -1,46 +1,119 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>My Newton Motion</title>
+<meta charset="UTF-8">
+<title>Constant Force Motion</title>
 </head>
-<body style="background:black; color:white; text-align:center;">
-
-<h2>My Simulation (Constant Force)</h2>
-
-<canvas id="c" width="600" height="300" style="background:#111;"></canvas><br>
+<body style="margin:0; background:#111; color:white; font-family:Arial; text-align:center;">
+<h2>Constant Force Motion</h2>
+<canvas id="canvas" width="800" height="400" style="background:#000; border:1px solid #555;"></canvas><br><br>
 <button onclick="start()">Start</button>
+<button onclick="resetAnim()">Reset</button>
 
 <script>
-let ctx = document.getElementById("c").getContext("2d");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
 let t = 0;
-let dt = 0.05;
+const dt = 0.03;
+let running = false;
+let timer = null;
+let trail = [];
 
 // initial conditions
-let x0 = 0, y0 = 0;
-let vx0 = 1, vy0 = -1;
-let ax = 3, ay = 1;
+const x0 = 0, y0 = 0;
+const vx0 = 1, vy0 = -1;
+const ax = 3, ay = 1;
 
-function draw() {
-let x = x0 + vx0*t + 0.5*ax*t*t;
-let y = y0 + vy0*t + 0.5*ay*t*t;
+function position(time) {
+return {
+x: x0 + vx0 * time + 0.5 * ax * time * time,
+y: y0 + vy0 * time + 0.5 * ay * time * time
+};
+}
 
-ctx.fillStyle = "black";
-ctx.fillRect(0,0,600,300);
+function drawAxes() {
+ctx.strokeStyle = "#333";
+ctx.lineWidth = 1;
 
-ctx.fillStyle = "cyan";
+// x-axis
 ctx.beginPath();
-ctx.arc(x*20+50, 250 - y*20, 5, 0, Math.PI*2);
+ctx.moveTo(40, 350);
+ctx.lineTo(760, 350);
+ctx.stroke();
+
+// y-axis
+ctx.beginPath();
+ctx.moveTo(40, 350);
+ctx.lineTo(40, 40);
+ctx.stroke();
+}
+
+function drawTrail() {
+if (trail.length < 2) return;
+
+ctx.strokeStyle = "cyan";
+ctx.lineWidth = 2;
+ctx.beginPath();
+
+for (let i = 0; i < trail.length; i++) {
+const px = 40 + trail[i].x * 25;
+const py = 350 - trail[i].y * 25;
+
+if (i === 0) ctx.moveTo(px, py);
+else ctx.lineTo(px, py);
+}
+
+ctx.stroke();
+}
+
+function drawBall(pos) {
+const px = 40 + pos.x * 25;
+const py = 350 - pos.y * 25;
+
+ctx.fillStyle = "red";
+ctx.beginPath();
+ctx.arc(px, py, 6, 0, 2 * Math.PI);
 ctx.fill();
 }
 
-function start() {
-setInterval(() => {
-t += dt;
-draw();
-}, 50);
-}
-</script>
+function draw() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+drawAxes();
 
+const pos = position(t);
+drawTrail();
+drawBall(pos);
+}
+
+function update() {
+const pos = position(t);
+trail.push(pos);
+draw();
+
+t += dt;
+
+if (t > 3.5) {
+clearInterval(timer);
+running = false;
+}
+}
+
+function start() {
+if (running) return;
+running = true;
+timer = setInterval(update, 30);
+}
+
+function resetAnim() {
+clearInterval(timer);
+running = false;
+t = 0;
+trail = [];
+draw();
+}
+
+draw();
+</script>
 </body>
 </html>
