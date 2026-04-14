@@ -133,24 +133,18 @@ $$
 
 Use the coordinate formula for the cross product:
 
-For
-
-$$
-\vec a = (a_1, a_2, a_3), \qquad \vec b = (b_1, b_2, b_3)
-$$
-
-we have
-
 $$
 \vec a \times \vec b =
 (a_2b_3 - a_3b_2,\; a_3b_1 - a_1b_3,\; a_1b_2 - a_2b_1)
 $$
 
-Now substitute
+For
 
 $$
 \vec a = (2, -1, 3), \qquad \vec b = (1, 4, -2)
 $$
+
+we get:
 
 ### First component
 
@@ -183,11 +177,7 @@ $$
 $$
 
 $$
-|\vec a \times \vec b| = \sqrt{100 + 49 + 81}
-$$
-
-$$
-|\vec a \times \vec b| = \sqrt{230}
+|\vec a \times \vec b| = \sqrt{100 + 49 + 81} = \sqrt{230}
 $$
 
 So,
@@ -239,7 +229,7 @@ $$
 ### Third component
 
 $$
-1 \cdot 2 + 0 \cdot (-1) + 1 \cdot 3 = 2 + 3 = 5
+1 \cdot 2 + 0 \cdot (-1) + 1 \cdot 3 = 2 + 0 + 3 = 5
 $$
 
 Therefore,
@@ -263,7 +253,7 @@ $$
 
 ## 6. Calculate $\det(A)$
 
-We use expansion along the first row:
+Given
 
 $$
 A =
@@ -274,60 +264,27 @@ A =
 \end{pmatrix}
 $$
 
-So,
+We expand the determinant along the first row:
 
 $$
-\det(A) =
-2 \cdot
-\begin{vmatrix}
-1 & -1 \\
-0 & 1
-\end{vmatrix}
--
-1 \cdot
-\begin{vmatrix}
-0 & -1 \\
-1 & 1
-\end{vmatrix}
-+
-0 \cdot
-\begin{vmatrix}
-0 & 1 \\
-1 & 0
-\end{vmatrix}
+\det(A) = 2(1 \cdot 1 - (-1)\cdot 0) - 1(0 \cdot 1 - (-1)\cdot 1) + 0(0 \cdot 0 - 1 \cdot 1)
 $$
 
-Now compute the $2 \times 2$ determinants.
-
-First:
+Now simplify step by step:
 
 $$
-\begin{vmatrix}
-1 & -1 \\
-0 & 1
-\end{vmatrix}
-= 1 \cdot 1 - (-1) \cdot 0 = 1
+\det(A) = 2(1 - 0) - 1(0 - (-1)) + 0
 $$
 
-Second:
-
 $$
-\begin{vmatrix}
-0 & -1 \\
-1 & 1
-\end{vmatrix}
-= 0 \cdot 1 - (-1) \cdot 1 = 1
+\det(A) = 2(1) - 1(1)
 $$
 
-Third term is multiplied by $0$, so it is just $0$.
+$$
+\det(A) = 2 - 1 = 1
+$$
 
 Therefore,
-
-$$
-\det(A) = 2 \cdot 1 - 1 \cdot 1 + 0 = 2 - 1 = 1
-$$
-
-So,
 
 $$
 \det(A) = 1
