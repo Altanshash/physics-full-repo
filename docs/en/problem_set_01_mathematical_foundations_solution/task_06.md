@@ -13,8 +13,7 @@ We need to:
 1. determine the velocity vector,
 2. determine the magnitude of the velocity,
 3. write the arc length as an integral,
-4. compute the integral analytically if possible,
-5. implement the trapezoidal rule in HTML/JS.
+4. compute the integral analytically if possible.
 
 ---
 
@@ -115,92 +114,24 @@ $$
 
 ---
 
-## 5. Trapezoidal rule
-
-Let
+## Final answers
 
 $$
-f(t)=\sqrt{1+4t^2}
+\vec v(t)=(1,2t)
 $$
 
-Divide $[0,1]$ into $N$ equal parts:
-
 $$
-h=\frac1N, \qquad t_i=\frac{i}{N}
+|\vec v(t)|=\sqrt{1+4t^2}
 $$
 
-Then the trapezoidal approximation is
-
 $$
-s_N=\frac{h}{2}\left[f(t_0)+2\sum_{i=1}^{N-1}f(t_i)+f(t_N)\right]
+s=\int_0^1 \sqrt{1+4t^2}\,dt
 $$
 
-That is,
-
 $$
-s_N=\frac{1}{2N}\left[f(0)+2\sum_{i=1}^{N-1}f\left(\frac{i}{N}\right)+f(1)\right]
+s=\frac{\sqrt5}{2}+\frac14\ln(2+\sqrt5)
 $$
 
-The error is
-
 $$
-E_N = |s_N-s|
+s\approx1.47894
 $$
-
----
-
-## Simple HTML/JS code
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Problem 6</title>
-</head>
-<body>
-  <h1>Problem 6 – Curve length</h1>
-
-  <label for="N">N:</label>
-  <input id="N" type="number" value="10" min="1" />
-  <button onclick="calculate()">Compute</button>
-
-  <pre id="out"></pre>
-
-  <script>
-    function f(t) {
-      return Math.sqrt(1 + 4 * t * t);
-    }
-
-    function exactLength() {
-      return Math.sqrt(5) / 2 + 0.25 * Math.log(2 + Math.sqrt(5));
-    }
-
-    function trapezoidal(N) {
-      const h = 1 / N;
-      let sum = 0.5 * (f(0) + f(1));
-      for (let i = 1; i < N; i++) {
-        sum += f(i * h);
-      }
-      return h * sum;
-    }
-
-    function calculate() {
-      const N = parseInt(document.getElementById("N").value, 10);
-      const exact = exactLength();
-      const approx = trapezoidal(N);
-      const error = Math.abs(approx - exact);
-
-      document.getElementById("out").textContent =
-        "v(t) = (1, 2t)\n" +
-        "|v(t)| = sqrt(1 + 4t^2)\n" +
-        "Exact length = " + exact.toFixed(10) + "\n" +
-        "Trapezoidal result = " + approx.toFixed(10) + "\n" +
-        "Error = " + error.toExponential(6);
-    }
-
-    calculate();
-  </script>
-</body>
-</html>
