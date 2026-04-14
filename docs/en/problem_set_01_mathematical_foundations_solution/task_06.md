@@ -8,25 +8,12 @@ $$
 x(t) = t, \qquad y(t) = t^2, \qquad t \in [0,1]
 $$
 
-Determine the velocity vector.
+Determine:
 
-$$
-\vec v(t) = \frac{d\vec r}{dt}
-$$
-
-Determine the magnitude of the velocity.
-
-$$
-|\vec v(t)|
-$$
-
-Write the arc length of the trajectory as an integral.
-
-$$
-s = \int_0^1 |\vec v(t)|\,dt
-$$
-
-Calculate this integral analytically if possible.
+1. the velocity vector
+2. the magnitude of the velocity
+3. the arc length as an integral
+4. evaluate the integral analytically
 
 ---
 
@@ -38,19 +25,15 @@ $$
 \vec r(t) = (t, t^2)
 $$
 
-Differentiate each component:
+Differentiate:
 
 $$
-\vec v(t) = \frac{d\vec r}{dt} = (1, 2t)
+\vec v(t) = (1, 2t)
 $$
 
 ---
 
-## 2. Magnitude of the velocity
-
-$$
-|\vec v(t)| = \sqrt{1^2 + (2t)^2}
-$$
+## 2. Magnitude of velocity
 
 $$
 |\vec v(t)| = \sqrt{1 + 4t^2}
@@ -58,15 +41,7 @@ $$
 
 ---
 
-## 3. Arc length integral
-
-The arc length is
-
-$$
-s = \int_0^1 |\vec v(t)|\,dt
-$$
-
-Therefore,
+## 3. Arc length
 
 $$
 s = \int_0^1 \sqrt{1 + 4t^2}\,dt
@@ -74,68 +49,49 @@ $$
 
 ---
 
-## 4. Analytical calculation
+## 4. Analytical solution
 
-Use the substitution
-
-$$
-u = 2t, \qquad dt = \frac{du}{2}
-$$
-
-When $t=0$, we have $u=0$.  
-When $t=1$, we have $u=2$.
-
-So,
+Substitute
 
 $$
-s = \frac{1}{2}\int_0^2 \sqrt{1+u^2}\,du
-$$
-
-Use the standard formula
-
-$$
-\int \sqrt{1+u^2}\,du
-=
-\frac{1}{2}\left(u\sqrt{1+u^2} + \ln\left|u+\sqrt{1+u^2}\right|\right)
+u = 2t, \quad dt = \frac{du}{2}
 $$
 
 Then
 
 $$
-s
-=
-\frac{1}{2}
-\cdot
-\frac{1}{2}
+s = \frac{1}{2} \int_0^2 \sqrt{1 + u^2}\,du
+$$
+
+Use formula
+
+$$
+\int \sqrt{1 + u^2}\,du =
+\frac{1}{2}\left(u\sqrt{1+u^2} + \ln(u + \sqrt{1+u^2})\right)
+$$
+
+So
+
+$$
+s = \frac{1}{4}
 \left[
-u\sqrt{1+u^2} + \ln\left|u+\sqrt{1+u^2}\right|
+u\sqrt{1+u^2} + \ln(u + \sqrt{1+u^2})
 \right]_0^2
 $$
 
-So,
+Evaluate:
 
 $$
-s
-=
-\frac{1}{4}
-\left[
-u\sqrt{1+u^2} + \ln\left|u+\sqrt{1+u^2}\right|
-\right]_0^2
+s = \frac{1}{4}\left(2\sqrt{5} + \ln(2 + \sqrt{5})\right)
 $$
 
-Evaluate at the bounds:
+Final form:
 
 $$
-s = \frac{1}{4}\left(2\sqrt{5} + \ln(2+\sqrt{5})\right)
+s = \frac{\sqrt{5}}{2} + \frac{1}{4}\ln(2 + \sqrt{5})
 $$
 
-Therefore,
-
-$$
-s = \frac{\sqrt{5}}{2} + \frac{1}{4}\ln(2+\sqrt{5})
-$$
-
-Approximate value:
+Approximation:
 
 $$
 s \approx 1.47894
@@ -158,9 +114,5 @@ s = \int_0^1 \sqrt{1 + 4t^2}\,dt
 $$
 
 $$
-s = \frac{\sqrt{5}}{2} + \frac{1}{4}\ln(2+\sqrt{5})
-$$
-
-$$
-s \approx 1.47894
+s = \frac{\sqrt{5}}{2} + \frac{1}{4}\ln(2 + \sqrt{5})
 $$
