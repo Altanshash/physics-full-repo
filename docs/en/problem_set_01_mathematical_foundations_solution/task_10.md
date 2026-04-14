@@ -2,22 +2,22 @@
 
 ## Given
 
-Consider circular motion in the xy plane.
+Consider circular motion in the $xy$ plane:
 
 $$
 \vec r(t) = (R\cos(\omega t),\; R\sin(\omega t),\; 0)
 $$
 
-Find the velocity vector.
+Determine the velocity vector
 
 $$
 \vec v(t) = \frac{d\vec r}{dt}
 $$
 
-Find the angular momentum with respect to the origin.
+Calculate the angular momentum with respect to the origin
 
 $$
-\vec L(t) = m\,\vec r(t)\times \vec v(t)
+\vec L(t) = m\,\vec r(t)\times\vec v(t)
 $$
 
 Show that
@@ -68,7 +68,7 @@ $$
 The angular momentum is
 
 $$
-\vec L(t) = m\,\vec r(t)\times \vec v(t)
+\vec L(t) = m\,\vec r(t)\times\vec v(t)
 $$
 
 Substitute
@@ -83,54 +83,53 @@ $$
 \vec v(t) = (-R\omega\sin(\omega t),\; R\omega\cos(\omega t),\; 0)
 $$
 
-Since both vectors lie in the xy plane, only the z-component of the cross product is nonzero:
+Since both vectors lie in the $xy$ plane, only the $z$-component of the cross product is nonzero:
 
 $$
-\vec r(t)\times \vec v(t) = (0,\;0,\;xv_y - yv_x)
+\vec r(t)\times\vec v(t) = (0,\;0,\;xv_y - yv_x)
 $$
 
-Now use
+where
 
 $$
 x = R\cos(\omega t), \qquad y = R\sin(\omega t)
 $$
 
+and
+
 $$
 v_x = -R\omega\sin(\omega t), \qquad v_y = R\omega\cos(\omega t)
 $$
 
-Then
+Now compute:
 
 $$
 xv_y - yv_x
-=
-R\cos(\omega t)\cdot R\omega\cos(\omega t)
--
-R\sin(\omega t)\cdot(-R\omega\sin(\omega t))
+= R\cos(\omega t)\cdot R\omega\cos(\omega t)
+- R\sin(\omega t)\cdot(-R\omega\sin(\omega t))
 $$
 
 $$
-=
-R^2\omega\cos^2(\omega t) + R^2\omega\sin^2(\omega t)
+xv_y - yv_x
+= R^2\omega\cos^2(\omega t) + R^2\omega\sin^2(\omega t)
 $$
 
 $$
-=
-R^2\omega(\cos^2(\omega t)+\sin^2(\omega t))
+xv_y - yv_x
+= R^2\omega\bigl(\cos^2(\omega t)+\sin^2(\omega t)\bigr)
 $$
 
 $$
-=
-R^2\omega
-$$
-
-So,
-
-$$
-\vec r(t)\times \vec v(t) = (0,\;0,\;R^2\omega)
+xv_y - yv_x = R^2\omega
 $$
 
 Therefore,
+
+$$
+\vec r(t)\times\vec v(t) = (0,\;0,\;R^2\omega)
+$$
+
+and hence
 
 $$
 \vec L(t) = (0,\;0,\;mR^2\omega)
@@ -143,7 +142,11 @@ $$
 The magnitude is
 
 $$
-|\vec L| = \sqrt{(mR^2\omega)^2} = mR^2\omega
+|\vec L| = \sqrt{(mR^2\omega)^2}
+$$
+
+$$
+|\vec L| = mR^2\omega
 $$
 
 So the magnitude is constant.
@@ -154,15 +157,15 @@ $$
 \vec L(t) = (0,\;0,\;mR^2\omega)
 $$
 
-has only a z-component, so it is perpendicular to the xy plane.
+has only a $z$-component, so it is perpendicular to the $xy$ plane.
 
 ---
 
 ## 4. Right-hand rule
 
-The motion is counterclockwise in the xy plane.
+The motion is counterclockwise in the $xy$ plane.
 
-By the right-hand rule, the angular momentum vector points along the positive z-axis.
+By the right-hand rule, the angular momentum vector points along the positive $z$-axis.
 
 ---
 
@@ -226,7 +229,7 @@ $$
 |\vec L| = mR^2\omega
 $$
 
-$\vec L$ is perpendicular to the plane of motion and points in the positive z direction.
+$\vec L$ is perpendicular to the plane of motion and points in the positive $z$ direction.
 
 $$
 \vec\tau = \vec 0
