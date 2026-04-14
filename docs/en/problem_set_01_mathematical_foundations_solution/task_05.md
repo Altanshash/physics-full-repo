@@ -11,11 +11,11 @@ $$
 determine:
 
 1. the velocity vector $\vec v(t)$ and the acceleration vector $\vec a(t)$,
-2. the unit tangent vector to the trajectory
+2. the unit tangent vector
    $$
    \hat T(t) = \frac{\vec v(t)}{|\vec v(t)|},
    $$
-3. the tangential and normal components of the acceleration
+3. the decomposition of acceleration into tangential and normal components
    $$
    \vec a(t) = \vec a_t(t) + \vec a_n(t),
    $$
@@ -27,10 +27,8 @@ determine:
    $$
    a_n = \frac{v^2}{R},
    $$
-   determine the radius of curvature at $t=0$,
-5. compare the result with the special case of a circle, where $a=b$.
-
-Also answer the physical interpretation questions.
+   determine the radius of curvature at the point $t=0$,
+5. compare the result with the circle case $a=b$.
 
 ---
 
@@ -70,40 +68,30 @@ $$
 |\vec v(t)| = \sqrt{a^2\sin^2 t + b^2\cos^2 t}
 $$
 
-Now use
+Therefore,
 
 $$
 \hat T(t) = \frac{\vec v(t)}{|\vec v(t)|}
 $$
 
-Therefore,
+so
 
 $$
 \hat T(t) =
 \frac{(-a\sin t,\; b\cos t)}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-So,
-
-$$
-\hat T(t) =
-\left(
-\frac{-a\sin t}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}},
-\frac{b\cos t}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
-\right)
-$$
-
 ---
 
 ## 3. Tangential and normal components of acceleration
 
-We decompose the acceleration as
+We write
 
 $$
 \vec a(t) = \vec a_t(t) + \vec a_n(t)
 $$
 
-where:
+where
 
 - $\vec a_t(t)$ is the tangential component,
 - $\vec a_n(t)$ is the normal component.
@@ -152,7 +140,7 @@ $$
 2(a^2-b^2)\sin t\cos t
 $$
 
-So,
+Therefore,
 
 $$
 a_t(t)
@@ -160,7 +148,7 @@ a_t(t)
 \frac{(a^2-b^2)\sin t\cos t}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-Therefore, the tangential acceleration vector is
+So the tangential acceleration vector is
 
 $$
 \vec a_t(t) = a_t(t)\,\hat T(t)
@@ -170,13 +158,13 @@ $$
 
 ### 3.2 Normal acceleration
 
-For a plane curve,
+For plane motion,
 
 $$
 a_n(t) = \frac{|\vec v(t)\times\vec a(t)|}{|\vec v(t)|}
 $$
 
-Treat the vectors as 3D vectors with zero third component:
+Treat the vectors as 3D vectors with third coordinate zero:
 
 $$
 \vec v(t) = (-a\sin t,\; b\cos t,\; 0)
@@ -188,19 +176,19 @@ $$
 
 Now compute the cross product.
 
-The first component is
+First component:
 
 $$
 (b\cos t)(0) - (0)(-b\sin t) = 0
 $$
 
-The second component is
+Second component:
 
 $$
 (0)(-a\cos t) - (-a\sin t)(0) = 0
 $$
 
-The third component is
+Third component:
 
 $$
 (-a\sin t)(-b\sin t) - (b\cos t)(-a\cos t)
@@ -214,13 +202,13 @@ $$
 = ab(\sin^2 t + \cos^2 t) = ab
 $$
 
-Therefore,
+Thus,
 
 $$
 \vec v(t)\times\vec a(t) = (0,\;0,\;ab)
 $$
 
-and so
+and therefore
 
 $$
 |\vec v(t)\times\vec a(t)| = ab
@@ -232,13 +220,13 @@ $$
 a_n(t) = \frac{ab}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-So the magnitude of the normal acceleration is
+So the normal component magnitude is
 
 $$
 a_n(t) = \frac{ab}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-The normal component vector is
+Also,
 
 $$
 \vec a_n(t) = \vec a(t) - \vec a_t(t)
@@ -282,7 +270,7 @@ $$
 
 ### Step 2. Normal acceleration at $t=0$
 
-From the formula above,
+Using the formula above,
 
 $$
 a_n(0) = \frac{ab}{\sqrt{a^2\sin^2 0 + b^2\cos^2 0}}
@@ -294,7 +282,7 @@ $$
 
 ### Step 3. Radius of curvature
 
-Substitute into
+Now substitute into
 
 $$
 R = \frac{v^2}{a_n}
@@ -317,22 +305,22 @@ $$
 If
 
 $$
-a=b=R_0,
+a=b=r,
 $$
 
 then the ellipse becomes a circle:
 
 $$
-x(t) = R_0\cos t, \qquad y(t) = R_0\sin t
+x(t) = r\cos t, \qquad y(t) = r\sin t
 $$
 
-The speed becomes
+In that case,
 
 $$
-|\vec v(t)| = \sqrt{R_0^2\sin^2 t + R_0^2\cos^2 t} = R_0
+|\vec v(t)| = \sqrt{r^2\sin^2 t + r^2\cos^2 t} = r
 $$
 
-So the speed is constant, hence
+So the speed is constant, and therefore
 
 $$
 a_t(t) = 0
@@ -341,28 +329,26 @@ $$
 Also,
 
 $$
-a_n(t) = \frac{R_0^2}{\sqrt{R_0^2\sin^2 t + R_0^2\cos^2 t}} = \frac{R_0^2}{R_0} = R_0
+a_n(t) = \frac{r^2}{\sqrt{r^2\sin^2 t + r^2\cos^2 t}} = \frac{r^2}{r} = r
 $$
 
-Thus, in the circular case,
+Thus for a circle,
 
 $$
-a_t = 0, \qquad a_n = R_0
+a_t = 0, \qquad a_n = r
 $$
 
 and the radius of curvature is constant:
 
 $$
-R = R_0
+R = r
 $$
-
-This is exactly the standard result for uniform circular motion.
 
 ---
 
 # Physical interpretation
 
-## 1. Does greater curvature imply greater normal acceleration?
+## 1. Does a greater trajectory curvature imply a greater normal acceleration?
 
 We know that
 
@@ -376,19 +362,19 @@ $$
 \kappa = \frac{1}{R}
 $$
 
-Therefore,
+So,
 
 $$
 a_n = v^2\kappa
 $$
 
-So for fixed speed, greater curvature means greater normal acceleration.
+Therefore, for fixed speed, greater curvature implies greater normal acceleration.
 
-**Answer:** Yes, if the speed is the same.
+**Answer:** Yes, if the speed is fixed.
 
 ---
 
-## 2. Where is the ellipse more curved: at the end of the major or minor semi-axis?
+## 2. Where on the ellipse is the trajectory more curved: at the end of the major or minor semi-axis?
 
 At
 
@@ -420,7 +406,7 @@ $$
 (0,b)
 $$
 
-Similarly, the radius of curvature there is
+Similarly,
 
 $$
 R\left(\frac{\pi}{2}\right) = \frac{a^2}{b}
@@ -448,13 +434,13 @@ $$
 
 ---
 
-## 3. Why does normal acceleration change the direction of motion?
+## 3. Why can normal acceleration be interpreted as the cause of the change in the direction of motion?
 
 Tangential acceleration changes the magnitude of the velocity, so it changes the speed.
 
-Normal acceleration is perpendicular to the velocity vector, so it changes the direction of the velocity vector rather than its magnitude.
+Normal acceleration is perpendicular to the velocity vector, so it changes the direction of the velocity rather than its magnitude.
 
-Therefore, normal acceleration is responsible for turning the motion and bending the trajectory.
+Therefore, normal acceleration is responsible for turning the motion and changing the direction of the trajectory.
 
 ---
 
@@ -502,11 +488,5 @@ $$
 ## Circle case
 
 $$
-a_t = 0, \qquad a_n = R_0, \qquad R = R_0
+a_t = 0, \qquad a_n = r, \qquad R = r
 $$
-
-## Physical meaning
-
-- Greater curvature gives greater normal acceleration if the speed is fixed.
-- The ellipse is more curved at the ends of the major semi-axis.
-- Tangential acceleration changes speed, while normal acceleration changes direction.
