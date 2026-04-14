@@ -1,561 +1,424 @@
-## Problem 1 – Vectors and linear transformations
+# Problem 1 – Vectors and linear transformations
 
-### Problem statement
+## Given
 
-Given two vectors in three-dimensional space:
+We are given two vectors in three-dimensional space:
 
-$$
-\vec{a}=(2,-1,3), \qquad \vec{b}=(1,4,-2)
-$$
+\[
+\vec{a} = (2, -1, 3), \qquad \vec{b} = (1, 4, -2)
+\]
 
 and the matrix
 
-$$
-A=
+\[
+A =
 \begin{pmatrix}
 2 & 1 & 0 \\
 0 & 1 & -1 \\
 1 & 0 & 1
-\end{pmatrix},
-$$
-
-we need to:
-
-1. calculate the lengths of the vectors $$|\vec{a}|$$ and $$|\vec{b}|$$,
-2. determine the normalized vector $$\hat{a}=\dfrac{\vec{a}}{|\vec{a}|}$$,
-3. calculate the dot product $$\vec{a}\cdot\vec{b}$$ and the angle between the vectors,
-4. calculate the cross product $$\vec{a}\times\vec{b}$$ and the area of the parallelogram spanned by these vectors,
-5. calculate $$A\vec{a}$$,
-6. calculate $$\det A$$,
-7. check whether the transformation preserves the orientation of space.
+\end{pmatrix}
+\]
 
 ---
 
-## Step 1. Lengths of the vectors
+## 1. Lengths of the vectors \( |\vec a| \) and \( |\vec b| \)
 
-For a vector in three-dimensional space,
+### Length of \( \vec a \)
 
-$$
-|(x,y,z)|=\sqrt{x^2+y^2+z^2}.
-$$
+\[
+|\vec a| = \sqrt{2^2 + (-1)^2 + 3^2}
+\]
 
-### Length of $$\vec{a}$$
+\[
+|\vec a| = \sqrt{4 + 1 + 9} = \sqrt{14}
+\]
 
-Since
+### Length of \( \vec b \)
 
-$$
-\vec{a}=(2,-1,3),
-$$
+\[
+|\vec b| = \sqrt{1^2 + 4^2 + (-2)^2}
+\]
 
-we have
+\[
+|\vec b| = \sqrt{1 + 16 + 4} = \sqrt{21}
+\]
 
-$$
-|\vec{a}|=\sqrt{2^2+(-1)^2+3^2}.
-$$
+### Answer
 
-Now calculate each square:
-
-$$
-2^2=4,\qquad (-1)^2=1,\qquad 3^2=9.
-$$
-
-So
-
-$$
-|\vec{a}|=\sqrt{4+1+9}=\sqrt{14}.
-$$
-
-Therefore,
-
-$$
-\boxed{|\vec{a}|=\sqrt{14}}.
-$$
-
-### Length of $$\vec{b}$$
-
-Since
-
-$$
-\vec{b}=(1,4,-2),
-$$
-
-we have
-
-$$
-|\vec{b}|=\sqrt{1^2+4^2+(-2)^2}.
-$$
-
-Now calculate each square:
-
-$$
-1^2=1,\qquad 4^2=16,\qquad (-2)^2=4.
-$$
-
-So
-
-$$
-|\vec{b}|=\sqrt{1+16+4}=\sqrt{21}.
-$$
-
-Therefore,
-
-$$
-\boxed{|\vec{b}|=\sqrt{21}}.
-$$
+\[
+|\vec a| = \sqrt{14}, \qquad |\vec b| = \sqrt{21}
+\]
 
 ---
 
-## Step 2. Normalized vector $$\hat{a}$$
+## 2. Normalized vector of \( \vec a \)
 
-The normalized vector is defined by
+The normalized vector is
 
-$$
-\hat{a}=\frac{\vec{a}}{|\vec{a}|}.
-$$
+\[
+\hat a = \frac{\vec a}{|\vec a|}
+\]
 
-We already found that
+Substitute \( \vec a = (2,-1,3) \) and \( |\vec a| = \sqrt{14} \):
 
-$$
-|\vec{a}|=\sqrt{14}.
-$$
+\[
+\hat a = \left( \frac{2}{\sqrt{14}}, \frac{-1}{\sqrt{14}}, \frac{3}{\sqrt{14}} \right)
+\]
 
-Thus,
+### Answer
 
-$$
-\hat{a}=\frac{(2,-1,3)}{\sqrt{14}}.
-$$
-
-Dividing each component by $$\sqrt{14}$$ gives
-
-$$
-\hat{a}=\left(\frac{2}{\sqrt{14}},\frac{-1}{\sqrt{14}},\frac{3}{\sqrt{14}}\right).
-$$
-
-Hence,
-
-$$
-\boxed{
-\hat{a}=\left(\frac{2}{\sqrt{14}},-\frac{1}{\sqrt{14}},\frac{3}{\sqrt{14}}\right)
-}.
-$$
+\[
+\hat a = \left( \frac{2}{\sqrt{14}}, -\frac{1}{\sqrt{14}}, \frac{3}{\sqrt{14}} \right)
+\]
 
 ---
 
-## Step 3. Dot product and the angle between the vectors
+## 3. Dot product \( \vec a \cdot \vec b \) and the angle between the vectors
 
 ### Dot product
 
-For two vectors
+\[
+\vec a \cdot \vec b = 2\cdot1 + (-1)\cdot4 + 3\cdot(-2)
+\]
 
-$$
-\vec{a}=(a_1,a_2,a_3), \qquad \vec{b}=(b_1,b_2,b_3),
-$$
+\[
+\vec a \cdot \vec b = 2 - 4 - 6 = -8
+\]
 
-their dot product is
+### Angle formula
 
-$$
-\vec{a}\cdot\vec{b}=a_1b_1+a_2b_2+a_3b_3.
-$$
+\[
+\vec a \cdot \vec b = |\vec a| |\vec b| \cos\theta
+\]
 
-Substitute the given vectors:
+So,
 
-$$
-\vec{a}\cdot\vec{b}=2\cdot 1+(-1)\cdot 4+3\cdot(-2).
-$$
+\[
+\cos\theta = \frac{\vec a \cdot \vec b}{|\vec a||\vec b|}
+\]
 
-Now calculate term by term:
+Substitute the values:
 
-$$
-2\cdot 1=2,\qquad (-1)\cdot 4=-4,\qquad 3\cdot(-2)=-6.
-$$
+\[
+\cos\theta = \frac{-8}{\sqrt{14}\sqrt{21}}
+\]
 
-So
-
-$$
-\vec{a}\cdot\vec{b}=2-4-6=-8.
-$$
-
-Therefore,
-
-$$
-\boxed{\vec{a}\cdot\vec{b}=-8}.
-$$
-
-### Angle between the vectors
-
-The angle $$\theta$$ between two vectors satisfies
-
-$$
-\cos\theta=\frac{\vec{a}\cdot\vec{b}}{|\vec{a}||\vec{b}|}.
-$$
-
-We already know that
-
-$$
-\vec{a}\cdot\vec{b}=-8,\qquad |\vec{a}|=\sqrt{14},\qquad |\vec{b}|=\sqrt{21}.
-$$
-
-Substitute into the formula:
-
-$$
-\cos\theta=\frac{-8}{\sqrt{14}\sqrt{21}}.
-$$
-
-Since
-
-$$
-\sqrt{14}\sqrt{21}=\sqrt{294},
-$$
-
-we obtain
-
-$$
-\cos\theta=\frac{-8}{\sqrt{294}}.
-$$
-
-Therefore,
-
-$$
-\boxed{\theta=\arccos\left(\frac{-8}{\sqrt{294}}\right)}.
-$$
-
-Approximate value:
-
-$$
-\sqrt{294}\approx 17.146,
-$$
-
-so
-
-$$
-\cos\theta\approx \frac{-8}{17.146}\approx -0.467.
-$$
-
-Hence,
-
-$$
-\theta\approx \arccos(-0.467)\approx 117.9^\circ.
-$$
+\[
+\cos\theta = \frac{-8}{\sqrt{294}}
+\]
 
 Thus,
 
-$$
-\boxed{\theta\approx 117.9^\circ}.
-$$
+\[
+\theta = \cos^{-1}\left(\frac{-8}{\sqrt{294}}\right)
+\]
+
+Approximate value:
+
+\[
+\sqrt{294} \approx 17.146
+\]
+
+\[
+\cos\theta \approx \frac{-8}{17.146} \approx -0.467
+\]
+
+\[
+\theta \approx \cos^{-1}(-0.467) \approx 117.9^\circ
+\]
+
+### Answer
+
+\[
+\vec a \cdot \vec b = -8
+\]
+
+\[
+\theta = \cos^{-1}\left(\frac{-8}{\sqrt{294}}\right) \approx 117.9^\circ
+\]
 
 ---
 
-## Step 4. Cross product and area of the parallelogram
+## 4. Cross product \( \vec a \times \vec b \) and the area of the parallelogram
 
 ### Cross product
 
-For two vectors
+\[
+\vec a \times \vec b =
+\begin{vmatrix}
+\mathbf i & \mathbf j & \mathbf k \\
+2 & -1 & 3 \\
+1 & 4 & -2
+\end{vmatrix}
+\]
 
-$$
-\vec{a}=(a_1,a_2,a_3), \qquad \vec{b}=(b_1,b_2,b_3),
-$$
+Expand by the first row:
 
-the cross product is
+\[
+\vec a \times \vec b =
+\mathbf i
+\begin{vmatrix}
+-1 & 3 \\
+4 & -2
+\end{vmatrix}
+-
+\mathbf j
+\begin{vmatrix}
+2 & 3 \\
+1 & -2
+\end{vmatrix}
++
+\mathbf k
+\begin{vmatrix}
+2 & -1 \\
+1 & 4
+\end{vmatrix}
+\]
 
-$$
-\vec{a}\times\vec{b}=
-\begin{pmatrix}
-a_2b_3-a_3b_2 \\
-a_3b_1-a_1b_3 \\
-a_1b_2-a_2b_1
-\end{pmatrix}.
-$$
+Now calculate each determinant:
 
-Substitute
+### \( \mathbf i \)-component
 
-$$
-\vec{a}=(2,-1,3),\qquad \vec{b}=(1,4,-2).
-$$
+\[
+(-1)(-2) - (3)(4) = 2 - 12 = -10
+\]
 
-Now compute each component.
+### \( \mathbf j \)-component
 
-### First component
+\[
+(2)(-2) - (3)(1) = -4 - 3 = -7
+\]
 
-$$
-a_2b_3-a_3b_2=(-1)(-2)-3\cdot 4=2-12=-10.
-$$
+Because of the minus sign before \( \mathbf j \):
 
-### Second component
+\[
+-\mathbf j(-7) = 7\mathbf j
+\]
 
-$$
-a_3b_1-a_1b_3=3\cdot 1-2(-2)=3+4=7.
-$$
+### \( \mathbf k \)-component
 
-### Third component
-
-$$
-a_1b_2-a_2b_1=2\cdot 4-(-1)\cdot 1=8+1=9.
-$$
+\[
+(2)(4) - (-1)(1) = 8 + 1 = 9
+\]
 
 So,
 
-$$
-\vec{a}\times\vec{b}=(-10,7,9).
-$$
+\[
+\vec a \times \vec b = (-10, 7, 9)
+\]
 
-Therefore,
-
-$$
-\boxed{\vec{a}\times\vec{b}=(-10,7,9)}.
-$$
+---
 
 ### Area of the parallelogram
 
-The area of the parallelogram spanned by $$\vec{a}$$ and $$\vec{b}$$ is
+The area is the magnitude of the cross product:
 
-$$
-|\vec{a}\times\vec{b}|.
-$$
+\[
+|\vec a \times \vec b| = \sqrt{(-10)^2 + 7^2 + 9^2}
+\]
 
-So we calculate the length of $$(-10,7,9)$$:
+\[
+|\vec a \times \vec b| = \sqrt{100 + 49 + 81}
+\]
 
-$$
-|\vec{a}\times\vec{b}|=\sqrt{(-10)^2+7^2+9^2}.
-$$
+\[
+|\vec a \times \vec b| = \sqrt{230}
+\]
+
+### Answer
+
+\[
+\vec a \times \vec b = (-10, 7, 9)
+\]
+
+\[
+\text{Area of the parallelogram} = \sqrt{230}
+\]
+
+---
+
+## 5. Calculate \( A\vec a \)
+
+We multiply the matrix \(A\) by the vector \(\vec a\):
+
+\[
+A\vec a =
+\begin{pmatrix}
+2 & 1 & 0 \\
+0 & 1 & -1 \\
+1 & 0 & 1
+\end{pmatrix}
+\begin{pmatrix}
+2 \\
+-1 \\
+3
+\end{pmatrix}
+\]
+
+Now calculate row by row.
+
+### First component
+
+\[
+2\cdot2 + 1\cdot(-1) + 0\cdot3 = 4 - 1 + 0 = 3
+\]
+
+### Second component
+
+\[
+0\cdot2 + 1\cdot(-1) + (-1)\cdot3 = 0 - 1 - 3 = -4
+\]
+
+### Third component
+
+\[
+1\cdot2 + 0\cdot(-1) + 1\cdot3 = 2 + 0 + 3 = 5
+\]
+
+So,
+
+\[
+A\vec a =
+\begin{pmatrix}
+3 \\
+-4 \\
+5
+\end{pmatrix}
+\]
+
+### Answer
+
+\[
+A\vec a = (3, -4, 5)
+\]
+
+---
+
+## 6. Calculate \( \det(A) \)
+
+\[
+A =
+\begin{pmatrix}
+2 & 1 & 0 \\
+0 & 1 & -1 \\
+1 & 0 & 1
+\end{pmatrix}
+\]
+
+Expand along the first row:
+
+\[
+\det(A) =
+2\begin{vmatrix}
+1 & -1 \\
+0 & 1
+\end{vmatrix}
+-
+1\begin{vmatrix}
+0 & -1 \\
+1 & 1
+\end{vmatrix}
++
+0\begin{vmatrix}
+0 & 1 \\
+1 & 0
+\end{vmatrix}
+\]
 
 Now compute:
 
-$$
-(-10)^2=100,\qquad 7^2=49,\qquad 9^2=81.
-$$
-
-Thus,
-
-$$
-|\vec{a}\times\vec{b}|=\sqrt{100+49+81}=\sqrt{230}.
-$$
-
-Hence, the area is
-
-$$
-\boxed{\sqrt{230}}.
-$$
-
-Approximate value:
-
-$$
-\sqrt{230}\approx 15.17.
-$$
-
-So,
-
-$$
-\boxed{\text{Area}\approx 15.17}.
-$$
-
----
-
-## Step 5. Calculate $$A\vec{a}$$
-
-We are given
-
-$$
-A=
-\begin{pmatrix}
-2 & 1 & 0 \\
-0 & 1 & -1 \\
-1 & 0 & 1
-\end{pmatrix},
-\qquad
-\vec{a}=
-\begin{pmatrix}
-2\\
--1\\
-3
-\end{pmatrix}.
-$$
-
-Now multiply the matrix by the vector.
-
-### First row
-
-$$
-2\cdot 2+1\cdot(-1)+0\cdot 3=4-1+0=3.
-$$
-
-### Second row
-
-$$
-0\cdot 2+1\cdot(-1)+(-1)\cdot 3=0-1-3=-4.
-$$
-
-### Third row
-
-$$
-1\cdot 2+0\cdot(-1)+1\cdot 3=2+0+3=5.
-$$
-
-Therefore,
-
-$$
-A\vec{a}=
-\begin{pmatrix}
-3\\
--4\\
-5
-\end{pmatrix}.
-$$
-
-So,
-
-$$
-\boxed{A\vec{a}=(3,-4,5)}.
-$$
-
----
-
-## Step 6. Calculate $$\det A$$
-
-We compute the determinant by expanding along the first row:
-
-$$
-\det A=
-\begin{vmatrix}
-2 & 1 & 0 \\
-0 & 1 & -1 \\
-1 & 0 & 1
-\end{vmatrix}.
-$$
-
-Using cofactor expansion:
-
-$$
-\det A
-=
-2
-\begin{vmatrix}
-1 & -1 \\
-0 & 1
-\end{vmatrix}
--1
-\begin{vmatrix}
-0 & -1 \\
-1 & 1
-\end{vmatrix}
-+0
-\begin{vmatrix}
-0 & 1 \\
-1 & 0
-\end{vmatrix}.
-$$
-
-Now calculate each minor.
-
 ### First minor
 
-$$
+\[
 \begin{vmatrix}
 1 & -1 \\
 0 & 1
 \end{vmatrix}
-=1\cdot 1-(-1)\cdot 0=1.
-$$
+= 1\cdot1 - (-1)\cdot0 = 1
+\]
 
 ### Second minor
 
-$$
+\[
 \begin{vmatrix}
 0 & -1 \\
 1 & 1
 \end{vmatrix}
-=0\cdot 1-(-1)\cdot 1=1.
-$$
+= 0\cdot1 - (-1)\cdot1 = 1
+\]
 
-So,
+Thus,
 
-$$
-\det A=2\cdot 1-1\cdot 1+0=2-1=1.
-$$
+\[
+\det(A) = 2(1) - 1(1) + 0 = 1
+\]
 
-Therefore,
+### Answer
 
-$$
-\boxed{\det A=1}.
-$$
-
----
-
-## Step 7. Check orientation preservation
-
-A linear transformation preserves the orientation of space if
-
-$$
-\det A>0.
-$$
-
-It reverses the orientation if
-
-$$
-\det A<0.
-$$
-
-We found that
-
-$$
-\det A=1.
-$$
-
-Since
-
-$$
-1>0,
-$$
-
-the transformation preserves the orientation of space.
-
-Therefore,
-
-$$
-\boxed{\text{The transformation preserves orientation.}}
-$$
+\[
+\det(A) = 1
+\]
 
 ---
 
-## Final answers
+## 7. Does the transformation preserve orientation?
 
-$$
-\boxed{|\vec{a}|=\sqrt{14}}
-$$
+A linear transformation preserves orientation if
 
-$$
-\boxed{|\vec{b}|=\sqrt{21}}
-$$
+\[
+\det(A) > 0
+\]
 
-$$
-\boxed{
-\hat{a}=\left(\frac{2}{\sqrt{14}},-\frac{1}{\sqrt{14}},\frac{3}{\sqrt{14}}\right)
-}
-$$
+From the previous calculation,
 
-$$
-\boxed{\vec{a}\cdot\vec{b}=-8}
-$$
+\[
+\det(A) = 1 > 0
+\]
 
-$$
-\boxed{\theta=\arccos\left(\frac{-8}{\sqrt{294}}\right)\approx 117.9^\circ}
-$$
+Therefore, the transformation **does preserve orientation**.
 
-$$
-\boxed{\vec{a}\times\vec{b}=(-10,7,9)}
-$$
+### Answer
 
-$$
-\boxed{\text{Area of the parallelogram}=\sqrt{230}\approx 15.17}
-$$
+Yes, the transformation preserves orientation because
 
-$$
-\boxed{A\vec{a}=(3,-4,5)}
-$$
+\[
+\det(A) = 1 > 0
+\]
 
-$$
-\boxed{\det A=1}
-$$
+---
 
-$$
-\boxed{\text{The transformation preserves orientation}}
-$$
+# Final Answers
+
+\[
+|\vec a| = \sqrt{14}, \qquad |\vec b| = \sqrt{21}
+\]
+
+\[
+\hat a = \left( \frac{2}{\sqrt{14}}, -\frac{1}{\sqrt{14}}, \frac{3}{\sqrt{14}} \right)
+\]
+
+\[
+\vec a \cdot \vec b = -8
+\]
+
+\[
+\theta = \cos^{-1}\left(\frac{-8}{\sqrt{294}}\right) \approx 117.9^\circ
+\]
+
+\[
+\vec a \times \vec b = (-10, 7, 9)
+\]
+
+\[
+\text{Area} = \sqrt{230}
+\]
+
+\[
+A\vec a = (3, -4, 5)
+\]
+
+\[
+\det(A) = 1
+\]
+
+The transformation preserves orientation.
