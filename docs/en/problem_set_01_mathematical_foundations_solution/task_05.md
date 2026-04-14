@@ -2,32 +2,18 @@
 
 ## Given
 
-For an ellipse:
+For an ellipse,
 
 $$
 x(t) = a\cos t, \qquad y(t) = b\sin t
 $$
 
-Determine:
+determine the following:
 
-1. the velocity vector $\vec v(t)$ and the acceleration vector $\vec a(t)$,
-2. the unit tangent vector to the trajectory
-   $$
-   \hat T(t) = \frac{\vec v(t)}{|\vec v(t)|},
-   $$
-3. decompose the acceleration into tangential and normal components:
-   $$
-   \vec a(t) = \vec a_t(t) + \vec a_n(t),
-   $$
-   and determine the magnitude of the normal acceleration
-   $$
-   a_n(t) = |\vec a_n(t)|,
-   $$
-4. using the relation
-   $$
-   a_n = \frac{v^2}{R},
-   $$
-   determine the radius of curvature of the trajectory at the point $t=0$,
+1. the velocity vector $\vec v(t)$ and the acceleration vector $\vec a(t)$;
+2. the unit tangent vector to the trajectory, defined by $\,\hat T(t) = \dfrac{\vec v(t)}{|\vec v(t)|}$;
+3. the decomposition of the acceleration into tangential and normal components, $\,\vec a(t) = \vec a_t(t) + \vec a_n(t)\,$, and the magnitude of the normal acceleration, $\,a_n(t)=|\vec a_n(t)|$;
+4. using the relation $\,a_n = \dfrac{v^2}{R}\,$, determine the radius of curvature of the trajectory at the point $t=0$;
 5. compare the result with the case of a circle $a=b$.
 
 ---
@@ -42,7 +28,7 @@ $$
 
 Differentiate each component.
 
-### Velocity
+### Velocity vector
 
 $$
 \vec v(t) = \frac{d\vec r}{dt}
@@ -52,7 +38,7 @@ $$
 \vec v(t) = (-a\sin t,\; b\cos t)
 $$
 
-### Acceleration
+### Acceleration vector
 
 $$
 \vec a(t) = \frac{d\vec v}{dt}
@@ -76,7 +62,7 @@ $$
 |\vec v(t)| = \sqrt{a^2\sin^2 t + b^2\cos^2 t}
 $$
 
-Now use the definition
+By definition,
 
 $$
 \hat T(t) = \frac{\vec v(t)}{|\vec v(t)|}
@@ -89,7 +75,7 @@ $$
 \frac{(-a\sin t,\; b\cos t)}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-So,
+So the unit tangent vector is
 
 $$
 \hat T(t) =
@@ -101,7 +87,7 @@ $$
 
 ---
 
-## 3. Tangential and normal components of acceleration
+## 3. Decomposition into tangential and normal components
 
 We write
 
@@ -111,12 +97,10 @@ $$
 
 where
 
-- $\vec a_t(t)$ is parallel to the velocity,
-- $\vec a_n(t)$ is perpendicular to the velocity.
+- $\vec a_t(t)$ is the tangential component,
+- $\vec a_n(t)$ is the normal component.
 
----
-
-## 3.1 Tangential acceleration
+### 3.1 Tangential acceleration
 
 The tangential acceleration magnitude is
 
@@ -150,30 +134,30 @@ $$
 |\vec v(t)| = \sqrt{a^2\sin^2 t + b^2\cos^2 t},
 $$
 
-we get
+we obtain
 
 $$
-a_t(t) =
+a_t(t)
+=
 \frac{(a^2-b^2)\sin t\cos t}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-Therefore, the tangential acceleration vector is
+Therefore, the tangential component vector is
 
 $$
 \vec a_t(t) = a_t(t)\,\hat T(t)
 $$
 
-That is,
+that is,
 
 $$
-\vec a_t(t) =
+\vec a_t(t)
+=
 \frac{(a^2-b^2)\sin t\cos t}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 \,\hat T(t)
 $$
 
----
-
-## 3.2 Normal acceleration
+### 3.2 Normal acceleration
 
 The magnitude of the normal acceleration is
 
@@ -181,7 +165,7 @@ $$
 a_n(t) = \frac{|\vec v(t)\times\vec a(t)|}{|\vec v(t)|}
 $$
 
-Treat the vectors as 3D vectors by adding a zero third component:
+Treat the vectors as 3D vectors by adding a zero third coordinate:
 
 $$
 \vec v(t) = (-a\sin t,\; b\cos t,\; 0)
@@ -243,7 +227,7 @@ $$
 a_n(t) = |\vec a_n(t)| = \frac{ab}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-The normal component vector is
+The normal component vector itself is
 
 $$
 \vec a_n(t) = \vec a(t) - \vec a_t(t)
@@ -369,9 +353,9 @@ $$
 
 ---
 
-# Physical interpretation
+## Physical interpretation
 
-## 1. Does a greater trajectory curvature imply a greater normal acceleration?
+### 1. Does a greater trajectory curvature imply a greater normal acceleration?
 
 We know that
 
@@ -395,9 +379,7 @@ So, for the same speed, greater curvature implies greater normal acceleration.
 
 **Answer:** Yes, if the speed is fixed.
 
----
-
-## 2. Where on the ellipse is the trajectory more curved: at the end of the major or minor semi-axis?
+### 2. Where on the ellipse is the trajectory more curved: at the end of the major or minor semi-axis?
 
 At
 
@@ -455,9 +437,7 @@ $$
 (\pm a,0)
 $$
 
----
-
-## 3. Explain why normal acceleration can be interpreted as the cause of the change in the direction of motion
+### 3. Explain why normal acceleration can be interpreted as the cause of the change in the direction of motion
 
 Tangential acceleration changes the magnitude of the velocity vector, so it changes the speed.
 
@@ -467,7 +447,7 @@ Therefore, normal acceleration is responsible for turning the motion and changin
 
 ---
 
-# Final answers
+## Final answers
 
 $$
 \vec v(t) = (-a\sin t,\; b\cos t)
