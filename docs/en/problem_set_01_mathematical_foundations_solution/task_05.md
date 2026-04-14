@@ -113,20 +113,17 @@ First compute the dot product:
 
 $$
 \vec v(t)\cdot\vec a(t)
-=
-(-a\sin t)(-a\cos t) + (b\cos t)(-b\sin t)
+= (-a\sin t)(-a\cos t) + (b\cos t)(-b\sin t)
 $$
 
 $$
 \vec v(t)\cdot\vec a(t)
-=
-a^2\sin t\cos t - b^2\sin t\cos t
+= a^2\sin t\cos t - b^2\sin t\cos t
 $$
 
 $$
 \vec v(t)\cdot\vec a(t)
-=
-(a^2-b^2)\sin t\cos t
+= (a^2 - b^2)\sin t\cos t
 $$
 
 Since
@@ -135,14 +132,15 @@ $$
 |\vec v(t)| = \sqrt{a^2\sin^2 t + b^2\cos^2 t},
 $$
 
-we obtain
+we get
 
 $$
 a_t(t) =
-\frac{(a^2-b^2)\sin t\cos t}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
+\frac{(a^2 - b^2)\sin t\cos t}
+{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-Hence,
+Therefore,
 
 $$
 \vec a_t(t) = a_t(t)\,\hat T(t)
