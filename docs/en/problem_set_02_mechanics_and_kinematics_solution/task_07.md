@@ -24,40 +24,30 @@ Find:
 
 ### Solution
 
-#### 1. Acceleration
+#### 1. Velocity vector
 
-The acceleration is constant:
-
-$$
-\vec{a}(t)=(2,-3).
-$$
-
-This means that
+Since acceleration is constant,
 
 $$
-\frac{d\vec{v}}{dt}=\vec{a}=(2,-3).
+\vec{a}(t)=\frac{d\vec{v}}{dt}=(2,-3).
 $$
 
----
-
-#### 2. Velocity vector
-
-To find the velocity vector, integrate the acceleration with respect to time:
+Integrating with respect to time, we obtain
 
 $$
-\vec{v}(t)=\int \vec{a}\,dt=(2t+C_1,\,-3t+C_2).
+\vec{v}(t)=(2t+C_1,\,-3t+C_2).
 $$
 
-Now use the initial condition
+Using the initial condition
 
 $$
-\vec{v}(0)=(1,0).
+\vec{v}(0)=(1,0),
 $$
 
-Substituting $t=0$, we get
+we find
 
 $$
-(C_1,C_2)=(1,0).
+C_1=1, \qquad C_2=0.
 $$
 
 Therefore,
@@ -68,30 +58,30 @@ $$
 
 ---
 
-#### 3. Position vector
+#### 2. Position vector
 
-The position vector satisfies
+Now
 
 $$
 \frac{d\vec{r}}{dt}=\vec{v}(t)=(2t+1,\,-3t).
 $$
 
-Integrate each component:
+Integrating again, we get
 
 $$
-\vec{r}(t)=\int \vec{v}(t)\,dt=(t^2+t+C_3,\,-\frac{3}{2}t^2+C_4).
+\vec{r}(t)=\left(t^2+t+C_3,\,-\frac{3}{2}t^2+C_4\right).
 $$
 
-Now use the initial condition
+Using the initial condition
 
 $$
-\vec{r}(0)=(0,0).
+\vec{r}(0)=(0,0),
 $$
 
-Substituting $t=0$, we obtain
+we obtain
 
 $$
-(C_3,C_4)=(0,0).
+C_3=0, \qquad C_4=0.
 $$
 
 Hence,
@@ -102,7 +92,7 @@ $$
 
 ---
 
-#### 4. Trajectory equation
+#### 3. Trajectory equation
 
 From the position vector,
 
@@ -112,54 +102,34 @@ x=t^2+t,
 y=-\frac{3}{2}t^2.
 $$
 
-To describe the trajectory, we eliminate the parameter $t$.
-
-From
-
-$$
-y=-\frac{3}{2}t^2,
-$$
-
-we get
+From the second equation,
 
 $$
 t^2=-\frac{2}{3}y.
 $$
 
-Using
+Using the first equation,
 
 $$
-x=t^2+t,
+x=t^2+t.
 $$
 
-we can also write
+Substitute $t^2=-\dfrac{2}{3}y$:
 
 $$
-t=x-t^2=x+\frac{2}{3}y.
+x=-\frac{2}{3}y+t.
 $$
 
-A simpler way is to solve for $t$ from the first relation:
-
-$$
-t^2=-\frac{2}{3}y.
-$$
-
-Then from
-
-$$
-x=t^2+t,
-$$
-
-we get
+So,
 
 $$
 t=x+\frac{2}{3}y.
 $$
 
-Squaring this expression:
+Now square both sides:
 
 $$
-\left(x+\frac{2}{3}y\right)^2=t^2.
+t^2=\left(x+\frac{2}{3}y\right)^2.
 $$
 
 But since
@@ -168,13 +138,13 @@ $$
 t^2=-\frac{2}{3}y,
 $$
 
-we finally obtain
+we get
 
 $$
 \left(x+\frac{2}{3}y\right)^2=-\frac{2}{3}y.
 $$
 
-Therefore, the trajectory equation is
+Therefore, the trajectory is
 
 $$
 \boxed{\left(x+\frac{2}{3}y\right)^2=-\frac{2}{3}y}.
@@ -184,15 +154,15 @@ This is a parabola.
 
 ---
 
-#### 5. Selected moments
+#### 4. Selected moments
 
-##### At $t=0$
+At $t=0$:
 
 $$
 \vec{r}(0)=(0,0), \qquad \vec{v}(0)=(1,0), \qquad \vec{a}=(2,-3).
 $$
 
-##### At $t=1$
+At $t=1$:
 
 $$
 \vec{r}(1)=\left(1^2+1,\,-\frac{3}{2}\cdot1^2\right)=\left(2,-\frac{3}{2}\right),
@@ -206,7 +176,7 @@ $$
 \vec{a}=(2,-3).
 $$
 
-##### At $t=2$
+At $t=2$:
 
 $$
 \vec{r}(2)=\left(2^2+2,\,-\frac{3}{2}\cdot2^2\right)=(6,-6),
@@ -224,27 +194,29 @@ These points can be used to sketch the trajectory and the vectors.
 
 ---
 
-#### 6. Interpretation of the motion
+#### 5. Interpretation of the motion
 
-- The body starts at the origin:
-  $$
-  \vec{r}(0)=(0,0)
-  $$
-- Its initial velocity is horizontal:
-  $$
-  \vec{v}(0)=(1,0)
-  $$
-- The acceleration is constant:
-  $$
-  \vec{a}=(2,-3)
-  $$
+The body starts at the origin:
 
-So:
+$$
+\vec{r}(0)=(0,0).
+$$
 
-- the $x$-component of velocity increases linearly because of the positive acceleration $2$
-- the $y$-component of velocity decreases linearly because of the negative acceleration $-3$
+Its initial velocity is horizontal:
 
-As a result, the body moves along a **parabolic trajectory** in the plane.
+$$
+\vec{v}(0)=(1,0).
+$$
+
+The acceleration is constant:
+
+$$
+\vec{a}=(2,-3).
+$$
+
+Thus, the horizontal component of velocity increases linearly with time, while the vertical component decreases linearly with time.
+
+As a result, the body moves along a parabolic trajectory in the plane.
 
 ---
 
@@ -280,4 +252,4 @@ $$
 \boxed{\left(x+\frac{2}{3}y\right)^2=-\frac{2}{3}y}.
 $$
 
-Thus, the motion is a two-dimensional motion with constant acceleration, where the velocity changes linearly with time and the position follows a parabolic path.
+Therefore, this is a two-dimensional motion with constant acceleration, linear change of velocity, and a parabolic trajectory.
