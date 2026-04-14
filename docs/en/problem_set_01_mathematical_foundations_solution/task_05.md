@@ -10,25 +10,18 @@ $$
 
 we need to:
 
-1. determine the velocity vector $\vec v(t)$ and the acceleration vector $\vec a(t)$,
+1. determine the velocity vector and the acceleration vector,
 2. determine the unit tangent vector
    $$
    \hat T(t) = \frac{\vec v(t)}{|\vec v(t)|},
    $$
-3. decompose the acceleration into tangential and normal components
+3. decompose the acceleration into tangential and normal components,
+4. use
    $$
-   \vec a(t) = \vec a_t(t) + \vec a_n(t),
+   a_n = \frac{v^2}{R}
    $$
-   and determine the magnitude of the normal acceleration
-   $$
-   a_n(t) = |\vec a_n(t)|,
-   $$
-4. using
-   $$
-   a_n = \frac{v^2}{R},
-   $$
-   determine the radius of curvature at $t=0$,
-5. compare the result with the special case of a circle $a=b$.
+   to determine the radius of curvature at $t=0$,
+5. compare the result with the special case of a circle, where $a=b$.
 
 We also answer the physical interpretation questions.
 
@@ -39,7 +32,7 @@ We also answer the physical interpretation questions.
 The position vector is
 
 $$
-\vec r(t) = (a\cos t, b\sin t)
+\vec r(t) = (a\cos t,\; b\sin t)
 $$
 
 Differentiate componentwise.
@@ -47,16 +40,20 @@ Differentiate componentwise.
 ### Velocity
 
 $$
-\vec v(t) = \frac{d\vec r}{dt} = (-a\sin t, b\cos t)
+\vec v(t) = \frac{d\vec r}{dt} = (-a\sin t,\; b\cos t)
 $$
 
 ### Acceleration
 
 $$
-\vec a(t) = \frac{d\vec v}{dt} = (-a\cos t, -b\sin t)
+\vec a(t) = \frac{d\vec v}{dt} = (-a\cos t,\; -b\sin t)
 $$
 
-The speed is
+---
+
+## 2. Speed and unit tangent vector
+
+The speed is the magnitude of the velocity:
 
 $$
 |\vec v(t)| = \sqrt{(-a\sin t)^2 + (b\cos t)^2}
@@ -66,24 +63,18 @@ $$
 |\vec v(t)| = \sqrt{a^2\sin^2 t + b^2\cos^2 t}
 $$
 
----
-
-## 2. Unit tangent vector
-
-By definition,
+Therefore, the unit tangent vector is
 
 $$
 \hat T(t) = \frac{\vec v(t)}{|\vec v(t)|}
 $$
 
-Therefore,
-
 $$
 \hat T(t) =
-\frac{(-a\sin t, b\cos t)}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
+\frac{(-a\sin t,\; b\cos t)}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-So the unit tangent vector is
+So,
 
 $$
 \hat T(t) =
@@ -97,32 +88,35 @@ $$
 
 ## 3. Tangential and normal components of acceleration
 
-We use the standard decomposition
+We write
 
 $$
-\vec a = \vec a_t + \vec a_n
+\vec a(t) = \vec a_t(t) + \vec a_n(t)
 $$
 
-where the tangential component is parallel to $\vec v$ and the normal component is perpendicular to $\vec v$.
+where:
 
-### 3.1 Tangential acceleration magnitude
+- $\vec a_t(t)$ is the tangential component,
+- $\vec a_n(t)$ is the normal component.
+
+### 3.1 Tangential acceleration
 
 The tangential acceleration magnitude is
 
 $$
-a_t = \frac{d}{dt} |\vec v|
+a_t(t) = \frac{d}{dt}|\vec v(t)|
 $$
 
 Since
 
 $$
-|\vec v| = \sqrt{a^2\sin^2 t + b^2\cos^2 t},
+|\vec v(t)| = \sqrt{a^2\sin^2 t + b^2\cos^2 t},
 $$
 
-differentiate:
+differentiate it:
 
 $$
-a_t
+a_t(t)
 =
 \frac{1}{2\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 \cdot
@@ -132,87 +126,98 @@ $$
 Now,
 
 $$
-\frac{d}{dt}(a^2\sin^2 t + b^2\cos^2 t)
-=
-2a^2\sin t\cos t - 2b^2\sin t\cos t
+\frac{d}{dt}(a^2\sin^2 t) = 2a^2\sin t\cos t
 $$
 
+and
+
 $$
+\frac{d}{dt}(b^2\cos^2 t) = -2b^2\sin t\cos t
+$$
+
+So,
+
+$$
+\frac{d}{dt}(a^2\sin^2 t + b^2\cos^2 t)
 =
 2(a^2-b^2)\sin t\cos t
 $$
 
-Therefore,
+Hence,
 
 $$
-a_t
+a_t(t)
 =
 \frac{(a^2-b^2)\sin t\cos t}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-Thus the tangential acceleration vector is
+Therefore, the tangential acceleration vector is
 
 $$
-\vec a_t = a_t \hat T
-$$
-
-so
-
-$$
-\vec a_t
-=
-\frac{(a^2-b^2)\sin t\cos t}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
-\hat T(t)
+\vec a_t(t) = a_t(t)\,\hat T(t)
 $$
 
 ---
 
-### 3.2 Normal acceleration magnitude
+### 3.2 Normal acceleration
 
-A convenient formula is
-
-$$
-a_n = \sqrt{|\vec a|^2 - a_t^2}
-$$
-
-but for plane curves it is simpler to use
+For a plane curve, the magnitude of the normal acceleration is
 
 $$
-a_n = \frac{|\vec v \times \vec a|}{|\vec v|}
+a_n(t) = \frac{|\vec v(t) \times \vec a(t)|}{|\vec v(t)|}
 $$
 
-Treat the 2D vectors as 3D vectors with third coordinate zero:
+Treat the vectors as 3D vectors with third coordinate equal to zero:
 
 $$
-\vec v = (-a\sin t, b\cos t, 0), \qquad
-\vec a = (-a\cos t, -b\sin t, 0)
-$$
-
-Then
-
-$$
-\vec v \times \vec a
-=
-(0,0,(-a\sin t)(-b\sin t) - (b\cos t)(-a\cos t))
+\vec v(t) = (-a\sin t,\; b\cos t,\; 0)
 $$
 
 $$
-=
-(0,0,ab\sin^2 t + ab\cos^2 t)
+\vec a(t) = (-a\cos t,\; -b\sin t,\; 0)
+$$
+
+Now compute the cross product.
+
+Its first component is
+
+$$
+(b\cos t)(0) - (0)(-b\sin t) = 0
+$$
+
+Its second component is
+
+$$
+(0)(-a\cos t) - (-a\sin t)(0) = 0
+$$
+
+Its third component is
+
+$$
+(-a\sin t)(-b\sin t) - (b\cos t)(-a\cos t)
 $$
 
 $$
-=
-(0,0,ab)
+= ab\sin^2 t + ab\cos^2 t
 $$
 
-Hence
-
 $$
-|\vec v \times \vec a| = ab
+= ab(\sin^2 t + \cos^2 t) = ab
 $$
 
-Therefore,
+So,
+
+$$
+\vec v(t) \times \vec a(t) = (0,\; 0,\; ab)
+$$
+
+and therefore
+
+$$
+|\vec v(t) \times \vec a(t)| = ab
+$$
+
+Thus,
 
 $$
 a_n(t) = \frac{ab}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
@@ -224,45 +229,51 @@ $$
 a_n(t) = \frac{ab}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-The normal acceleration vector is
+The normal component vector itself is
 
 $$
-\vec a_n = \vec a - \vec a_t
+\vec a_n(t) = \vec a(t) - \vec a_t(t)
 $$
 
 ---
 
 ## 4. Radius of curvature at $t=0$
 
-We use
+We use the relation
 
 $$
 a_n = \frac{v^2}{R}
 $$
 
-So
+Therefore,
 
 $$
 R = \frac{v^2}{a_n}
 $$
 
-At $t=0$:
+Now evaluate everything at $t=0$.
 
 ### Step 1. Velocity at $t=0$
 
 $$
-\vec v(0) = (-a\sin 0, b\cos 0) = (0,b)
+\vec v(0) = (-a\sin 0,\; b\cos 0) = (0,\; b)
 $$
 
-Thus
+Hence,
 
 $$
 |\vec v(0)| = b
 $$
 
+So,
+
+$$
+v(0)^2 = b^2
+$$
+
 ### Step 2. Normal acceleration at $t=0$
 
-From the formula above,
+Using the formula for $a_n(t)$:
 
 $$
 a_n(0) = \frac{ab}{\sqrt{a^2\sin^2 0 + b^2\cos^2 0}}
@@ -284,7 +295,7 @@ $$
 R(0) = \frac{b^2}{a}
 $$
 
-So the radius of curvature at $t=0$ is
+Therefore, the radius of curvature at $t=0$ is
 
 $$
 R(0) = \frac{b^2}{a}
@@ -294,39 +305,57 @@ $$
 
 ## 5. Special case: circle $a=b$
 
-If $a=b=R_0$, then the ellipse becomes a circle:
+If
+
+$$
+a=b=R_0,
+$$
+
+then the ellipse becomes a circle:
 
 $$
 x(t) = R_0\cos t, \qquad y(t) = R_0\sin t
 $$
 
-Then
+The velocity becomes
 
 $$
-|\vec v| = R_0
+\vec v(t) = (-R_0\sin t,\; R_0\cos t)
 $$
 
-is constant, so the tangential acceleration is zero:
+and its magnitude is
 
 $$
-a_t = 0
+|\vec v(t)| = R_0
 $$
 
-Also,
+So the speed is constant, which means
 
 $$
-a_n = \frac{ab}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
-\quad \Longrightarrow \quad
-a_n = \frac{R_0^2}{R_0} = R_0
+a_t(t) = 0
 $$
 
-Thus for a circle the acceleration is purely normal, and the radius of curvature is constant:
+For the normal acceleration,
+
+$$
+a_n(t) = \frac{R_0^2}{\sqrt{R_0^2\sin^2 t + R_0^2\cos^2 t}}
+$$
+
+$$
+a_n(t) = \frac{R_0^2}{R_0} = R_0
+$$
+
+Thus, in circular motion:
+
+$$
+a_t = 0, \qquad a_n = R_0
+$$
+
+Also, the radius of curvature is constant and equal to the radius of the circle:
 
 $$
 R = R_0
 $$
-
-This matches the usual result for circular motion.
 
 ---
 
@@ -334,33 +363,39 @@ This matches the usual result for circular motion.
 
 ## 1. Does greater curvature imply greater normal acceleration?
 
-From the relation
+We know that
 
 $$
 a_n = \frac{v^2}{R}
 $$
 
-and curvature
+and curvature is
 
 $$
-\kappa = \frac{1}{R},
+\kappa = \frac{1}{R}
 $$
 
-we get
+So,
 
 $$
-a_n = v^2 \kappa
+a_n = v^2\kappa
 $$
 
-So for the same speed, greater curvature means greater normal acceleration.
+Therefore, for the same speed, greater curvature means greater normal acceleration.
 
-Therefore, **yes**: greater curvature implies greater normal acceleration if the speed is fixed.
+So the answer is: **yes**, if the speed is fixed.
 
 ---
 
 ## 2. Where is the ellipse more curved: at the end of the major or minor semi-axis?
 
-At the point $t=0$, the point on the ellipse is
+At
+
+$$
+t=0
+$$
+
+the point is
 
 $$
 (a,0)
@@ -372,69 +407,93 @@ $$
 R(0) = \frac{b^2}{a}
 $$
 
-If we evaluate similarly at the top point $t=\frac{\pi}{2}$, we get
+At
+
+$$
+t=\frac{\pi}{2}
+$$
+
+the point is
+
+$$
+(0,b)
+$$
+
+Now:
+
+- at $t=\frac{\pi}{2}$, the speed is $a$,
+- at $t=\frac{\pi}{2}$, the normal acceleration is $b$,
+
+so
 
 $$
 R\left(\frac{\pi}{2}\right) = \frac{a^2}{b}
 $$
 
-Curvature is larger where the radius of curvature is smaller.
+The curve is more curved where the radius of curvature is smaller.
 
-So:
+If
 
-- at $(a,0)$, the radius is $\frac{b^2}{a}$,
-- at $(0,b)$, the radius is $\frac{a^2}{b}$.
+$$
+a>b,
+$$
 
-If $a>b$, then
+then
 
 $$
 \frac{b^2}{a} < \frac{a^2}{b}
 $$
 
-so the ellipse is more curved at the ends of the **major semi-axis**, that is, near $(\pm a,0)$.
+Therefore, the ellipse is more curved at the ends of the **major semi-axis**, that is, near
+
+$$
+(\pm a, 0)
+$$
 
 ---
 
-## 3. Why can normal acceleration be interpreted as the cause of the change in direction of motion?
+## 3. Why does normal acceleration change the direction of motion?
 
-Tangential acceleration changes the magnitude of the velocity, that is, the speed.
+Tangential acceleration changes the magnitude of the velocity, so it changes the speed.
 
-Normal acceleration is perpendicular to the velocity vector, so it does not change the speed directly. Instead, it changes the direction of the velocity vector.
+Normal acceleration is perpendicular to the velocity vector, so it changes the direction of the velocity instead of its magnitude.
 
-Therefore, normal acceleration is responsible for bending the trajectory and changing the direction of motion.
+Therefore, normal acceleration is responsible for turning the motion and bending the trajectory.
 
 ---
 
 # Final answers
 
-## Velocity and acceleration
+## Velocity
 
 $$
-\vec v(t) = (-a\sin t, b\cos t)
+\vec v(t) = (-a\sin t,\; b\cos t)
 $$
 
+## Acceleration
+
 $$
-\vec a(t) = (-a\cos t, -b\sin t)
+\vec a(t) = (-a\cos t,\; -b\sin t)
 $$
 
 ## Unit tangent vector
 
 $$
 \hat T(t) =
-\frac{(-a\sin t, b\cos t)}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
+\frac{(-a\sin t,\; b\cos t)}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
 ## Tangential acceleration magnitude
 
 $$
-a_t =
+a_t(t) =
 \frac{(a^2-b^2)\sin t\cos t}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
 ## Normal acceleration magnitude
 
 $$
-a_n =
+a_n(t) =
 \frac{ab}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
@@ -444,14 +503,14 @@ $$
 R(0) = \frac{b^2}{a}
 $$
 
-## Circle case $a=b=R_0$
+## Circle case
 
 $$
 a_t = 0, \qquad a_n = R_0, \qquad R = R_0
 $$
 
-## Physical interpretation
+## Physical meaning
 
-- Greater curvature means greater normal acceleration when speed is fixed.
+- Greater curvature gives greater normal acceleration if the speed is fixed.
 - The ellipse is more curved at the ends of the major semi-axis.
-- Normal acceleration changes the direction of motion, while tangential acceleration changes the speed.
+- Tangential acceleration changes speed, while normal acceleration changes direction.
