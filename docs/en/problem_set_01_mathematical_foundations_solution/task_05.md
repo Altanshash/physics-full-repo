@@ -8,22 +8,29 @@ $$
 x(t) = a\cos t, \qquad y(t) = b\sin t
 $$
 
-we need to:
+determine:
 
-1. determine the velocity vector and the acceleration vector,
-2. determine the unit tangent vector
+1. the velocity vector $\vec v(t)$ and the acceleration vector $\vec a(t)$,
+2. the unit tangent vector to the trajectory
    $$
    \hat T(t) = \frac{\vec v(t)}{|\vec v(t)|},
    $$
-3. decompose the acceleration into tangential and normal components,
-4. use
+3. the tangential and normal components of the acceleration
    $$
-   a_n = \frac{v^2}{R}
+   \vec a(t) = \vec a_t(t) + \vec a_n(t),
    $$
-   to determine the radius of curvature at $t=0$,
+   and the magnitude of the normal acceleration
+   $$
+   a_n(t) = |\vec a_n(t)|,
+   $$
+4. using
+   $$
+   a_n = \frac{v^2}{R},
+   $$
+   determine the radius of curvature at $t=0$,
 5. compare the result with the special case of a circle, where $a=b$.
 
-We also answer the physical interpretation questions.
+Also answer the physical interpretation questions.
 
 ---
 
@@ -51,9 +58,9 @@ $$
 
 ---
 
-## 2. Speed and unit tangent vector
+## 2. Unit tangent vector
 
-The speed is the magnitude of the velocity:
+First compute the speed:
 
 $$
 |\vec v(t)| = \sqrt{(-a\sin t)^2 + (b\cos t)^2}
@@ -63,11 +70,13 @@ $$
 |\vec v(t)| = \sqrt{a^2\sin^2 t + b^2\cos^2 t}
 $$
 
-Therefore, the unit tangent vector is
+Now use
 
 $$
 \hat T(t) = \frac{\vec v(t)}{|\vec v(t)|}
 $$
+
+Therefore,
 
 $$
 \hat T(t) =
@@ -88,7 +97,7 @@ $$
 
 ## 3. Tangential and normal components of acceleration
 
-We write
+We decompose the acceleration as
 
 $$
 \vec a(t) = \vec a_t(t) + \vec a_n(t)
@@ -113,7 +122,7 @@ $$
 |\vec v(t)| = \sqrt{a^2\sin^2 t + b^2\cos^2 t},
 $$
 
-differentiate it:
+differentiate:
 
 $$
 a_t(t)
@@ -135,7 +144,7 @@ $$
 \frac{d}{dt}(b^2\cos^2 t) = -2b^2\sin t\cos t
 $$
 
-So,
+Hence,
 
 $$
 \frac{d}{dt}(a^2\sin^2 t + b^2\cos^2 t)
@@ -143,7 +152,7 @@ $$
 2(a^2-b^2)\sin t\cos t
 $$
 
-Hence,
+So,
 
 $$
 a_t(t)
@@ -161,13 +170,13 @@ $$
 
 ### 3.2 Normal acceleration
 
-For a plane curve, the magnitude of the normal acceleration is
+For a plane curve,
 
 $$
-a_n(t) = \frac{|\vec v(t) \times \vec a(t)|}{|\vec v(t)|}
+a_n(t) = \frac{|\vec v(t)\times\vec a(t)|}{|\vec v(t)|}
 $$
 
-Treat the vectors as 3D vectors with third coordinate equal to zero:
+Treat the vectors as 3D vectors with zero third component:
 
 $$
 \vec v(t) = (-a\sin t,\; b\cos t,\; 0)
@@ -179,19 +188,19 @@ $$
 
 Now compute the cross product.
 
-Its first component is
+The first component is
 
 $$
 (b\cos t)(0) - (0)(-b\sin t) = 0
 $$
 
-Its second component is
+The second component is
 
 $$
 (0)(-a\cos t) - (-a\sin t)(0) = 0
 $$
 
-Its third component is
+The third component is
 
 $$
 (-a\sin t)(-b\sin t) - (b\cos t)(-a\cos t)
@@ -205,19 +214,19 @@ $$
 = ab(\sin^2 t + \cos^2 t) = ab
 $$
 
-So,
+Therefore,
 
 $$
-\vec v(t) \times \vec a(t) = (0,\; 0,\; ab)
+\vec v(t)\times\vec a(t) = (0,\;0,\;ab)
 $$
 
-and therefore
+and so
 
 $$
-|\vec v(t) \times \vec a(t)| = ab
+|\vec v(t)\times\vec a(t)| = ab
 $$
 
-Thus,
+Hence,
 
 $$
 a_n(t) = \frac{ab}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
@@ -229,7 +238,7 @@ $$
 a_n(t) = \frac{ab}{\sqrt{a^2\sin^2 t + b^2\cos^2 t}}
 $$
 
-The normal component vector itself is
+The normal component vector is
 
 $$
 \vec a_n(t) = \vec a(t) - \vec a_t(t)
@@ -239,7 +248,7 @@ $$
 
 ## 4. Radius of curvature at $t=0$
 
-We use the relation
+We use
 
 $$
 a_n = \frac{v^2}{R}
@@ -251,7 +260,7 @@ $$
 R = \frac{v^2}{a_n}
 $$
 
-Now evaluate everything at $t=0$.
+Now evaluate at $t=0$.
 
 ### Step 1. Velocity at $t=0$
 
@@ -273,7 +282,7 @@ $$
 
 ### Step 2. Normal acceleration at $t=0$
 
-Using the formula for $a_n(t)$:
+From the formula above,
 
 $$
 a_n(0) = \frac{ab}{\sqrt{a^2\sin^2 0 + b^2\cos^2 0}}
@@ -285,7 +294,7 @@ $$
 
 ### Step 3. Radius of curvature
 
-Now substitute into
+Substitute into
 
 $$
 R = \frac{v^2}{a_n}
@@ -303,7 +312,7 @@ $$
 
 ---
 
-## 5. Special case: circle $a=b$
+## 5. Comparison with the circle case $a=b$
 
 If
 
@@ -317,45 +326,37 @@ $$
 x(t) = R_0\cos t, \qquad y(t) = R_0\sin t
 $$
 
-The velocity becomes
+The speed becomes
 
 $$
-\vec v(t) = (-R_0\sin t,\; R_0\cos t)
+|\vec v(t)| = \sqrt{R_0^2\sin^2 t + R_0^2\cos^2 t} = R_0
 $$
 
-and its magnitude is
-
-$$
-|\vec v(t)| = R_0
-$$
-
-So the speed is constant, which means
+So the speed is constant, hence
 
 $$
 a_t(t) = 0
 $$
 
-For the normal acceleration,
+Also,
 
 $$
-a_n(t) = \frac{R_0^2}{\sqrt{R_0^2\sin^2 t + R_0^2\cos^2 t}}
+a_n(t) = \frac{R_0^2}{\sqrt{R_0^2\sin^2 t + R_0^2\cos^2 t}} = \frac{R_0^2}{R_0} = R_0
 $$
 
-$$
-a_n(t) = \frac{R_0^2}{R_0} = R_0
-$$
-
-Thus, in circular motion:
+Thus, in the circular case,
 
 $$
 a_t = 0, \qquad a_n = R_0
 $$
 
-Also, the radius of curvature is constant and equal to the radius of the circle:
+and the radius of curvature is constant:
 
 $$
 R = R_0
 $$
+
+This is exactly the standard result for uniform circular motion.
 
 ---
 
@@ -375,15 +376,15 @@ $$
 \kappa = \frac{1}{R}
 $$
 
-So,
+Therefore,
 
 $$
 a_n = v^2\kappa
 $$
 
-Therefore, for the same speed, greater curvature means greater normal acceleration.
+So for fixed speed, greater curvature means greater normal acceleration.
 
-So the answer is: **yes**, if the speed is fixed.
+**Answer:** Yes, if the speed is the same.
 
 ---
 
@@ -401,7 +402,7 @@ $$
 (a,0)
 $$
 
-and we found
+and the radius of curvature is
 
 $$
 R(0) = \frac{b^2}{a}
@@ -419,12 +420,7 @@ $$
 (0,b)
 $$
 
-Now:
-
-- at $t=\frac{\pi}{2}$, the speed is $a$,
-- at $t=\frac{\pi}{2}$, the normal acceleration is $b$,
-
-so
+Similarly, the radius of curvature there is
 
 $$
 R\left(\frac{\pi}{2}\right) = \frac{a^2}{b}
@@ -444,10 +440,10 @@ $$
 \frac{b^2}{a} < \frac{a^2}{b}
 $$
 
-Therefore, the ellipse is more curved at the ends of the **major semi-axis**, that is, near
+So the ellipse is more curved at the ends of the **major semi-axis**, that is, near
 
 $$
-(\pm a, 0)
+(\pm a,0)
 $$
 
 ---
@@ -456,7 +452,7 @@ $$
 
 Tangential acceleration changes the magnitude of the velocity, so it changes the speed.
 
-Normal acceleration is perpendicular to the velocity vector, so it changes the direction of the velocity instead of its magnitude.
+Normal acceleration is perpendicular to the velocity vector, so it changes the direction of the velocity vector rather than its magnitude.
 
 Therefore, normal acceleration is responsible for turning the motion and bending the trajectory.
 
