@@ -7,22 +7,19 @@ Earth and Mars move in circles around the Sun in the same direction.
 In the heliocentric reference frame, their position vectors are
 
 $$
-\vec{r}_E(t)=R_E\bigl(\cos(\omega_E t),\,\sin(\omega_E t)\bigr),
+\vec{r}_E(t)=R_E(\cos(\omega_E t),\sin(\omega_E t))
 $$
 
 $$
-\vec{r}_M(t)=R_M\bigl(\cos(\omega_M t),\,\sin(\omega_M t)\bigr).
+\vec{r}_M(t)=R_M(\cos(\omega_M t),\sin(\omega_M t))
 $$
 
 Find:
 
 1. Describe both motions in the heliocentric system
-2. Determine the position of Mars relative to Earth:
-   $$
-   \vec{r}_{M/E}(t)=\vec{r}_M(t)-\vec{r}_E(t)
-   $$
-3. Explicitly write the components $x_{M/E}(t)$ and $y_{M/E}(t)$
-4. Interpret the result geometrically
+2. Determine the position of Mars relative to Earth
+3. Write explicitly the components $x_{M/E}(t)$ and $y_{M/E}(t)$
+4. Explain the geometric meaning of the result
 
 ---
 
@@ -30,92 +27,91 @@ Find:
 
 #### 1. Motion in the heliocentric system
 
-In the heliocentric frame, the Sun is at the origin of coordinates.
+In the heliocentric frame, the Sun is at the origin.
 
-The Earth moves on a circle of radius $R_E$ with angular velocity $\omega_E$, so its position vector is
-
-$$
-\vec{r}_E(t)=R_E\bigl(\cos(\omega_E t),\,\sin(\omega_E t)\bigr).
-$$
-
-Therefore, the components of Earth's motion are
+The position of Earth is
 
 $$
-x_E(t)=R_E\cos(\omega_E t),
+\vec{r}_E(t)=R_E(\cos(\omega_E t),\sin(\omega_E t))
 $$
 
-$$
-y_E(t)=R_E\sin(\omega_E t).
-$$
-
-Similarly, Mars moves on a circle of radius $R_M$ with angular velocity $\omega_M$, so
+Therefore, its coordinates are
 
 $$
-\vec{r}_M(t)=R_M\bigl(\cos(\omega_M t),\,\sin(\omega_M t)\bigr).
-$$
-
-Its components are
-
-$$
-x_M(t)=R_M\cos(\omega_M t),
+x_E(t)=R_E\cos(\omega_E t)
 $$
 
 $$
-y_M(t)=R_M\sin(\omega_M t).
+y_E(t)=R_E\sin(\omega_E t)
 $$
 
-Thus, in the heliocentric frame:
+So Earth moves uniformly along a circle of radius $R_E$.
 
-- Earth moves uniformly on a circle of radius $R_E$
-- Mars moves uniformly on a circle of radius $R_M$
+The position of Mars is
+
+$$
+\vec{r}_M(t)=R_M(\cos(\omega_M t),\sin(\omega_M t))
+$$
+
+Therefore, its coordinates are
+
+$$
+x_M(t)=R_M\cos(\omega_M t)
+$$
+
+$$
+y_M(t)=R_M\sin(\omega_M t)
+$$
+
+So Mars moves uniformly along a circle of radius $R_M$.
 
 ---
 
 #### 2. Position of Mars relative to Earth
 
-To describe Mars as seen from Earth, we subtract Earth's position vector from Mars's position vector:
+The position of Mars relative to Earth is defined by
 
 $$
-\vec{r}_{M/E}(t)=\vec{r}_M(t)-\vec{r}_E(t).
+\vec{r}_{M/E}(t)=\vec{r}_M(t)-\vec{r}_E(t)
 $$
 
-Substituting the given vectors:
+Substituting the vectors, we obtain
 
 $$
 \vec{r}_{M/E}(t)
 =
-R_M\bigl(\cos(\omega_M t),\,\sin(\omega_M t)\bigr)
+R_M(\cos(\omega_M t),\sin(\omega_M t))
 -
-R_E\bigl(\cos(\omega_E t),\,\sin(\omega_E t)\bigr).
+R_E(\cos(\omega_E t),\sin(\omega_E t))
 $$
 
-Now subtract the components:
+Now subtract the corresponding components:
 
 $$
 \vec{r}_{M/E}(t)=
 \Bigl(
-R_M\cos(\omega_M t)-R_E\cos(\omega_E t),\;
+R_M\cos(\omega_M t)-R_E\cos(\omega_E t),
 R_M\sin(\omega_M t)-R_E\sin(\omega_E t)
-\Bigr).
+\Bigr)
 $$
 
-Therefore,
+Hence,
 
 $$
 \boxed{
 \vec{r}_{M/E}(t)=
 \Bigl(
-R_M\cos(\omega_M t)-R_E\cos(\omega_E t),\;
+R_M\cos(\omega_M t)-R_E\cos(\omega_E t),
 R_M\sin(\omega_M t)-R_E\sin(\omega_E t)
 \Bigr)
-}.
+}
 $$
 
 ---
 
-#### 3. Components of the relative motion
+#### 3. Components of the geocentric motion
 
-From the expression above, the coordinates of Mars relative to Earth are
+From the relative position vector, the components are
 
 $$
 \boxed{
@@ -123,100 +119,84 @@ x_{M/E}(t)=R_M\cos(\omega_M t)-R_E\cos(\omega_E t)
 }
 $$
 
-and
-
 $$
 \boxed{
 y_{M/E}(t)=R_M\sin(\omega_M t)-R_E\sin(\omega_E t)
-}.
+}
 $$
 
-These equations describe the apparent trajectory of Mars in the geocentric reference frame.
+These equations describe the apparent motion of Mars as seen from Earth.
 
 ---
 
 #### 4. Geometric interpretation
 
-The curve described by
+In the heliocentric frame, both Earth and Mars move on simple circles around the Sun.
+
+However, in the geocentric frame, Mars is described by the relative vector
 
 $$
-x_{M/E}(t)=R_M\cos(\omega_M t)-R_E\cos(\omega_E t),
+\vec{r}_{M/E}(t)=\vec{r}_M(t)-\vec{r}_E(t)
 $$
 
+This means that the apparent trajectory of Mars is obtained by combining two circular motions:
+
 $$
-y_{M/E}(t)=R_M\sin(\omega_M t)-R_E\sin(\omega_E t),
+R_M(\cos(\omega_M t),\sin(\omega_M t))
 $$
 
-is generally **not a circle**.
+and
 
-It is the trajectory of Mars as observed from Earth.
+$$
+-R_E(\cos(\omega_E t),\sin(\omega_E t))
+$$
 
-This apparent motion is produced by combining two circular motions:
+Therefore, the trajectory of Mars relative to Earth is generally not a circle.
 
-- the real circular motion of Mars around the Sun
-- the circular motion of Earth around the Sun
-
-So, even though both planets move in simple circles in the heliocentric system, the motion of Mars relative to Earth becomes more complicated.
-
-This explains why, in the geocentric description, planets can appear to move along loops or retrograde-like paths.
+It is a more complicated curve, and this explains why Mars can appear to form loops in the geocentric description.
 
 ---
 
-#### 5. Special case: equal angular velocities
+#### 5. Special case
 
-If
+If the angular velocities are equal,
 
 $$
-\omega_M=\omega_E=\omega,
+\omega_M=\omega_E=\omega
 $$
 
 then
 
 $$
-x_{M/E}(t)=R_M\cos(\omega t)-R_E\cos(\omega t)=(R_M-R_E)\cos(\omega t),
+x_{M/E}(t)=R_M\cos(\omega t)-R_E\cos(\omega t)=(R_M-R_E)\cos(\omega t)
 $$
 
 $$
-y_{M/E}(t)=R_M\sin(\omega t)-R_E\sin(\omega t)=(R_M-R_E)\sin(\omega t).
+y_{M/E}(t)=R_M\sin(\omega t)-R_E\sin(\omega t)=(R_M-R_E)\sin(\omega t)
 $$
 
-Therefore,
+So in this case
 
 $$
-\vec{r}_{M/E}(t)=(R_M-R_E)\bigl(\cos(\omega t),\,\sin(\omega t)\bigr),
+\vec{r}_{M/E}(t)=(R_M-R_E)(\cos(\omega t),\sin(\omega t))
 $$
 
-which is again circular motion.
+which is again a circle.
 
-So, only when the angular velocities are equal does the relative trajectory remain a circle.
-
----
-
-#### 6. Physical meaning of the change of reference frame
-
-This problem shows the importance of the reference frame.
-
-- In the **heliocentric frame**, both Earth and Mars have simple circular trajectories.
-- In the **geocentric frame**, Mars is described by the relative vector
-  $$
-  \vec{r}_{M/E}(t)=\vec{r}_M(t)-\vec{r}_E(t)
-  $$
-  and its trajectory becomes more complicated.
-
-Thus, a simple motion in one reference frame may appear much more complex in another reference frame.
+Thus, only in this special case does the geocentric trajectory remain circular.
 
 ---
 
 ### Final Conclusion
 
-In the heliocentric system, Earth and Mars move as
+In the heliocentric frame,
 
 $$
-\vec{r}_E(t)=R_E\bigl(\cos(\omega_E t),\,\sin(\omega_E t)\bigr),
+\vec{r}_E(t)=R_E(\cos(\omega_E t),\sin(\omega_E t))
 $$
 
 $$
-\vec{r}_M(t)=R_M\bigl(\cos(\omega_M t),\,\sin(\omega_M t)\bigr).
+\vec{r}_M(t)=R_M(\cos(\omega_M t),\sin(\omega_M t))
 $$
 
 The position of Mars relative to Earth is
@@ -233,13 +213,13 @@ $$
 \boxed{
 \vec{r}_{M/E}(t)=
 \Bigl(
-R_M\cos(\omega_M t)-R_E\cos(\omega_E t),\;
+R_M\cos(\omega_M t)-R_E\cos(\omega_E t),
 R_M\sin(\omega_M t)-R_E\sin(\omega_E t)
 \Bigr)
-}.
+}
 $$
 
-Hence, the geocentric components are
+Therefore, the geocentric coordinates of Mars are
 
 $$
 \boxed{
@@ -253,4 +233,4 @@ y_{M/E}(t)=R_M\sin(\omega_M t)-R_E\sin(\omega_E t)
 }
 $$
 
-Therefore, although Earth and Mars each move on circles around the Sun, the trajectory of Mars as seen from Earth is generally a more complicated curve, which explains the geocentric appearance of planetary loops.
+So, although Earth and Mars each move on circles around the Sun, the motion of Mars as seen from Earth is generally a more complicated curve rather than a circle.
