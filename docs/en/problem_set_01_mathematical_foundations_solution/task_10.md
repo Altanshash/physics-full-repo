@@ -8,16 +8,16 @@ $$
 \vec r(t) = (R\cos(\omega t),\; R\sin(\omega t),\; 0)
 $$
 
-Determine the velocity:
+Determine the velocity vector.
 
 $$
 \vec v(t) = \dot{\vec r}(t)
 $$
 
-Calculate the angular momentum with respect to the origin:
+Calculate the angular momentum with respect to the origin.
 
 $$
-\vec L(t) = m\,\vec r(t)\times \vec v(t)
+\vec L(t) = m\,\vec r(t)\times\vec v(t)
 $$
 
 Show that
@@ -26,27 +26,27 @@ $$
 |\vec L| = mR^2\omega
 $$
 
-is constant, and that the vector $\vec L$ is perpendicular to the plane of motion.
+is constant, and that $\vec L$ is perpendicular to the plane of motion.
 
 Interpret the direction of $\vec L$ using the right-hand rule.
 
-(Optional) Add a centripetal force and calculate the torque:
+For the centripetal force, calculate the torque
 
 $$
-\vec \tau = \vec r \times \vec F
+\vec\tau = \vec r \times \vec F
 $$
 
-Verify the relation
+and verify the relation
 
 $$
-\vec \tau = \frac{d\vec L}{dt}
+\vec\tau = \frac{d\vec L}{dt}
 $$
 
 for uniform circular motion.
 
 ---
 
-## 1. Velocity
+## 1. Velocity vector
 
 Differentiate the position vector:
 
@@ -57,7 +57,7 @@ $$
 Therefore,
 
 $$
-\vec v(t) = \dot{\vec r}}(t) = (-R\omega\sin(\omega t),\; R\omega\cos(\omega t),\; 0)
+\vec v(t) = \dot{\vec r}(t) = (-R\omega\sin(\omega t),\; R\omega\cos(\omega t),\; 0)
 $$
 
 ---
@@ -82,51 +82,64 @@ $$
 \vec v(t) = (-R\omega\sin(\omega t),\; R\omega\cos(\omega t),\; 0)
 $$
 
-Compute the cross product:
+Since both vectors lie in the $xy$ plane, only the third component of the cross product is nonzero:
 
 $$
-\vec r(t)\times\vec v(t)
+\vec r(t)\times\vec v(t) = (0,\; 0,\; xv_y - yv_x)
+$$
+
+Here
+
+$$
+x = R\cos(\omega t), \qquad y = R\sin(\omega t)
+$$
+
+and
+
+$$
+v_x = -R\omega\sin(\omega t), \qquad v_y = R\omega\cos(\omega t)
+$$
+
+So,
+
+$$
+xv_y - yv_x
 =
-\begin{pmatrix}
-0 \\
-0 \\
 R\cos(\omega t)\cdot R\omega\cos(\omega t)
 -
-R\sin(\omega t)\cdot(-R\omega\sin(\omega t))
-\end{pmatrix}
+R\sin(\omega t)\cdot\bigl(-R\omega\sin(\omega t)\bigr)
 $$
 
 $$
-\vec r(t)\times\vec v(t)
 =
-\begin{pmatrix}
-0 \\
-0 \\
 R^2\omega\cos^2(\omega t) + R^2\omega\sin^2(\omega t)
-\end{pmatrix}
 $$
 
-Using
+$$
+=
+R^2\omega\bigl(\cos^2(\omega t)+\sin^2(\omega t)\bigr)
+$$
 
 $$
-\sin^2(\omega t)+\cos^2(\omega t)=1
-$$
-
-we get
-
-$$
-\vec r(t)\times\vec v(t) = (0,\;0,\;R^2\omega)
+=
+R^2\omega
 $$
 
 Therefore,
 
 $$
-\vec L(t) = (0,\;0,\;mR^2\omega)
+\vec r(t)\times\vec v(t) = (0,\; 0,\; R^2\omega)
+$$
+
+and hence
+
+$$
+\vec L(t) = (0,\; 0,\; mR^2\omega)
 $$
 
 ---
 
-## 3. Magnitude and direction of angular momentum
+## 3. Magnitude and direction of $\vec L$
 
 The magnitude is
 
@@ -139,12 +152,10 @@ So $|\vec L|$ is constant.
 Also,
 
 $$
-\vec L(t) = (0,\;0,\;mR^2\omega)
+\vec L(t) = (0,\; 0,\; mR^2\omega)
 $$
 
 has only a $z$-component, so it is perpendicular to the $xy$ plane.
-
-Thus, the angular momentum vector is perpendicular to the plane of motion.
 
 ---
 
@@ -152,13 +163,13 @@ Thus, the angular momentum vector is perpendicular to the plane of motion.
 
 The motion is counterclockwise in the $xy$ plane.
 
-Using the right-hand rule, curl the fingers of your right hand in the direction of motion. Your thumb points along the positive $z$-axis.
+By the right-hand rule, the angular momentum vector points along the positive $z$-axis.
 
-Therefore, $\vec L$ points in the positive $z$ direction.
+So $\vec L$ points upward, perpendicular to the plane of motion.
 
 ---
 
-## 5. Torque and the relation $\vec \tau = \frac{d\vec L}{dt}$
+## 5. Torque and the relation $\vec\tau = \frac{d\vec L}{dt}$
 
 For uniform circular motion, the centripetal force is directed toward the origin:
 
@@ -172,25 +183,25 @@ $$
 \vec F(t) = (-m\omega^2R\cos(\omega t),\; -m\omega^2R\sin(\omega t),\; 0)
 $$
 
-Now compute the torque:
+Now calculate the torque:
 
 $$
-\vec \tau = \vec r \times \vec F
+\vec\tau = \vec r \times \vec F
 $$
 
 Since $\vec F$ is parallel to $\vec r$, their cross product is zero:
 
 $$
-\vec \tau = \vec 0
+\vec\tau = \vec 0
 $$
 
 Now differentiate the angular momentum:
 
 $$
-\vec L(t) = (0,\;0,\;mR^2\omega)
+\vec L(t) = (0,\; 0,\; mR^2\omega)
 $$
 
-Since this vector is constant,
+Since this is constant,
 
 $$
 \frac{d\vec L}{dt} = \vec 0
@@ -199,7 +210,7 @@ $$
 Therefore,
 
 $$
-\vec \tau = \frac{d\vec L}{dt}
+\vec\tau = \frac{d\vec L}{dt}
 $$
 
 So the relation is verified.
@@ -213,25 +224,19 @@ $$
 $$
 
 $$
-\vec L(t) = (0,\;0,\;mR^2\omega)
+\vec L(t) = (0,\; 0,\; mR^2\omega)
 $$
 
 $$
 |\vec L| = mR^2\omega
 $$
 
-The vector $\vec L$ is perpendicular to the plane of motion and points in the positive $z$ direction.
+$\vec L$ is perpendicular to the plane of motion and points in the positive $z$ direction.
 
 $$
-\vec \tau = \vec 0
+\vec\tau = \vec 0
 $$
 
 $$
 \frac{d\vec L}{dt} = \vec 0
-$$
-
-Hence,
-
-$$
-\vec \tau = \frac{d\vec L}{dt}
 $$
