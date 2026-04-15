@@ -1,21 +1,20 @@
-# Problem Set 4  
+# Problem Set 4
 ## Problem 1 – Harmonic motion: motion parameters
 
 ### Given
-Harmonic motion is described by the function:
 
-\[
-x(t) = A \cos(\omega t + \varphi)
-\]
+A function describing harmonic motion is given:
+
+`x(t) = A cos(ωt + φ)`
 
 Find:
 
-1. the period \(T\) and the frequency \(f\);
-2. the maximum velocity \(v_{\max}\) and the maximum acceleration \(a_{\max}\);
-3. for \(A = 0.2\ \text{m}\), \(f = 2\ \text{Hz}\):
-   - calculate \(\omega\),
-   - calculate \(v_{\max}\),
-   - calculate \(a_{\max}\).
+1. the period `T` and the frequency `f`;
+2. the maximum velocity `v_max` and the maximum acceleration `a_max`;
+3. for `A = 0.2 m`, `f = 2 Hz`:
+   - calculate `ω`,
+   - calculate `v_max`,
+   - calculate `a_max`.
 
 ---
 
@@ -23,96 +22,75 @@ Find:
 
 ### 1. Period and frequency
 
-For harmonic motion, angular frequency \(\omega\), period \(T\), and frequency \(f\) are related by:
+For harmonic motion, angular frequency, period, and frequency are related by:
 
-\[
-\omega = 2\pi f
-\]
+`ω = 2πf`
 
-and
+From this:
 
-\[
-T = \frac{1}{f}
-\]
+`f = ω / (2π)`
 
-Since
+Since period is the inverse of frequency:
 
-\[
-f = \frac{\omega}{2\pi}
-\]
+`T = 1 / f`
 
-then the period can also be written as:
+Substituting `f = ω / (2π)`:
 
-\[
-T = \frac{2\pi}{\omega}
-\]
+`T = 2π / ω`
 
 ### Answer:
-\[
-T = \frac{2\pi}{\omega}, \qquad f = \frac{\omega}{2\pi}
-\]
+
+`T = 2π / ω`
+
+`f = ω / (2π)`
 
 ---
 
 ### 2. Maximum velocity
 
-The velocity is the first derivative of displacement:
+Velocity is the first derivative of displacement with respect to time:
 
-\[
-v(t) = \frac{dx}{dt}
-\]
+`v(t) = dx/dt`
 
-Differentiate the given function:
+Given:
 
-\[
-x(t) = A\cos(\omega t + \varphi)
-\]
+`x(t) = A cos(ωt + φ)`
 
-\[
-v(t) = -A\omega \sin(\omega t + \varphi)
-\]
+Differentiate:
 
-The maximum value of \(\sin(\omega t + \varphi)\) in absolute value is 1, therefore the maximum velocity is:
+`v(t) = -Aω sin(ωt + φ)`
 
-\[
-v_{\max} = A\omega
-\]
+The maximum value of `sin(ωt + φ)` in absolute value is 1, therefore:
+
+`v_max = Aω`
 
 ### Answer:
-\[
-v_{\max} = A\omega
-\]
+
+`v_max = Aω`
 
 ---
 
 ### 3. Maximum acceleration
 
-The acceleration is the derivative of velocity:
+Acceleration is the derivative of velocity:
 
-\[
-a(t) = \frac{dv}{dt}
-\]
+`a(t) = dv/dt`
 
-Differentiate:
+From
 
-\[
-v(t) = -A\omega \sin(\omega t + \varphi)
-\]
+`v(t) = -Aω sin(ωt + φ)`
 
-\[
-a(t) = -A\omega^2 \cos(\omega t + \varphi)
-\]
+differentiate again:
 
-The maximum value of \(\cos(\omega t + \varphi)\) in absolute value is 1, so:
+`a(t) = -Aω² cos(ωt + φ)`
 
-\[
-a_{\max} = A\omega^2
-\]
+The maximum value of `cos(ωt + φ)` in absolute value is 1, therefore:
+
+`a_max = Aω²`
 
 ### Answer:
-\[
-a_{\max} = A\omega^2
-\]
+
+`a_max = Aω²`
 
 ---
 
@@ -120,122 +98,98 @@ a_{\max} = A\omega^2
 
 Given:
 
-\[
-A = 0.2\ \text{m}, \qquad f = 2\ \text{Hz}
-\]
+`A = 0.2 m`
 
-### 1. Calculate \(\omega\)
+`f = 2 Hz`
+
+### 1. Calculate `ω`
 
 Use the formula:
 
-\[
-\omega = 2\pi f
-\]
-
-Substitute \(f = 2\ \text{Hz}\):
-
-\[
-\omega = 2\pi \cdot 2 = 4\pi\ \text{rad/s}
-\]
-
-\[
-\omega \approx 12.57\ \text{rad/s}
-\]
-
----
-
-### 2. Calculate \(v_{\max}\)
-
-Use:
-
-\[
-v_{\max} = A\omega
-\]
+`ω = 2πf`
 
 Substitute the values:
 
-\[
-v_{\max} = 0.2 \cdot 12.57
-\]
+`ω = 2π * 2 = 4π rad/s`
 
-\[
-v_{\max} \approx 2.51\ \text{m/s}
-\]
+Using `π ≈ 3.14`:
 
----
+`ω ≈ 4 * 3.14 = 12.56 rad/s`
 
-### 3. Calculate \(a_{\max}\)
+### 2. Calculate `v_max`
 
 Use:
 
-\[
-a_{\max} = A\omega^2
-\]
+`v_max = Aω`
 
 Substitute the values:
 
-\[
-a_{\max} = 0.2 \cdot (12.57)^2
-\]
+`v_max = 0.2 * 12.56`
 
-\[
-a_{\max} = 0.2 \cdot 157.9
-\]
+`v_max = 2.512 m/s`
 
-\[
-a_{\max} \approx 31.58\ \text{m/s}^2
-\]
+So:
+
+`v_max ≈ 2.51 m/s`
+
+### 3. Calculate `a_max`
+
+Use:
+
+`a_max = Aω²`
+
+Substitute the values:
+
+`a_max = 0.2 * (12.56)^2`
+
+First calculate:
+
+`(12.56)^2 = 157.75`
+
+Then:
+
+`a_max = 0.2 * 157.75 = 31.55 m/s²`
+
+So:
+
+`a_max ≈ 31.55 m/s²`
 
 ---
 
 ## Final Answer
 
-\[
-T = \frac{2\pi}{\omega}, \qquad f = \frac{\omega}{2\pi}
-\]
+`T = 2π / ω`
 
-\[
-v_{\max} = A\omega
-\]
+`f = ω / (2π)`
 
-\[
-a_{\max} = A\omega^2
-\]
+`v_max = Aω`
 
-For \(A = 0.2\ \text{m}\), \(f = 2\ \text{Hz}\):
+`a_max = Aω²`
 
-\[
-\omega = 4\pi \approx 12.57\ \text{rad/s}
-\]
+For `A = 0.2 m` and `f = 2 Hz`:
 
-\[
-v_{\max} \approx 2.51\ \text{m/s}
-\]
+`ω = 4π ≈ 12.56 rad/s`
 
-\[
-a_{\max} \approx 31.58\ \text{m/s}^2
-\]
+`v_max ≈ 2.51 m/s`
+
+`a_max ≈ 31.55 m/s²`
 
 ---
 
 ## Conclusion
 
-In harmonic motion, the period and frequency are determined by the angular frequency:
+In harmonic motion, the period and frequency are determined by angular frequency:
 
-\[
-T = \frac{2\pi}{\omega}, \qquad f = \frac{\omega}{2\pi}
-\]
+`T = 2π / ω`
 
-The maximum velocity depends linearly on both amplitude and angular frequency:
+`f = ω / (2π)`
 
-\[
-v_{\max} = A\omega
-\]
+The maximum velocity is:
 
-The maximum acceleration depends on the amplitude and on the square of angular frequency:
+`v_max = Aω`
 
-\[
-a_{\max} = A\omega^2
-\]
+The maximum acceleration is:
 
-For the given values \(A = 0.2\ \text{m}\) and \(f = 2\ \text{Hz}\), the body oscillates with angular frequency \(12.57\ \text{rad/s}\), reaches a maximum velocity of \(2.51\ \text{m/s}\), and a maximum acceleration of \(31.58\ \text{m/s}^2\).
+`a_max = Aω²`
+
+For `A = 0.2 m` and `f = 2 Hz`, the angular frequency is `12.56 rad/s`, the maximum velocity is `2.51 m/s`, and the maximum acceleration is `31.55 m/s²`.
