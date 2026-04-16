@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harmonic Oscillator Animation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    canvas {
+      background: white;
+      border: 1px solid #999;
+      display: block;
+      margin: 0 auto 20px auto;
+    }
+
+    .info {
+      background: white;
+      display: inline-block;
+      padding: 15px 25px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      text-align: left;
+      line-height: 1.8;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Harmonic Oscillator</h1>
+  <p>Spring-mass motion with numerical values</p>
+
+  <canvas id="canvas" width="900" height="300"></canvas>
+
+  <div class="info">
+    <div><b>Given:</b> m = 1 kg, k = 100 N/m, x₀ = 2 m, v₀ = 1 m/s</div>
+    <div>Time: <span id="time">0.00</span> s</div>
+    <div>Position x(t): <span id="xval">0.00</span> m</div>
+    <div>Velocity v(t): <span id="vval">0.00</span> m/s</div>
+    <div>Kinetic Energy K: <span id="kval">0.00</span> J</div>
+    <div>Potential Energy U: <span id="uval">0.00</span> J</div>
+    <div>Total Energy E: <span id="eval">0.00</span> J</div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const m = 1;
+    const k = 100;
+    const x0 = 2;
+    const v0 = 1;
+
+    const omega = Math.sqrt(k / m);
+
+    // Amplitude and phase from initial conditions
+    const A = Math.sqrt(x0 * x0 + (v0 / omega) * (v0 / omega));
+    const phi = Math.atan2(-v0 / omega, x0);
+
+    const timeEl = document.getElementById("time");
+    const xEl = document.getElementById("xval");
+    const vEl = document.getElementById("vval");
+    const kEl = document.getElementById("kval");
+    const uEl = document.getElementById("uval");
+    const eEl = document.getElementById("eval");
+
+    let t = 0;
+    const dt = 0.02;
+
+    const wallX = 80;
+    const baseX = 300;
+    const y = 150;
+    const scale = 80; // pixel scale
+
+    function drawWall() {
+      ctx.fillStyle = "#444";
+      ctx.fillRect(30, 60, 30, 180);
+
+      ctx.strokeStyle = "#222";
+      for (let i = 60; i < 240; i += 12) {
+        ctx.beginPath();
+        ctx.moveTo(30, i);
+        ctx.lineTo(60, i + 12);
+        ctx.stroke();
+      }
+    }
+
+    function drawGround() {
+      ctx.beginPath();
+      ctx.moveTo(0, 220);
+      ctx.lineTo(canvas.width, 220);
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    function drawSpring(xMass) {
+      const startX = wallX;
+      const endX = xMass - 30;
+      const coils = 16;
+      const amp = 12;
+
+      ctx.beginPath();
+      ctx.moveTo(startX, y);
+
+      for (let i = 1; i <= coils; i++) {
+        const px = startX + (endX - startX) * i / coils;
+        const py = (i % 2 === 0) ? y - amp : y + amp;
+        ctx.lineTo(px, py);
+      }
+
+      ctx.lineTo(endX, y);
+      ctx.strokeStyle = "#0077cc";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+
+    function drawMass(xMass) {
+      ctx.fillStyle = "#cc3333";
+      ctx.fillRect(xMass - 30, y - 30, 60, 60);
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const x = A * Math.cos(omega * t + phi);
+      const v = -A * omega * Math.sin(omega * t + phi);
+
+      const K = 0.5 * m * v * v;
+      const U = 0.5 * k * x * x;
+      const E = K + U;
+
+      const xMass = baseX + x * scale;
+
+      drawGround();
+      drawWall();
+      drawSpring(xMass);
+      drawMass(xMass);
+
+      timeEl.textContent = t.toFixed(2);
+      xEl.textContent = x.toFixed(3);
+      vEl.textContent = v.toFixed(3);
+      kEl.textContent = K.toFixed(3);
+      uEl.textContent = U.toFixed(3);
+      eEl.textContent = E.toFixed(3);
+
+      t += dt;
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+
+</body>
+</html>v
