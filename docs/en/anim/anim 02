@@ -1,49 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Harmonic Oscillator Animation</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      background: #f4f4f4;
+      background: #f5f5f5;
       margin: 0;
       padding: 20px;
     }
 
     h1 {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     p {
-      margin-top: 0;
       color: #444;
+      margin-bottom: 20px;
     }
 
     canvas {
       background: white;
-      border: 1px solid #ccc;
-      margin-top: 20px;
+      border: 1px solid #999;
+      display: block;
+      margin: 0 auto 20px auto;
     }
 
     .info {
-      margin-top: 20px;
-      font-size: 18px;
-      line-height: 1.8;
       background: white;
       display: inline-block;
       padding: 15px 25px;
+      border: 1px solid #ccc;
       border-radius: 10px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      text-align: left;
+      line-height: 1.8;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
 
   <h1>Harmonic Oscillator</h1>
-  <p>Animation of spring-mass motion with numerical values</p>
+  <p>Spring-mass motion with numerical values</p>
 
   <canvas id="canvas" width="900" height="300"></canvas>
 
@@ -67,6 +68,8 @@
     const v0 = 1;
 
     const omega = Math.sqrt(k / m);
+
+    // Amplitude and phase from initial conditions
     const A = Math.sqrt(x0 * x0 + (v0 / omega) * (v0 / omega));
     const phi = Math.atan2(-v0 / omega, x0);
 
@@ -80,20 +83,20 @@
     let t = 0;
     const dt = 0.02;
 
-    const wallX = 60;
-    const centerX = 350;
+    const wallX = 80;
+    const baseX = 300;
     const y = 150;
-    const scale = 100;
+    const scale = 80; // pixel scale
 
     function drawWall() {
       ctx.fillStyle = "#444";
-      ctx.fillRect(20, 70, 30, 160);
+      ctx.fillRect(30, 60, 30, 180);
 
       ctx.strokeStyle = "#222";
-      for (let i = 70; i < 230; i += 10) {
+      for (let i = 60; i < 240; i += 12) {
         ctx.beginPath();
-        ctx.moveTo(20, i);
-        ctx.lineTo(50, i + 10);
+        ctx.moveTo(30, i);
+        ctx.lineTo(60, i + 12);
         ctx.stroke();
       }
     }
@@ -110,16 +113,15 @@
     function drawSpring(xMass) {
       const startX = wallX;
       const endX = xMass - 30;
-      const coils = 18;
-      const amplitude = 15;
+      const coils = 16;
+      const amp = 12;
 
       ctx.beginPath();
       ctx.moveTo(startX, y);
 
-      const length = endX - startX;
       for (let i = 1; i <= coils; i++) {
-        const px = startX + (i * length) / coils;
-        const py = y + (i % 2 === 0 ? -amplitude : amplitude);
+        const px = startX + (endX - startX) * i / coils;
+        const py = (i % 2 === 0) ? y - amp : y + amp;
         ctx.lineTo(px, py);
       }
 
@@ -144,7 +146,7 @@
       const U = 0.5 * k * x * x;
       const E = K + U;
 
-      const xMass = centerX + x * scale;
+      const xMass = baseX + x * scale;
 
       drawGround();
       drawWall();
