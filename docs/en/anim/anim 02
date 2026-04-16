@@ -17,6 +17,11 @@
       margin-bottom: 10px;
     }
 
+    p {
+      margin-top: 0;
+      color: #444;
+    }
+
     canvas {
       background: white;
       border: 1px solid #ccc;
@@ -31,14 +36,14 @@
       display: inline-block;
       padding: 15px 25px;
       border-radius: 10px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     }
   </style>
 </head>
 <body>
 
   <h1>Harmonic Oscillator</h1>
-  <p>Numerical animation of spring-mass motion</p>
+  <p>Animation of spring-mass motion with numerical values</p>
 
   <canvas id="canvas" width="900" height="300"></canvas>
 
@@ -56,20 +61,15 @@
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
-    // Given values
     const m = 1;
     const k = 100;
     const x0 = 2;
     const v0 = 1;
 
-    // Angular frequency
     const omega = Math.sqrt(k / m);
-
-    // Amplitude and phase from initial conditions
     const A = Math.sqrt(x0 * x0 + (v0 / omega) * (v0 / omega));
     const phi = Math.atan2(-v0 / omega, x0);
 
-    // UI elements
     const timeEl = document.getElementById("time");
     const xEl = document.getElementById("xval");
     const vEl = document.getElementById("vval");
@@ -80,28 +80,37 @@
     let t = 0;
     const dt = 0.02;
 
-    // Drawing parameters
-    const wallX = 100;
+    const wallX = 60;
     const centerX = 350;
     const y = 150;
-    const scale = 100; // 1 meter = 100 pixels
+    const scale = 100;
 
     function drawWall() {
       ctx.fillStyle = "#444";
-      ctx.fillRect(40, 80, 20, 140);
+      ctx.fillRect(20, 70, 30, 160);
 
-      for (let i = 80; i < 220; i += 10) {
+      ctx.strokeStyle = "#222";
+      for (let i = 70; i < 230; i += 10) {
         ctx.beginPath();
-        ctx.moveTo(40, i);
-        ctx.lineTo(60, i + 10);
+        ctx.moveTo(20, i);
+        ctx.lineTo(50, i + 10);
         ctx.stroke();
       }
     }
 
+    function drawGround() {
+      ctx.beginPath();
+      ctx.moveTo(0, 220);
+      ctx.lineTo(canvas.width, 220);
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
     function drawSpring(xMass) {
-      const startX = 60;
+      const startX = wallX;
       const endX = xMass - 30;
-      const coils = 16;
+      const coils = 18;
       const amplitude = 15;
 
       ctx.beginPath();
@@ -125,37 +134,23 @@
       ctx.fillRect(xMass - 30, y - 30, 60, 60);
     }
 
-    function drawGround() {
-      ctx.beginPath();
-      ctx.moveTo(0, 220);
-      ctx.lineTo(canvas.width, 220);
-      ctx.strokeStyle = "#000";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    }
-
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Exact solution
       const x = A * Math.cos(omega * t + phi);
       const v = -A * omega * Math.sin(omega * t + phi);
 
-      // Energies
       const K = 0.5 * m * v * v;
       const U = 0.5 * k * x * x;
       const E = K + U;
 
-      // Convert physical x to canvas position
       const xMass = centerX + x * scale;
 
-      // Draw scene
       drawGround();
       drawWall();
       drawSpring(xMass);
       drawMass(xMass);
 
-      // Update numbers
       timeEl.textContent = t.toFixed(2);
       xEl.textContent = x.toFixed(3);
       vEl.textContent = v.toFixed(3);
@@ -169,5 +164,6 @@
 
     animate();
   </script>
+
 </body>
 </html>
