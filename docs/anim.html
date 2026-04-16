@@ -14,12 +14,30 @@
     }
 
     h1 {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    p {
-      color: #444;
-      margin-bottom: 20px;
+    .controls {
+      margin: 20px 0;
+    }
+
+    button {
+      padding: 10px 22px;
+      font-size: 16px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #startBtn {
+      background-color: green;
+      color: white;
+    }
+
+    #stopBtn {
+      background-color: crimson;
+      color: white;
     }
 
     canvas {
@@ -38,41 +56,16 @@
       text-align: left;
       line-height: 1.8;
       font-size: 18px;
-      margin-bottom: 20px;
-    }
-
-    .buttons {
-      margin-bottom: 20px;
-    }
-
-    button {
-      font-size: 16px;
-      padding: 10px 20px;
-      margin: 0 10px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .start-btn {
-      background-color: #28a745;
-      color: white;
-    }
-
-    .stop-btn {
-      background-color: #dc3545;
-      color: white;
     }
   </style>
 </head>
 <body>
 
   <h1>Harmonic Oscillator</h1>
-  <p>Spring-mass motion with numerical values</p>
 
-  <div class="buttons">
-    <button class="start-btn" onclick="startAnimation()">Start</button>
-    <button class="stop-btn" onclick="stopAnimation()">Stop</button>
+  <div class="controls">
+    <button id="startBtn" onclick="startAnimation()">Start</button>
+    <button id="stopBtn" onclick="stopAnimation()">Stop</button>
   </div>
 
   <canvas id="canvas" width="900" height="300"></canvas>
@@ -91,6 +84,13 @@
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
+    const timeEl = document.getElementById("time");
+    const xEl = document.getElementById("xval");
+    const vEl = document.getElementById("vval");
+    const kEl = document.getElementById("kval");
+    const uEl = document.getElementById("uval");
+    const eEl = document.getElementById("eval");
+
     const m = 1;
     const k = 100;
     const x0 = 2;
@@ -99,13 +99,6 @@
     const omega = Math.sqrt(k / m);
     const A = Math.sqrt(x0 * x0 + (v0 / omega) * (v0 / omega));
     const phi = Math.atan2(-v0 / omega, x0);
-
-    const timeEl = document.getElementById("time");
-    const xEl = document.getElementById("xval");
-    const vEl = document.getElementById("vval");
-    const kEl = document.getElementById("kval");
-    const uEl = document.getElementById("uval");
-    const eEl = document.getElementById("eval");
 
     let t = 0;
     const dt = 0.02;
@@ -195,7 +188,6 @@
 
       updateScene();
       t += dt;
-
       animationId = requestAnimationFrame(animate);
     }
 
@@ -208,7 +200,7 @@
 
     function stopAnimation() {
       running = false;
-      if (animationId) {
+      if (animationId !== null) {
         cancelAnimationFrame(animationId);
       }
     }
