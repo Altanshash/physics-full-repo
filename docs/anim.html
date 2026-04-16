@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Harmonic Oscillator Animation</title>
   <style>
     body {
@@ -38,6 +38,30 @@
       text-align: left;
       line-height: 1.8;
       font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .buttons {
+      margin-bottom: 20px;
+    }
+
+    button {
+      font-size: 16px;
+      padding: 10px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .start-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .stop-btn {
+      background-color: #dc3545;
+      color: white;
     }
   </style>
 </head>
@@ -46,16 +70,21 @@
   <h1>Harmonic Oscillator</h1>
   <p>Spring-mass motion with numerical values</p>
 
+  <div class="buttons">
+    <button class="start-btn" onclick="startAnimation()">Start</button>
+    <button class="stop-btn" onclick="stopAnimation()">Stop</button>
+  </div>
+
   <canvas id="canvas" width="900" height="300"></canvas>
 
   <div class="info">
     <div><b>Given:</b> m = 1 kg, k = 100 N/m, x₀ = 2 m, v₀ = 1 m/s</div>
     <div>Time: <span id="time">0.00</span> s</div>
-    <div>Position x(t): <span id="xval">0.00</span> m</div>
-    <div>Velocity v(t): <span id="vval">0.00</span> m/s</div>
-    <div>Kinetic Energy K: <span id="kval">0.00</span> J</div>
-    <div>Potential Energy U: <span id="uval">0.00</span> J</div>
-    <div>Total Energy E: <span id="eval">0.00</span> J</div>
+    <div>Position x(t): <span id="xval">0.000</span> m</div>
+    <div>Velocity v(t): <span id="vval">0.000</span> m/s</div>
+    <div>Kinetic Energy K: <span id="kval">0.000</span> J</div>
+    <div>Potential Energy U: <span id="uval">0.000</span> J</div>
+    <div>Total Energy E: <span id="eval">0.000</span> J</div>
   </div>
 
   <script>
@@ -68,8 +97,6 @@
     const v0 = 1;
 
     const omega = Math.sqrt(k / m);
-
-    // Amplitude and phase from initial conditions
     const A = Math.sqrt(x0 * x0 + (v0 / omega) * (v0 / omega));
     const phi = Math.atan2(-v0 / omega, x0);
 
@@ -82,11 +109,13 @@
 
     let t = 0;
     const dt = 0.02;
+    let running = false;
+    let animationId = null;
 
     const wallX = 80;
     const baseX = 300;
     const y = 150;
-    const scale = 80; // pixel scale
+    const scale = 80;
 
     function drawWall() {
       ctx.fillStyle = "#444";
@@ -136,7 +165,7 @@
       ctx.fillRect(xMass - 30, y - 30, 60, 60);
     }
 
-    function animate() {
+    function updateScene() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const x = A * Math.cos(omega * t + phi);
@@ -159,13 +188,33 @@
       kEl.textContent = K.toFixed(3);
       uEl.textContent = U.toFixed(3);
       eEl.textContent = E.toFixed(3);
-
-      t += dt;
-      requestAnimationFrame(animate);
     }
 
-    animate();
+    function animate() {
+      if (!running) return;
+
+      updateScene();
+      t += dt;
+
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function startAnimation() {
+      if (!running) {
+        running = true;
+        animate();
+      }
+    }
+
+    function stopAnimation() {
+      running = false;
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+    }
+
+    updateScene();
   </script>
 
 </body>
-</html>v
+</html>
