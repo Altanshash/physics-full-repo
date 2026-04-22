@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chain of N Springs - Discrete Wave Model</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f4f4f4;
+      margin: 20px;
+      color: #111;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+    }
+
+    .panel {
+      max-width: 1200px;
+      margin: 0 auto 15px auto;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    select, input[type="range"] {
+      font-size: 15px;
+      padding: 4px;
+    }
+
+    input[type="range"] {
+      width: 180px;
+    }
+
+    button {
+      padding: 10px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      border: 1px solid #888;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    button:hover {
+      background: #eee;
+    }
+
+    canvas {
+      background: white;
+      border: 1px solid black;
+      margin-top: 15px;
+    }
+
+    .info {
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .legend {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="panel">
+    <h2>Problem 9 - Chain of N Springs</h2>
+    <div><strong>Discrete wave model: propagation of a local pulse</strong></div>
+
+    <div class="controls">
+      <label for="nSelect">N:</label>
+      <select id="nSelect">
+        <option value="20">20</option>
+        <option value="50" selected>50</option>
+        <option value="100">100</option>
+      </select>
+
+      <label for="kSlider">k:</label>
+      <input type="range" id="kSlider" min="0.5" max="10" step="0.1" value="4.0">
+      <span id="kValue">4.0</span>
+
+      <label for="mSlider">m:</label>
+      <input type="range" id="mSlider" min="0.5" max="10" step="0.1" value="1.0">
+      <span id="mValue">1.0</span>
+
+      <button onclick="startAnimation()">Start</button>
+      <button onclick="stopAnimation()">Stop</button>
+      <button onclick="resetAnimation()">Reset</button>
+    </div>
+
+    <div class="info">
+      <div><strong>Current time:</strong> <span id="timeValue">0.00</span> s</div>
+      <div><strong>Approximate propagation speed:</strong> <span id="speedValue"></span></div>
+      <div><strong>Initial condition:</strong> local Gaussian disturbance at the center</div>
+    </div>
+
+    <div class="legend">
+      <span style="color: blue;">Blue = current displacement of the chain</span> |
+      <span style="color: red;">Red dot = initially disturbed mass</span>
+    </div>
+  </div>
+
+  <canvas id="canvas" width="1200" height="760"></canvas>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const nSelect = document.getElementById("nSelect");
+    const kSlider = document.getElementById("kSlider");
+    const mSlider = document.getElementById("mSlider");
+
+    const kValue = document.getElementById("kValue");
+    const mValue = document.getElementById("mValue");
+    const timeValue = document.getElementById("timeValue");
+    const speedValue = document.getElementById("speedValue");
+
+    let N = parseInt(nSelect.value);
+    let k = parseFloat(kSlider.value);
+    let m = parseFloat(mSlider.value);
+
+    const dt = 0.02;
+    const tMax = 80;
+    let steps = Math.floor(tMax / dt);
+
+    let solution = [];
+    let animationIndex = 0;
+    let animationId = null;
+
+    function updateLabels() {
+      kValue.textContent = k.toFixed(1);
+      mValue.textContent = m.toFixed(1);
+      speedValue.textContent = Math.sqrt(k / m).toFixed(3);
+    }
+
+    function createInitialState() {
+      const u = new Array(N).fill(0);
+      const v = new Array(N).fill(0);
+
+      const center = Math.floor(N / 2);
+      const sigma = Math.max(2, N / 20);
+      const A = 1.0;
+
+      for (let i = 0; i < N; i++) {
+        u[i] = A * Math.exp(-Math.pow(i - center, 2) / (2 * sigma * sigma));
+      }
+
+      return { u, v, center };
+    }
+
+    function derivatives(u, v) {
+      const du = new Array(N).fill(0);
+      const dv = new Array(N).fill(0);
+
+      for (let i = 0; i < N; i++) {
+        du[i] = v[i];
+
+        const left = (i === 0) ? 0 : u[i - 1];
+        const right = (i === N - 1) ? 0 : u[i + 1];
+
+        dv[i] = (k / m) * (right - 2 * u[i] + left);
+      }
+
+      return { du, dv };
+    }
+
+    function addScaled(a, b, scale) {
+      const out = new Array(a.length);
+      for (let i = 0; i < a.length; i++) out[i] = a[i] + scale * b[i];
+      return out;
+    }
+
+    function solveRK4() {
+      solution = [];
+      steps = Math.floor(tMax / dt);
+
+      let { u, v, center } = createInitialState();
+      let t = 0;
+
+      solution.push({
+        t,
+        u: [...u],
+        v: [...v],
+        center
+      });
+
+      for (let step = 0; step < steps; step++) {
+        const k1 = derivatives(u, v);
+
+        const u2 = addScaled(u, k1.du, dt / 2);
+        const v2 = addScaled(v, k1.dv, dt / 2);
+        const k2 = derivatives(u2, v2);
+
+        const u3 = addScaled(u, k2.du, dt / 2);
+        const v3 = addScaled(v, k2.dv, dt / 2);
+        const k3 = derivatives(u3, v3);
+
+        const u4 = addScaled(u, k3.du, dt);
+        const v4 = addScaled(v, k3.dv, dt);
+        const k4 = derivatives(u4, v4);
+
+        for (let i = 0; i < N; i++) {
+          u[i] += (dt / 6) * (k1.du[i] + 2 * k2.du[i] + 2 * k3.du[i] + k4.du[i]);
+          v[i] += (dt / 6) * (k1.dv[i] + 2 * k2.dv[i] + 2 * k3.dv[i] + k4.dv[i]);
+        }
+
+        t += dt;
+
+        solution.push({
+          t,
+          u: [...u],
+          v: [...v],
+          center
+        });
+      }
+    }
+
+    function drawAxes() {
+      ctx.strokeStyle = "black";
+      ctx.fillStyle = "black";
+      ctx.lineWidth = 1;
+      ctx.font = "14px Arial";
+
+      // Top: mass positions
+      const left1 = 70;
+      const right1 = 1130;
+      const top1 = 60;
+      const bottom1 = 250;
+      const centerY1 = (top1 + bottom1) / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(left1, centerY1);
+      ctx.lineTo(right1, centerY1);
+      ctx.stroke();
+
+      ctx.fillText("Chain animation", 520, 35);
+
+      // Middle: displacement profile u_n
+      const left2 = 70;
+      const right2 = 1130;
+      const top2 = 310;
+      const bottom2 = 510;
+      const centerY2 = (top2 + bottom2) / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(left2, centerY2);
+      ctx.lineTo(right2, centerY2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(left2, top2);
+      ctx.lineTo(left2, bottom2);
+      ctx.stroke();
+
+      ctx.font = "18px Arial";
+      ctx.fillText("Displacement Profile uₙ(t)", 470, 285);
+
+      ctx.font = "14px Arial";
+      for (let i = 0; i <= 10; i++) {
+        const px = left2 + i * (right2 - left2) / 10;
+        const label = Math.round(i * (N - 1) / 10);
+        ctx.beginPath();
+        ctx.moveTo(px, centerY2 - 4);
+        ctx.lineTo(px, centerY2 + 4);
+        ctx.stroke();
+        ctx.fillText(label.toString(), px - 8, centerY2 + 20);
+      }
+
+      ctx.fillText("u", 25, top2 + 10);
+      ctx.fillText("n", right2 + 8, centerY2 + 5);
+
+      // Bottom: time evolution of central mass
+      const left3 = 70;
+      const right3 = 1130;
+      const top3 = 570;
+      const bottom3 = 730;
+      const centerY3 = (top3 + bottom3) / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(left3, centerY3);
+      ctx.lineTo(right3, centerY3);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(left3, top3);
+      ctx.lineTo(left3, bottom3);
+      ctx.stroke();
+
+      ctx.font = "18px Arial";
+      ctx.fillText("Displacement of the Initially Disturbed Mass", 410, 545);
+
+      ctx.font = "14px Arial";
+      for (let i = 0; i <= 10; i++) {
+        const px = left3 + i * (right3 - left3) / 10;
+        const label = (i * tMax / 10).toFixed(0);
+        ctx.beginPath();
+        ctx.moveTo(px, centerY3 - 4);
+        ctx.lineTo(px, centerY3 + 4);
+        ctx.stroke();
+        ctx.fillText(label, px - 6, centerY3 + 20);
+      }
+
+      ctx.fillText("u", 25, top3 + 10);
+      ctx.fillText("t", right3 + 8, centerY3 + 5);
+    }
+
+    function drawChainAnimation(frame) {
+      const left = 70;
+      const right = 1130;
+      const top = 60;
+      const bottom = 250;
+      const centerY = (top + bottom) / 2;
+      const spacing = (right - left) / (N - 1);
+      const yScale = 55;
+
+      // Springs line
+      ctx.strokeStyle = "#999";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      for (let i = 0; i < N; i++) {
+        const x = left + i * spacing;
+        const y = centerY - frame.u[i] * yScale;
+
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Masses
+      for (let i = 0; i < N; i++) {
+        const x = left + i * spacing;
+        const y = centerY - frame.u[i] * yScale;
+
+        ctx.beginPath();
+        ctx.fillStyle = (i === frame.center) ? "red" : "#4a90e2";
+        ctx.arc(x, y, N >= 100 ? 3 : (N >= 50 ? 4 : 6), 0, 2 * Math.PI);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = "black";
+      ctx.font = "14px Arial";
+      ctx.fillText("fixed end", left - 10, centerY + 40);
+      ctx.fillText("fixed end", right - 30, centerY + 40);
+    }
+
+    function drawDisplacementProfile(frame) {
+      const left = 70;
+      const right = 1130;
+      const top = 310;
+      const bottom = 510;
+      const centerY = (top + bottom) / 2;
+      const xScale = (right - left) / (N - 1);
+      const yScale = 70;
+
+      ctx.beginPath();
+      ctx.strokeStyle = "blue";
+      ctx.lineWidth = 2;
+
+      for (let i = 0; i < N; i++) {
+        const px = left + i * xScale;
+        const py = centerY - frame.u[i] * yScale;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      for (let i = 0; i < N; i++) {
+        const px = left + i * xScale;
+        const py = centerY - frame.u[i] * yScale;
+
+        ctx.beginPath();
+        ctx.fillStyle = (i === frame.center) ? "red" : "blue";
+        ctx.arc(px, py, N >= 100 ? 2.5 : 3.5, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
+
+    function drawCenterMassHistory() {
+      const left = 70;
+      const right = 1130;
+      const top = 570;
+      const bottom = 730;
+      const centerY = (top + bottom) / 2;
+      const xScale = (right - left) / tMax;
+      const yScale = 55;
+
+      if (!solution.length) return;
+      const center = solution[0].center;
+
+      ctx.beginPath();
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 2;
+
+      for (let i = 0; i <= animationIndex; i++) {
+        const frame = solution[i];
+        const px = left + frame.t * xScale;
+        const py = centerY - frame.u[center] * yScale;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawAxes();
+
+      const frame = solution[Math.min(animationIndex, solution.length - 1)] || {
+        t: 0,
+        u: new Array(N).fill(0),
+        center: Math.floor(N / 2)
+      };
+
+      drawChainAnimation(frame);
+      drawDisplacementProfile(frame);
+      drawCenterMassHistory();
+
+      timeValue.textContent = frame.t.toFixed(2);
+    }
+
+    function animate() {
+      render();
+
+      if (animationIndex < solution.length - 1) {
+        animationIndex += 2;
+        animationId = requestAnimationFrame(animate);
+      } else {
+        animationId = null;
+      }
+    }
+
+    function startAnimation() {
+      if (!animationId) {
+        animationId = requestAnimationFrame(animate);
+      }
+    }
+
+    function stopAnimation() {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+    }
+
+    function resetAnimation() {
+      stopAnimation();
+      animationIndex = 0;
+      render();
+    }
+
+    function rebuildSystem() {
+      stopAnimation();
+      N = parseInt(nSelect.value);
+      k = parseFloat(kSlider.value);
+      m = parseFloat(mSlider.value);
+      updateLabels();
+      solveRK4();
+      animationIndex = 0;
+      render();
+    }
+
+    nSelect.addEventListener("change", rebuildSystem);
+    kSlider.addEventListener("input", rebuildSystem);
+    mSlider.addEventListener("input", rebuildSystem);
+
+    updateLabels();
+    solveRK4();
+    render();
+  </script>
+</body>
+</html>
