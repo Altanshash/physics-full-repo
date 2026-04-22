@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Problem 5 - Beats Animation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f4f4f4;
+      margin: 20px;
+    }
+
+    h2 {
+      margin-bottom: 5px;
+    }
+
+    p {
+      margin-top: 0;
+    }
+
+    canvas {
+      background: white;
+      border: 1px solid black;
+      margin-top: 15px;
+    }
+
+    .controls {
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 10px 18px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .legend {
+      margin-top: 10px;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Superposition of Waves and Beats</h2>
+  <p>
+    y₁(x,t) = A sin(kx − ωt), &nbsp;
+    y₂(x,t) = A sin(kx − (ω + Δω)t)
+  </p>
+
+  <canvas id="canvas" width="1000" height="520"></canvas>
+
+  <div class="controls">
+    <button onclick="startAnimation()">Start</button>
+    <button onclick="stopAnimation()">Stop</button>
+    <button onclick="resetAnimation()">Reset</button>
+  </div>
+
+  <div class="legend">
+    <span style="color: blue;">Blue = y₁</span> |
+    <span style="color: green;">Green = y₂</span> |
+    <span style="color: red;">Red = y₁ + y₂</span> |
+    <span style="color: purple;">Purple dashed = envelope</span>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    let animationId = null;
+    let t = 0;
+
+    // Parameters
+    const A = 40;
+    const k = 2 * Math.PI;          // same k for both waves
+    const omega = 8 * Math.PI;
+    const deltaOmega = 0.8 * Math.PI;
+
+    const xScale = 140;             // horizontal scaling
+    const timeScale = 0.03;         // speed of time evolution
+
+    const center1 = 90;             // y1 graph center
+    const center2 = 210;            // y2 graph center
+    const center3 = 380;            // resultant graph center
+
+    function drawAxes(yCenter, label) {
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 1;
+
+      // horizontal axis
+      ctx.beginPath();
+      ctx.moveTo(40, yCenter);
+      ctx.lineTo(canvas.width - 20, yCenter);
+      ctx.stroke();
+
+      // vertical axis
+      ctx.beginPath();
+      ctx.moveTo(40, yCenter - 60);
+      ctx.lineTo(40, yCenter + 60);
+      ctx.stroke();
+
+      // x-axis ticks
+      for (let i = 0; i <= 6; i++) {
+        const xVal = i * 0.5;
+        const px = 40 + xVal * xScale;
+        ctx.beginPath();
+        ctx.moveTo(px, yCenter - 4);
+        ctx.lineTo(px, yCenter + 4);
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(xVal.toFixed(1), px - 8, yCenter + 18);
+      }
+
+      // y labels
+      ctx.fillText("A", 12, yCenter - A + 4);
+      ctx.fillText("0", 12, yCenter + 4);
+      ctx.fillText("-A", 5, yCenter + A + 4);
+
+      // graph label
+      ctx.font = "16px Arial";
+      ctx.fillText(label, 820, yCenter - 35);
+    }
+
+    function drawResultAxes(yCenter, label) {
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 1;
+
+      // horizontal axis
+      ctx.beginPath();
+      ctx.moveTo(40, yCenter);
+      ctx.lineTo(canvas.width - 20, yCenter);
+      ctx.stroke();
+
+      // vertical axis
+      ctx.beginPath();
+      ctx.moveTo(40, yCenter - 110);
+      ctx.lineTo(40, yCenter + 110);
+      ctx.stroke();
+
+      // x-axis ticks
+      for (let i = 0; i <= 6; i++) {
+        const xVal = i * 0.5;
+        const px = 40 + xVal * xScale;
+        ctx.beginPath();
+        ctx.moveTo(px, yCenter - 4);
+        ctx.lineTo(px, yCenter + 4);
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(xVal.toFixed(1), px - 8, yCenter + 18);
+      }
+
+      ctx.fillText("2A", 5, yCenter - 2 * A + 4);
+      ctx.fillText("0", 12, yCenter + 4);
+      ctx.fillText("-2A", 0, yCenter + 2 * A + 4);
+
+      ctx.font = "16px Arial";
+      ctx.fillText(label, 770, yCenter - 85);
+    }
+
+    function drawWave(color, yCenter, waveFunc, lineWidth = 2) {
+      ctx.beginPath();
+      ctx.lineWidth = lineWidth;
+      ctx.strokeStyle = color;
+
+      let first = true;
+      for (let px = 40; px <= canvas.width - 20; px++) {
+        const x = (px - 40) / xScale;
+        const y = waveFunc(x, t);
+        const py = yCenter - y;
+
+        if (first) {
+          ctx.moveTo(px, py);
+          first = false;
+        } else {
+          ctx.lineTo(px, py);
+        }
+      }
+      ctx.stroke();
+    }
+
+    function drawEnvelope(yCenter) {
+      ctx.setLineDash([8, 6]);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "purple";
+
+      // upper envelope
+      ctx.beginPath();
+      let first = true;
+      for (let px = 40; px <= canvas.width - 20; px++) {
+        const amp = 2 * A * Math.cos((deltaOmega / 2) * t);
+        const py = yCenter - amp;
+        if (first) {
+          ctx.moveTo(px, py);
+          first = false;
+        } else {
+          ctx.lineTo(px, py);
+        }
+      }
+      ctx.stroke();
+
+      // lower envelope
+      ctx.beginPath();
+      first = true;
+      for (let px = 40; px <= canvas.width - 20; px++) {
+        const amp = 2 * A * Math.cos((deltaOmega / 2) * t);
+        const py = yCenter + amp;
+        if (first) {
+          ctx.moveTo(px, py);
+          first = false;
+        } else {
+          ctx.lineTo(px, py);
+        }
+      }
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+    }
+
+    function drawTextInfo() {
+      ctx.fillStyle = "black";
+      ctx.font = "16px Arial";
+
+      const fb = deltaOmega / (2 * Math.PI);
+      const Tb = 1 / fb;
+
+      ctx.fillText("Beat frequency: f_b = Δω / 2π = " + fb.toFixed(2), 60, 470);
+      ctx.fillText("Beat period: T_b = 2π / Δω = " + Tb.toFixed(2), 60, 495);
+      ctx.fillText("At x = 0, the amplitude changes slowly with time → beats", 420, 470);
+    }
+
+    function y1(x, time) {
+      return A * Math.sin(k * x - omega * time);
+    }
+
+    function y2(x, time) {
+      return A * Math.sin(k * x - (omega + deltaOmega) * time);
+    }
+
+    function ySum(x, time) {
+      return y1(x, time) + y2(x, time);
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.font = "14px Arial";
+
+      drawAxes(center1, "y₁(x,t)");
+      drawAxes(center2, "y₂(x,t)");
+      drawResultAxes(center3, "y(x,t) = y₁ + y₂");
+
+      drawWave("blue", center1, y1);
+      drawWave("green", center2, y2);
+      drawWave("red", center3, ySum, 2.5);
+      drawEnvelope(center3);
+
+      drawTextInfo();
+
+      t += timeScale;
+    }
+
+    function animate() {
+      render();
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function startAnimation() {
+      if (!animationId) {
+        animate();
+      }
+    }
+
+    function stopAnimation() {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+    }
+
+    function resetAnimation() {
+      stopAnimation();
+      t = 0;
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
