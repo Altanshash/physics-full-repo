@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Harmonic Wave (Numerical)</title>
+<style>
+  body { text-align: center; font-family: Arial; background: #f4f4f4; }
+  canvas { background: white; border: 1px solid black; }
+  button { margin: 10px; padding: 10px 20px; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<h2>Harmonic Wave (with numbers)</h2>
+
+<p>λ = 0.5 , v = 5</p>
+
+<canvas id="canvas" width="800" height="300"></canvas><br>
+
+<button onclick="start()">Start</button>
+<button onclick="stop()">Stop</button>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let t = 0;
+let animation;
+
+// REAL VALUES
+const A = 50;
+const k = 4 * Math.PI;
+const w = 20 * Math.PI;
+
+const scale = 200; // to fit screen
+const lambda = 0.5;
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.beginPath();
+
+  for (let px = 0; px < canvas.width; px++) {
+    let x = px / scale;
+    let y = A * Math.sin(k * x - w * t / 100);
+    ctx.lineTo(px, 150 - y);
+  }
+
+  ctx.strokeStyle = "blue";
+  ctx.stroke();
+
+  // x = 0
+  let y0 = A * Math.sin(-w * t / 100);
+  ctx.fillStyle = "red";
+  ctx.beginPath();
+  ctx.arc(0, 150 - y0, 5, 0, 2 * Math.PI);
+  ctx.fill();
+
+  // x = λ = 0.5
+  let pxLambda = lambda * scale;
+  let yLambda = A * Math.sin(k * lambda - w * t / 100);
+
+  ctx.fillStyle = "green";
+  ctx.beginPath();
+  ctx.arc(pxLambda, 150 - yLambda, 5, 0, 2 * Math.PI);
+  ctx.fill();
+
+  // text
+  ctx.fillStyle = "black";
+  ctx.fillText("x = 0", 10, 20);
+  ctx.fillText("x = 0.5 (λ)", pxLambda - 30, 20);
+
+  t += 1;
+}
+
+function start() {
+  if (!animation) {
+    animation = setInterval(draw, 30);
+  }
+}
+
+function stop() {
+  clearInterval(animation);
+  animation = null;
+}
+</script>
+
+</body>
+</html>
