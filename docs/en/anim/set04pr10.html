@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Double Pendulum Ensemble - Deterministic Chaos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f4f4f4;
+      margin: 20px;
+      color: #111;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+    }
+
+    .panel {
+      max-width: 1220px;
+      margin: 0 auto 15px auto;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input[type="range"] {
+      width: 220px;
+    }
+
+    button {
+      padding: 10px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      border: 1px solid #888;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    button:hover {
+      background: #eee;
+    }
+
+    canvas {
+      background: white;
+      border: 1px solid black;
+      margin-top: 15px;
+    }
+
+    .info {
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .legend {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="panel">
+    <h2>Problem 10 - Double Pendulum and Deterministic Chaos</h2>
+    <div><strong>Ensemble mode: 50 pendulums simultaneously</strong></div>
+
+    <div class="controls">
+      <label for="perturbSlider">Perturbation scale ε:</label>
+      <input type="range" id="perturbSlider" min="0.0001" max="0.01" step="0.0001" value="0.0010">
+      <span id="perturbValue">0.0010</span>
+
+      <button onclick="startAnimation()">Start</button>
+      <button onclick="stopAnimation()">Stop</button>
+      <button onclick="resetSimulation()">Reset</button>
+    </div>
+
+    <div class="info">
+      <div><strong>Parameters:</strong> m₁ = 1, m₂ = 1, l₁ = 1, l₂ = 1, g = 9.81, Δt = 0.01</div>
+      <div><strong>Current time:</strong> <span id="timeValue">0.00</span> s</div>
+      <div><strong>Energy drift (reference pendulum):</strong> <span id="energyDriftValue">0.000000</span></div>
+      <div><strong>Base initial conditions:</strong> θ₁(0) = 2.0, θ₂(0) = 1.4, ω₁(0) = 0, ω₂(0) = 0</div>
+    </div>
+
+    <div class="legend">
+      Different colors represent slightly different initial conditions.  
+      At first the pendulums move almost the same, then their trajectories diverge.
+    </div>
+  </div>
+
+  <canvas id="canvas" width="1220" height="860"></canvas>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const perturbSlider = document.getElementById("perturbSlider");
+    const perturbValue = document.getElementById("perturbValue");
+    const timeValue = document.getElementById("timeValue");
+    const energyDriftValue = document.getElementById("energyDriftValue");
+
+    // Physical parameters
+    const m1 = 1.0;
+    const m2 = 1.0;
+    const l1 = 1.0;
+    const l2 = 1.0;
+    const g = 9.81;
+
+    // Numerical parameters
+    const dt = 0.01;
+    const totalTime = 40;
+    const steps = Math.floor(totalTime / dt);
+    const ensembleSize = 50;
+
+    // Base initial conditions
+    const theta1_0 = 2.0;
+    const theta2_0 = 1.4;
+    const omega1_0 = 0.0;
+    const omega2_0 = 0.0;
+
+    let epsilon = parseFloat(perturbSlider.value);
+    let trajectories = [];
+    let animationIndex = 0;
+    let animationId = null;
+    let initialEnergy = 0;
+
+    function makeColor(i, n) {
+      const hue = (360 * i / n) % 360;
+      return `hsl(${hue}, 80%, 45%)`;
+    }
+
+    function energy(state) {
+      const { theta1, theta2, omega1, omega2 } = state;
+      const T =
+        0.5 * (m1 + m2) * l1 * l1 * omega1 * omega1 +
+        0.5 * m2 * l2 * l2 * omega2 * omega2 +
+        m2 * l1 * l2 * omega1 * omega2 * Math.cos(theta1 - theta2);
+
+      const V =
+        -(m1 + m2) * g * l1 * Math.cos(theta1) -
+        m2 * g * l2 * Math.cos(theta2);
+
+      return T + V;
+    }
+
+    function derivatives(state) {
+      const { theta1, theta2, omega1, omega2 } = state;
+      const delta = theta1 - theta2;
+      const sinDelta = Math.sin(delta);
+      const cosDelta = Math.cos(delta);
+
+      const denom1 = l1 * (m1 + m2 * sinDelta * sinDelta);
+      const denom2 = l2 * (m1 + m2 * sinDelta * sinDelta);
+
+      const dtheta1 = omega1;
+      const dtheta2 = omega2;
+
+      const domega1 =
+        (
+          -m2 * l1 * omega1 * omega1 * sinDelta * cosDelta +
+          m2 * g * Math.sin(theta2) * cosDelta -
+          m2 * l2 * omega2 * omega2 * sinDelta -
+          (m1 + m2) * g * Math.sin(theta1)
+        ) / denom1;
+
+      const domega2 =
+        (
+          (m1 + m2) * l1 * omega1 * omega1 * sinDelta +
+          (m1 + m2) * g * Math.sin(theta1) * cosDelta +
+          (m1 + m2) * l2 * omega2 * omega2 * sinDelta * cosDelta -
+          (m1 + m2) * g * Math.sin(theta2)
+        ) / denom2;
+
+      return { dtheta1, dtheta2, domega1, domega2 };
+    }
+
+    function addState(state, deriv, factor) {
+      return {
+        theta1: state.theta1 + factor * deriv.dtheta1,
+        theta2: state.theta2 + factor * deriv.dtheta2,
+        omega1: state.omega1 + factor * deriv.domega1,
+        omega2: state.omega2 + factor * deriv.domega2
+      };
+    }
+
+    function rk4Step(state) {
+      const k1 = derivatives(state);
+      const k2 = derivatives(addState(state, k1, dt / 2));
+      const k3 = derivatives(addState(state, k2, dt / 2));
+      const k4 = derivatives(addState(state, k3, dt));
+
+      return {
+        theta1: state.theta1 + (dt / 6) * (k1.dtheta1 + 2 * k2.dtheta1 + 2 * k3.dtheta1 + k4.dtheta1),
+        theta2: state.theta2 + (dt / 6) * (k1.dtheta2 + 2 * k2.dtheta2 + 2 * k3.dtheta2 + k4.dtheta2),
+        omega1: state.omega1 + (dt / 6) * (k1.domega1 + 2 * k2.domega1 + 2 * k3.domega1 + k4.domega1),
+        omega2: state.omega2 + (dt / 6) * (k1.domega2 + 2 * k2.domega2 + 2 * k3.domega2 + k4.domega2)
+      };
+    }
+
+    function stateToCoordinates(state) {
+      const x1 = l1 * Math.sin(state.theta1);
+      const y1 = -l1 * Math.cos(state.theta1);
+      const x2 = x1 + l2 * Math.sin(state.theta2);
+      const y2 = y1 - l2 * Math.cos(state.theta2);
+      return { x1, y1, x2, y2 };
+    }
+
+    function buildTrajectories() {
+      trajectories = [];
+
+      for (let j = 0; j < ensembleSize; j++) {
+        let state = {
+          theta1: theta1_0,
+          theta2: theta2_0 + j * epsilon,
+          omega1: omega1_0,
+          omega2: omega2_0
+        };
+
+        const path = [];
+        for (let i = 0; i <= steps; i++) {
+          path.push({
+            t: i * dt,
+            ...state,
+            ...stateToCoordinates(state),
+            E: energy(state)
+          });
+          state = rk4Step(state);
+        }
+
+        trajectories.push({
+          color: makeColor(j, ensembleSize),
+          path
+        });
+      }
+
+      initialEnergy = trajectories[0].path[0].E;
+    }
+
+    function drawAxes() {
+      ctx.fillStyle = "black";
+      ctx.font = "18px Arial";
+      ctx.fillText("Ensemble Animation", 220, 35);
+      ctx.fillText("Trajectories of Second Masses", 780, 35);
+      ctx.fillText("Energy Drift of Reference Pendulum", 420, 465);
+
+      ctx.font = "14px Arial";
+
+      // Left panel border
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(40, 60, 540, 360);
+
+      // Right panel border
+      ctx.strokeRect(640, 60, 540, 360);
+
+      // Bottom panel border
+      ctx.strokeRect(120, 490, 980, 300);
+    }
+
+    function drawPendulums(frameIndex) {
+      const originX = 310;
+      const originY = 120;
+      const scale = 110;
+
+      // faint origin
+      ctx.fillStyle = "black";
+      ctx.beginPath();
+      ctx.arc(originX, originY, 4, 0, 2 * Math.PI);
+      ctx.fill();
+
+      for (let j = 0; j < trajectories.length; j++) {
+        const p = trajectories[j].path[frameIndex];
+        const x1 = originX + p.x1 * scale;
+        const y1 = originY + p.y1 * scale;
+        const x2 = originX + p.x2 * scale;
+        const y2 = originY + p.y2 * scale;
+
+        ctx.strokeStyle = trajectories[j].color;
+        ctx.lineWidth = 1.1;
+
+        ctx.beginPath();
+        ctx.moveTo(originX, originY);
+        ctx.lineTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        ctx.fillStyle = trajectories[j].color;
+        ctx.beginPath();
+        ctx.arc(x2, y2, 2.5, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
+
+    function drawTrajectories(frameIndex) {
+      const left = 640;
+      const top = 60;
+      const width = 540;
+      const height = 360;
+      const centerX = left + width / 2;
+      const centerY = top + 100;
+      const scale = 70;
+
+      for (let j = 0; j < trajectories.length; j++) {
+        const traj = trajectories[j];
+        ctx.strokeStyle = traj.color;
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+        for (let i = 0; i <= frameIndex; i += 2) {
+          const p = traj.path[i];
+          const px = centerX + p.x2 * scale;
+          const py = centerY + p.y2 * scale;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+
+        const current = traj.path[frameIndex];
+        const cx = centerX + current.x2 * scale;
+        const cy = centerY + current.y2 * scale;
+
+        ctx.fillStyle = traj.color;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 2.2, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
+
+    function drawEnergyGraph(frameIndex) {
+      const left = 120;
+      const top = 490;
+      const width = 980;
+      const height = 300;
+      const bottom = top + height;
+      const centerY = top + height / 2;
+
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 1;
+
+      // axes
+      ctx.beginPath();
+      ctx.moveTo(left, centerY);
+      ctx.lineTo(left + width, centerY);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(left, top + 20);
+      ctx.lineTo(left, bottom - 20);
+      ctx.stroke();
+
+      // x ticks
+      ctx.fillStyle = "black";
+      ctx.font = "14px Arial";
+      for (let i = 0; i <= 8; i++) {
+        const px = left + i * width / 8;
+        const tLabel = (i * totalTime / 8).toFixed(0);
+        ctx.beginPath();
+        ctx.moveTo(px, centerY - 4);
+        ctx.lineTo(px, centerY + 4);
+        ctx.stroke();
+        ctx.fillText(tLabel, px - 5, centerY + 18);
+      }
+
+      ctx.fillText("t", left + width + 8, centerY + 4);
+      ctx.fillText("ΔE", left - 28, top + 18);
+
+      // reference pendulum energy drift
+      ctx.strokeStyle = "blue";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      let first = true;
+      const yScale = 2000; // visual scaling of small drift
+
+      for (let i = 0; i <= frameIndex; i++) {
+        const p = trajectories[0].path[i];
+        const drift = p.E - initialEnergy;
+        const px = left + (p.t / totalTime) * width;
+        const py = centerY - drift * yScale;
+
+        if (first) {
+          ctx.moveTo(px, py);
+          first = false;
+        } else {
+          ctx.lineTo(px, py);
+        }
+      }
+      ctx.stroke();
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawAxes();
+
+      const frameIndex = Math.min(animationIndex, steps);
+
+      drawPendulums(frameIndex);
+      drawTrajectories(frameIndex);
+      drawEnergyGraph(frameIndex);
+
+      const current = trajectories[0].path[frameIndex];
+      const drift = current.E - initialEnergy;
+
+      timeValue.textContent = current.t.toFixed(2);
+      energyDriftValue.textContent = drift.toFixed(6);
+
+      ctx.fillStyle = "black";
+      ctx.font = "14px Arial";
+      ctx.fillText("All pendulums start almost together", 90, 390);
+      ctx.fillText("Then tiny perturbations produce visible divergence", 90, 412);
+      ctx.fillText("Colored traces show the paths of the second masses", 720, 390);
+    }
+
+    function animate() {
+      render();
+
+      if (animationIndex < steps) {
+        animationIndex += 1;
+        animationId = requestAnimationFrame(animate);
+      } else {
+        animationId = null;
+      }
+    }
+
+    function startAnimation() {
+      if (!animationId) {
+        animationId = requestAnimationFrame(animate);
+      }
+    }
+
+    function stopAnimation() {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+    }
+
+    function resetSimulation() {
+      stopAnimation();
+      epsilon = parseFloat(perturbSlider.value);
+      perturbValue.textContent = epsilon.toFixed(4);
+      buildTrajectories();
+      animationIndex = 0;
+      render();
+    }
+
+    perturbSlider.addEventListener("input", () => {
+      epsilon = parseFloat(perturbSlider.value);
+      perturbValue.textContent = epsilon.toFixed(4);
+      resetSimulation();
+    });
+
+    resetSimulation();
+  </script>
+</body>
+</html>
