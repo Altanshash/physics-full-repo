@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Forced Oscillator and Resonance</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f4f4f4;
+      margin: 20px;
+      color: #111;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+    }
+
+    .panel {
+      max-width: 1180px;
+      margin: 0 auto 15px auto;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input[type="range"] {
+      width: 260px;
+    }
+
+    button {
+      padding: 10px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      border: 1px solid #888;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    button:hover {
+      background: #eee;
+    }
+
+    canvas {
+      background: white;
+      border: 1px solid black;
+      margin-top: 15px;
+    }
+
+    .info {
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .equation {
+      font-size: 18px;
+      margin: 8px 0 0 0;
+    }
+
+    .legend {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="panel">
+    <h2>Problem 7 - Forced Oscillator and Resonance</h2>
+    <div class="equation">
+      <strong>m x'' + b x' + k x = F<sub>0</sub> cos(Ωt)</strong>
+    </div>
+
+    <div class="controls">
+      <label for="omegaSlider">Forcing frequency Ω:</label>
+      <input type="range" id="omegaSlider" min="0.2" max="4.0" step="0.01" value="1.4">
+      <span id="omegaValue">1.40</span>
+
+      <button onclick="startAnimation()">Start</button>
+      <button onclick="stopAnimation()">Stop</button>
+      <button onclick="resetAnimation()">Reset</button>
+    </div>
+
+    <div class="info">
+      <div><strong>Natural frequency:</strong> <span id="naturalFreq"></span></div>
+      <div><strong>Steady-state amplitude A(Ω):</strong> <span id="ampValue"></span></div>
+      <div><strong>Phase shift φ:</strong> <span id="phaseValue"></span></div>
+      <div><strong>Current regime:</strong> <span id="regimeText"></span></div>
+      <div><strong>Parameters:</strong> m = <span id="mValue"></span>, b = <span id="bValue"></span>, k = <span id="kValue"></span>, F₀ = <span id="f0Value"></span></div>
+    </div>
+
+    <div class="legend">
+      <span style="color: blue;">Blue = displacement x(t)</span> |
+      <span style="color: red;">Red = driving force F₀cos(Ωt)</span> |
+      <span style="color: green;">Green = resonance curve</span> |
+      <span style="color: purple;">Purple dot = current Ω</span>
+    </div>
+  </div>
+
+  <canvas id="canvas" width="1180" height="760"></canvas>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const omegaSlider = document.getElementById("omegaSlider");
+    const omegaValue = document.getElementById("omegaValue");
+    const naturalFreq = document.getElementById("naturalFreq");
+    const ampValue = document.getElementById("ampValue");
+    const phaseValue = document.getElementById("phaseValue");
+    const regimeText = document.getElementById("regimeText");
+    const mValue = document.getElementById("mValue");
+    const bValue = document.getElementById("bValue");
+    const kValue = document.getElementById("kValue");
+    const f0Value = document.getElementById("f0Value");
+
+    // Fixed parameters
+    const m = 1.0;
+    const b = 0.4;
+    const k = 4.0;
+    const F0 = 1.0;
+
+    // Initial conditions
+    const x0 = 0.0;
+    const v0 = 0.0;
+
+    // Simulation settings
+    const dt = 0.02;
+    const tMax = 60;
+    const steps = Math.floor(tMax / dt);
+
+    let Omega = parseFloat(omegaSlider.value);
+    let solution = [];
+    let animationIndex = 0;
+    let animationId = null;
+
+    const omega0 = Math.sqrt(k / m);
+
+    mValue.textContent = m.toFixed(1);
+    bValue.textContent = b.toFixed(1);
+    kValue.textContent = k.toFixed(1);
+    f0Value.textContent = F0.toFixed(1);
+    naturalFreq.textContent = omega0.toFixed(2);
+
+    function amplitudeFormula(Om) {
+      return F0 / Math.sqrt(Math.pow(k - m * Om * Om, 2) + Math.pow(b * Om, 2));
+    }
+
+    function phaseFormula(Om) {
+      return Math.atan2(b * Om, k - m * Om * Om);
+    }
+
+    function classifyRegime(Om) {
+      const diff = Math.abs(Om - omega0);
+      if (diff < 0.15) return "Near resonance";
+      if (Om < omega0) return "Below resonance";
+      return "Above resonance";
+    }
+
+    function derivatives(t, x, v) {
+      return {
+        dxdt: v,
+        dvdt: (F0 * Math.cos(Omega * t) - b * v - k * x) / m
+      };
+    }
+
+    function solveRK4() {
+      solution = [];
+
+      let t = 0;
+      let x = x0;
+      let v = v0;
+
+      solution.push({
+        t,
+        x,
+        v,
+        force: F0 * Math.cos(Omega * t)
+      });
+
+      for (let i = 0; i < steps; i++) {
+        const k1 = derivatives(t, x, v);
+
+        const k2 = derivatives(
+          t + dt / 2,
+          x + dt * k1.dxdt / 2,
+          v + dt * k1.dvdt / 2
+        );
+
+        const k3 = derivatives(
+          t + dt / 2,
+          x + dt * k2.dxdt / 2,
+          v + dt * k2.dvdt / 2
+        );
+
+        const k4 = derivatives(
+          t + dt,
+          x + dt * k3.dxdt,
+          v + dt * k3.dvdt
+        );
+
+        x = x + (dt / 6) * (k1.dxdt + 2 * k2.dxdt + 2 * k3.dxdt + k4.dxdt);
+        v = v + (dt / 6) * (k1.dvdt + 2 * k2.dvdt + 2 * k3.dvdt + k4.dvdt);
+        t = t + dt;
+
+        solution.push({
+          t,
+          x,
+          v,
+          force: F0 * Math.cos(Omega * t)
+        });
+      }
+    }
+
+    function drawAxes() {
+      ctx.strokeStyle = "black";
+      ctx.fillStyle = "black";
+      ctx.lineWidth = 1;
+      ctx.font = "14px Arial";
+
+      // Top graph: x(t) and force
+      const left1 = 70;
+      const right1 = 1130;
+      const top1 = 60;
+      const bottom1 = 280;
+      const centerY1 = (top1 + bottom1) / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(left1, centerY1);
+      ctx.lineTo(right1, centerY1);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(left1, top1);
+      ctx.lineTo(left1, bottom1);
+      ctx.stroke();
+
+      for (let i = 0; i <= 10; i++) {
+        const px = left1 + i * (right1 - left1) / 10;
+        const tLabel = (i * tMax / 10).toFixed(0);
+
+        ctx.beginPath();
+        ctx.moveTo(px, centerY1 - 4);
+        ctx.lineTo(px, centerY1 + 4);
+        ctx.stroke();
+
+        ctx.fillText(tLabel, px - 6, centerY1 + 20);
+      }
+
+      ctx.fillText("x, F", 20, top1 + 10);
+      ctx.fillText("t", right1 + 8, centerY1 + 5);
+      ctx.font = "18px Arial";
+      ctx.fillText("Time Response x(t) and Driving Force", 410, 35);
+
+      // Middle graph: phase portrait
+      const left2 = 70;
+      const right2 = 550;
+      const top2 = 380;
+      const bottom2 = 700;
+      const centerX2 = (left2 + right2) / 2;
+      const centerY2 = (top2 + bottom2) / 2;
+
+      ctx.strokeStyle = "black";
+      ctx.font = "14px Arial";
+
+      ctx.beginPath();
+      ctx.moveTo(left2, centerY2);
+      ctx.lineTo(right2, centerY2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(centerX2, top2);
+      ctx.lineTo(centerX2, bottom2);
+      ctx.stroke();
+
+      ctx.fillText("x", right2 + 8, centerY2 + 5);
+      ctx.fillText("v", centerX2 + 8, top2 - 6);
+
+      ctx.font = "18px Arial";
+      ctx.fillText("Phase Portrait", 220, 355);
+
+      // Right graph: resonance curve
+      const left3 = 650;
+      const right3 = 1130;
+      const top3 = 380;
+      const bottom3 = 700;
+
+      ctx.beginPath();
+      ctx.moveTo(left3, bottom3);
+      ctx.lineTo(right3, bottom3);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(left3, top3);
+      ctx.lineTo(left3, bottom3);
+      ctx.stroke();
+
+      for (let i = 0; i <= 6; i++) {
+        const Om = 0.5 + i * 0.5;
+        const px = left3 + ((Om - 0.2) / (4.0 - 0.2)) * (right3 - left3);
+
+        ctx.beginPath();
+        ctx.moveTo(px, bottom3 - 4);
+        ctx.lineTo(px, bottom3 + 4);
+        ctx.stroke();
+
+        ctx.fillText(Om.toFixed(1), px - 8, bottom3 + 20);
+      }
+
+      ctx.fillText("Ω", right3 + 8, bottom3 + 5);
+      ctx.fillText("A", left3 - 20, top3 + 5);
+
+      ctx.font = "18px Arial";
+      ctx.fillText("Resonance Curve A(Ω)", 810, 355);
+    }
+
+    function drawTimeResponse() {
+      const left = 70;
+      const right = 1130;
+      const top = 60;
+      const bottom = 280;
+      const centerY = (top + bottom) / 2;
+      const xScale = (right - left) / tMax;
+      const yScale = 65;
+
+      // displacement
+      ctx.beginPath();
+      ctx.strokeStyle = "blue";
+      ctx.lineWidth = 2;
+
+      for (let i = 0; i <= animationIndex; i++) {
+        const p = solution[i];
+        const px = left + p.t * xScale;
+        const py = centerY - p.x * yScale;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // driving force
+      ctx.beginPath();
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 1.8;
+
+      for (let i = 0; i <= animationIndex; i++) {
+        const p = solution[i];
+        const px = left + p.t * xScale;
+        const py = centerY - p.force * yScale * 0.7;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // current point on x(t)
+      if (solution.length > 0) {
+        const p = solution[Math.min(animationIndex, solution.length - 1)];
+        const px = left + p.t * xScale;
+        const py = centerY - p.x * yScale;
+
+        ctx.fillStyle = "blue";
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
+
+    function drawPhasePortrait() {
+      const left = 70;
+      const right = 550;
+      const top = 380;
+      const bottom = 700;
+      const centerX = (left + right) / 2;
+      const centerY = (top + bottom) / 2;
+      const xScale = 95;
+      const vScale = 55;
+
+      ctx.beginPath();
+      ctx.strokeStyle = "orange";
+      ctx.lineWidth = 2;
+
+      for (let i = 0; i <= animationIndex; i++) {
+        const p = solution[i];
+        const px = centerX + p.x * xScale;
+        const py = centerY - p.v * vScale;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      if (solution.length > 0) {
+        const p = solution[Math.min(animationIndex, solution.length - 1)];
+        const px = centerX + p.x * xScale;
+        const py = centerY - p.v * vScale;
+
+        ctx.fillStyle = "orange";
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
+
+    function drawResonanceCurve() {
+      const left = 650;
+      const right = 1130;
+      const top = 380;
+      const bottom = 700;
+      const maxA = 3.2;
+
+      ctx.beginPath();
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 2.2;
+
+      let first = true;
+      for (let Om = 0.2; Om <= 4.0; Om += 0.01) {
+        const A = amplitudeFormula(Om);
+        const px = left + ((Om - 0.2) / (4.0 - 0.2)) * (right - left);
+        const py = bottom - (Math.min(A, maxA) / maxA) * (bottom - top - 20);
+
+        if (first) {
+          ctx.moveTo(px, py);
+          first = false;
+        } else {
+          ctx.lineTo(px, py);
+        }
+      }
+      ctx.stroke();
+
+      // natural frequency line
+      const px0 = left + ((omega0 - 0.2) / (4.0 - 0.2)) * (right - left);
+      ctx.setLineDash([6, 6]);
+      ctx.strokeStyle = "#666";
+      ctx.beginPath();
+      ctx.moveTo(px0, top);
+      ctx.lineTo(px0, bottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // current Omega point
+      const currentA = amplitudeFormula(Omega);
+      const currentPx = left + ((Omega - 0.2) / (4.0 - 0.2)) * (right - left);
+      const currentPy = bottom - (Math.min(currentA, maxA) / maxA) * (bottom - top - 20);
+
+      ctx.fillStyle = "purple";
+      ctx.beginPath();
+      ctx.arc(currentPx, currentPy, 6, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.fillStyle = "black";
+      ctx.font = "14px Arial";
+      ctx.fillText("ω₀", px0 + 6, top + 18);
+    }
+
+    function drawInfo() {
+      ctx.fillStyle = "black";
+      ctx.font = "16px Arial";
+
+      const p = solution[Math.min(animationIndex, solution.length - 1)] || { t: 0, x: 0, v: 0 };
+      ctx.fillText(`Current time: ${p.t.toFixed(2)} s`, 865, 35);
+      ctx.fillText(`x = ${p.x.toFixed(3)}`, 90, 730);
+      ctx.fillText(`v = ${p.v.toFixed(3)}`, 230, 730);
+      ctx.fillText(`Ω = ${Omega.toFixed(2)}`, 720, 730);
+      ctx.fillText(`A(Ω) = ${amplitudeFormula(Omega).toFixed(3)}`, 840, 730);
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawAxes();
+      drawTimeResponse();
+      drawPhasePortrait();
+      drawResonanceCurve();
+      drawInfo();
+    }
+
+    function updateDisplayedValues() {
+      omegaValue.textContent = Omega.toFixed(2);
+      const A = amplitudeFormula(Omega);
+      const phi = phaseFormula(Omega);
+
+      ampValue.textContent = A.toFixed(4);
+      phaseValue.textContent = `${phi.toFixed(4)} rad`;
+      regimeText.textContent = classifyRegime(Omega);
+    }
+
+    function updateSystem() {
+      solveRK4();
+      animationIndex = 0;
+      updateDisplayedValues();
+      render();
+    }
+
+    function animate() {
+      render();
+
+      if (animationIndex < solution.length - 1) {
+        animationIndex += 2;
+        animationId = requestAnimationFrame(animate);
+      } else {
+        animationId = null;
+      }
+    }
+
+    function startAnimation() {
+      if (!animationId) {
+        animationId = requestAnimationFrame(animate);
+      }
+    }
+
+    function stopAnimation() {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+    }
+
+    function resetAnimation() {
+      stopAnimation();
+      animationIndex = 0;
+      render();
+    }
+
+    omegaSlider.addEventListener("input", () => {
+      stopAnimation();
+      Omega = parseFloat(omegaSlider.value);
+      updateSystem();
+    });
+
+    updateSystem();
+  </script>
+</body>
+</html>
