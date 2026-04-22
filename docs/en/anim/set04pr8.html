@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Two Coupled Springs</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f4f4f4;
+      margin: 20px;
+      color: #111;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+    }
+
+    .panel {
+      max-width: 1180px;
+      margin: 0 auto 15px auto;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    button {
+      padding: 10px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      border: 1px solid #888;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    button:hover {
+      background: #eee;
+    }
+
+    canvas {
+      background: white;
+      border: 1px solid black;
+      margin-top: 15px;
+    }
+
+    .info {
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .legend {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="panel">
+    <h2>Problem 8 - Two Coupled Springs</h2>
+    <div><strong>Two masses connected by three springs</strong></div>
+
+    <div class="controls">
+      <button onclick="startAnimation()">Start</button>
+      <button onclick="stopAnimation()">Stop</button>
+      <button onclick="resetAnimation()">Reset</button>
+    </div>
+
+    <div class="info">
+      <div><strong>Parameters:</strong> m₁ = 1.0, m₂ = 1.0, k₁ = 4.0, k₂ = 1.0, k₃ = 4.0</div>
+      <div><strong>Natural frequencies:</strong> ω₁ = <span id="omega1Value"></span>, ω₂ = <span id="omega2Value"></span></div>
+      <div><strong>Current time:</strong> <span id="timeValue">0.00</span> s</div>
+      <div><strong>Displacements:</strong> x₁ = <span id="x1Value">0.000</span>, x₂ = <span id="x2Value">0.000</span></div>
+    </div>
+
+    <div class="legend">
+      <span style="color: blue;">Blue = x₁(t)</span> |
+      <span style="color: red;">Red = x₂(t)</span> |
+      <span style="color: green;">Green = energy exchange</span>
+    </div>
+  </div>
+
+  <canvas id="canvas" width="1180" height="760"></canvas>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const omega1Value = document.getElementById("omega1Value");
+    const omega2Value = document.getElementById("omega2Value");
+    const timeValue = document.getElementById("timeValue");
+    const x1Value = document.getElementById("x1Value");
+    const x2Value = document.getElementById("x2Value");
+
+    // Parameters
+    const m1 = 1.0;
+    const m2 = 1.0;
+    const k1 = 4.0;
+    const k2 = 1.0;
+    const k3 = 4.0;
+
+    // Initial conditions
+    const x1_0 = 0.8;
+    const x2_0 = 0.0;
+    const v1_0 = 0.0;
+    const v2_0 = 0.0;
+
+    // Simulation
+    const dt = 0.02;
+    const tMax = 60;
+    const steps = Math.floor(tMax / dt);
+
+    let solution = [];
+    let animationIndex = 0;
+    let animationId = null;
+
+    const omega1 = Math.sqrt(k1 / m1);
+    const omega2 = Math.sqrt((k1 + 2 * k2) / m1);
+
+    omega1Value.textContent = omega1.toFixed(3);
+    omega2Value.textContent = omega2.toFixed(3);
+
+    function derivatives(x1, x2, v1, v2) {
+      return {
+        dx1dt: v1,
+        dx2dt: v2,
+        dv1dt: (-(k1 + k2) * x1 + k2 * x2) / m1,
+        dv2dt: (k2 * x1 - (k2 + k3) * x2) / m2
+      };
+    }
+
+    function totalEnergy(x1, x2, v1, v2) {
+      const T = 0.5 * m1 * v1 * v1 + 0.5 * m2 * v2 * v2;
+      const V = 0.5 * k1 * x1 * x1 + 0.5 * k2 * (x2 - x1) * (x2 - x1) + 0.5 * k3 * x2 * x2;
+      return T + V;
+    }
+
+    function individualEnergy1(x1, v1) {
+      return 0.5 * m1 * v1 * v1 + 0.5 * k1 * x1 * x1;
+    }
+
+    function individualEnergy2(x2, v2) {
+      return 0.5 * m2 * v2 * v2 + 0.5 * k3 * x2 * x2;
+    }
+
+    function solveRK4() {
+      solution = [];
+
+      let t = 0;
+      let x1 = x1_0;
+      let x2 = x2_0;
+      let v1 = v1_0;
+      let v2 = v2_0;
+
+      solution.push({
+        t, x1, x2, v1, v2,
+        E: totalEnergy(x1, x2, v1, v2),
+        E1: individualEnergy1(x1, v1),
+        E2: individualEnergy2(x2, v2)
+      });
+
+      for (let i = 0; i < steps; i++) {
+        const k_1 = derivatives(x1, x2, v1, v2);
+
+        const k_2 = derivatives(
+          x1 + 0.5 * dt * k_1.dx1dt,
+          x2 + 0.5 * dt * k_1.dx2dt,
+          v1 + 0.5 * dt * k_1.dv1dt,
+          v2 + 0.5 * dt * k_1.dv2dt
+        );
+
+        const k_3 = derivatives(
+          x1 + 0.5 * dt * k_2.dx1dt,
+          x2 + 0.5 * dt * k_2.dx2dt,
+          v1 + 0.5 * dt * k_2.dv1dt,
+          v2 + 0.5 * dt * k_2.dv2dt
+        );
+
+        const k_4 = derivatives(
+          x1 + dt * k_3.dx1dt,
+          x2 + dt * k_3.dx2dt,
+          v1 + dt * k_3.dv1dt,
+          v2 + dt * k_3.dv2dt
+        );
+
+        x1 += (dt / 6) * (k_1.dx1dt + 2 * k_2.dx1dt + 2 * k_3.dx1dt + k_4.dx1dt);
+        x2 += (dt / 6) * (k_1.dx2dt + 2 * k_2.dx2dt + 2 * k_3.dx2dt + k_4.dx2dt);
+        v1 += (dt / 6) * (k_1.dv1dt + 2 * k_2.dv1dt + 2 * k_3.dv1dt + k_4.dv1dt);
+        v2 += (dt / 6) * (k_1.dv2dt + 2 * k_2.dv2dt + 2 * k_3.dv2dt + k_4.dv2dt);
+        t += dt;
+
+        solution.push({
+          t, x1, x2, v1, v2,
+          E: totalEnergy(x1, x2, v1, v2),
+          E1: individualEnergy1(x1, v1),
+          E2: individualEnergy2(x2, v2)
+        });
+      }
+    }
+
+    function drawSpring(xStart, xEnd, y, coils = 10, amplitude = 12) {
+      ctx.beginPath();
+      ctx.moveTo(xStart, y);
+
+      const length = xEnd - xStart;
+      const segment = length / (coils * 2);
+
+      let x = xStart;
+      for (let i = 0; i < coils * 2; i++) {
+        x += segment;
+        const yy = (i % 2 === 0) ? y - amplitude : y + amplitude;
+        ctx.lineTo(x, yy);
+      }
+
+      ctx.lineTo(xEnd, y);
+      ctx.stroke();
+    }
+
+    function drawMechanicalSystem(p) {
+      const y = 120;
+      const leftWall = 80;
+      const rightWall = 1080;
+
+      const scale = 120;
+      const eq1 = 380;
+      const eq2 = 760;
+
+      const mass1X = eq1 + p.x1 * scale;
+      const mass2X = eq2 + p.x2 * scale;
+
+      // Walls
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(leftWall, 60);
+      ctx.lineTo(leftWall, 180);
+      ctx.moveTo(rightWall, 60);
+      ctx.lineTo(rightWall, 180);
+      ctx.stroke();
+
+      // Springs
+      ctx.strokeStyle = "#555";
+      ctx.lineWidth = 2;
+      drawSpring(leftWall, mass1X - 35, y);
+      drawSpring(mass1X + 35, mass2X - 35, y);
+      drawSpring(mass2X + 35, rightWall, y);
+
+      // Masses
+      ctx.fillStyle = "#4a90e2";
+      ctx.fillRect(mass1X - 35, y - 25, 70, 50);
+
+      ctx.fillStyle = "#e94e4e";
+      ctx.fillRect(mass2X - 35, y - 25, 70, 50);
+
+      // Labels
+      ctx.fillStyle = "black";
+      ctx.font = "16px Arial";
+      ctx.fillText("m₁", mass1X - 10, y + 5);
+      ctx.fillText("m₂", mass2X - 10, y + 5);
+
+      ctx.fillText("k₁", (leftWall + mass1X - 35) / 2 - 10, y - 30);
+      ctx.fillText("k₂", (mass1X + mass2X) / 2 - 10, y - 30);
+      ctx.fillText("k₃", (mass2X + 35 + rightWall) / 2 - 10, y - 30);
+
+      ctx.font = "18px Arial";
+      ctx.fillText("Animation of the Motion of Both Masses", 420, 35);
+    }
+
+    function drawAxes() {
+      ctx.strokeStyle = "black";
+      ctx.fillStyle = "black";
+      ctx.lineWidth = 1;
+      ctx.font = "14px Arial";
+
+      // x1 and x2 graph
+      const left1 = 70;
+      const right1 = 1130;
+      const top1 = 240;
+      const bottom1 = 470;
+      const centerY1 = (top1 + bottom1) / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(left1, centerY1);
+      ctx.lineTo(right1, centerY1);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(left1, top1);
+      ctx.lineTo(left1, bottom1);
+      ctx.stroke();
+
+      for (let i = 0; i <= 10; i++) {
+        const px = left1 + i * (right1 - left1) / 10;
+        const tLabel = (i * tMax / 10).toFixed(0);
+
+        ctx.beginPath();
+        ctx.moveTo(px, centerY1 - 4);
+        ctx.lineTo(px, centerY1 + 4);
+        ctx.stroke();
+
+        ctx.fillText(tLabel, px - 6, centerY1 + 20);
+      }
+
+      ctx.font = "18px Arial";
+      ctx.fillText("Displacements x₁(t) and x₂(t)", 430, 215);
+      ctx.font = "14px Arial";
+      ctx.fillText("x", 25, top1 + 10);
+      ctx.fillText("t", right1 + 8, centerY1 + 5);
+
+      // Energy graph
+      const left2 = 70;
+      const right2 = 1130;
+      const top2 = 530;
+      const bottom2 = 730;
+      const centerY2 = bottom2;
+
+      ctx.beginPath();
+      ctx.moveTo(left2, bottom2);
+      ctx.lineTo(right2, bottom2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(left2, top2);
+      ctx.lineTo(left2, bottom2);
+      ctx.stroke();
+
+      for (let i = 0; i <= 10; i++) {
+        const px = left2 + i * (right2 - left2) / 10;
+        const tLabel = (i * tMax / 10).toFixed(0);
+
+        ctx.beginPath();
+        ctx.moveTo(px, bottom2 - 4);
+        ctx.lineTo(px, bottom2 + 4);
+        ctx.stroke();
+
+        ctx.fillText(tLabel, px - 6, bottom2 + 20);
+      }
+
+      ctx.font = "18px Arial";
+      ctx.fillText("Energy Exchange", 510, 505);
+      ctx.font = "14px Arial";
+      ctx.fillText("E", 25, top2 + 10);
+      ctx.fillText("t", right2 + 8, bottom2 + 5);
+    }
+
+    function drawDisplacementGraph() {
+      const left = 70;
+      const right = 1130;
+      const top = 240;
+      const bottom = 470;
+      const centerY = (top + bottom) / 2;
+      const xScale = (right - left) / tMax;
+      const yScale = 90;
+
+      // x1(t)
+      ctx.beginPath();
+      ctx.strokeStyle = "blue";
+      ctx.lineWidth = 2;
+
+      for (let i = 0; i <= animationIndex; i++) {
+        const p = solution[i];
+        const px = left + p.t * xScale;
+        const py = centerY - p.x1 * yScale;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // x2(t)
+      ctx.beginPath();
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 2;
+
+      for (let i = 0; i <= animationIndex; i++) {
+        const p = solution[i];
+        const px = left + p.t * xScale;
+        const py = centerY - p.x2 * yScale;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+
+    function drawEnergyGraph() {
+      const left = 70;
+      const right = 1130;
+      const top = 530;
+      const bottom = 730;
+      const xScale = (right - left) / tMax;
+
+      let maxE = 0;
+      for (const p of solution) {
+        if (p.E1 > maxE) maxE = p.E1;
+        if (p.E2 > maxE) maxE = p.E2;
+      }
+      maxE *= 1.1;
+
+      // E1
+      ctx.beginPath();
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 2;
+
+      for (let i = 0; i <= animationIndex; i++) {
+        const p = solution[i];
+        const px = left + p.t * xScale;
+        const py = bottom - (p.E1 / maxE) * (bottom - top);
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // E2
+      ctx.beginPath();
+      ctx.strokeStyle = "purple";
+      ctx.lineWidth = 2;
+
+      for (let i = 0; i <= animationIndex; i++) {
+        const p = solution[i];
+        const px = left + p.t * xScale;
+        const py = bottom - (p.E2 / maxE) * (bottom - top);
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+
+    function drawCurrentInfo(p) {
+      timeValue.textContent = p.t.toFixed(2);
+      x1Value.textContent = p.x1.toFixed(3);
+      x2Value.textContent = p.x2.toFixed(3);
+
+      ctx.fillStyle = "black";
+      ctx.font = "15px Arial";
+      ctx.fillText("Green = energy of mass 1", 860, 520);
+      ctx.fillText("Purple = energy of mass 2", 860, 545);
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const p = solution[Math.min(animationIndex, solution.length - 1)] || {
+        t: 0, x1: x1_0, x2: x2_0, v1: v1_0, v2: v2_0, E1: 0, E2: 0
+      };
+
+      drawMechanicalSystem(p);
+      drawAxes();
+      drawDisplacementGraph();
+      drawEnergyGraph();
+      drawCurrentInfo(p);
+    }
+
+    function animate() {
+      render();
+
+      if (animationIndex < solution.length - 1) {
+        animationIndex += 2;
+        animationId = requestAnimationFrame(animate);
+      } else {
+        animationId = null;
+      }
+    }
+
+    function startAnimation() {
+      if (!animationId) {
+        animationId = requestAnimationFrame(animate);
+      }
+    }
+
+    function stopAnimation() {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+    }
+
+    function resetAnimation() {
+      stopAnimation();
+      animationIndex = 0;
+      render();
+    }
+
+    solveRK4();
+    render();
+  </script>
+</body>
+</html>
