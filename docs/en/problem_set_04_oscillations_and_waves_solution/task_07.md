@@ -21,18 +21,12 @@ We need to:
 
 ## Solution
 
-### 1. Analytical solution
+### 1. General form of the solution
 
-The equation of motion is
+The total solution of the forced oscillator is the sum of:
 
-$$
-m\frac{d^2x}{dt^2} + b\frac{dx}{dt} + kx = F_0\cos(\Omega t)
-$$
-
-The total solution is the sum of:
-
-1. the **homogeneous solution** $x_h(t)$
-2. the **particular solution** $x_p(t)$
+1. the **homogeneous solution** $x_h(t)$  
+2. the **particular solution** $x_p(t)$  
 
 So,
 
@@ -40,17 +34,50 @@ $$
 x(t) = x_h(t) + x_p(t)
 $$
 
+The homogeneous part describes the transient motion.  
+The particular part describes the steady-state forced motion.
+
 ---
 
 ### 2. Homogeneous solution
 
-The homogeneous equation is
+First, solve the homogeneous equation:
 
 $$
 m\frac{d^2x}{dt^2} + b\frac{dx}{dt} + kx = 0
 $$
 
-Its characteristic equation is
+Assume a solution of the form
+
+$$
+x_h(t) = e^{rt}
+$$
+
+Then
+
+$$
+\frac{dx_h}{dt} = re^{rt}
+$$
+
+and
+
+$$
+\frac{d^2x_h}{dt^2} = r^2e^{rt}
+$$
+
+Substitute into the homogeneous equation:
+
+$$
+mr^2e^{rt} + bre^{rt} + ke^{rt} = 0
+$$
+
+Factor out $e^{rt}$:
+
+$$
+e^{rt}(mr^2 + br + k) = 0
+$$
+
+Since $e^{rt} \neq 0$, we get the characteristic equation
 
 $$
 mr^2 + br + k = 0
@@ -62,56 +89,60 @@ $$
 r_{1,2} = \frac{-b \pm \sqrt{b^2 - 4mk}}{2m}
 $$
 
-So the transient part of motion is the same as for the damped oscillator:
-
-- **Underdamped**: oscillatory decay
-- **Critically damped**: fastest non-oscillatory decay
-- **Overdamped**: slow non-oscillatory decay
-
-This part disappears with time because of damping.
+So the homogeneous solution is the same as in the damped oscillator problem.
 
 ---
 
 ### 3. Particular solution
 
-To find the steady-state solution, assume
+Assume a particular solution of the form
 
 $$
 x_p(t) = C\cos(\Omega t) + D\sin(\Omega t)
 $$
 
-Then
+First derivative:
 
 $$
 \frac{dx_p}{dt} = -C\Omega\sin(\Omega t) + D\Omega\cos(\Omega t)
 $$
 
+Second derivative:
+
 $$
 \frac{d^2x_p}{dt^2} = -C\Omega^2\cos(\Omega t) - D\Omega^2\sin(\Omega t)
 $$
 
-Substitute into the equation:
+Substitute into the equation
 
 $$
-m(-C\Omega^2\cos(\Omega t) - D\Omega^2\sin(\Omega t))
-+ b(-C\Omega\sin(\Omega t) + D\Omega\cos(\Omega t))
-+ k(C\cos(\Omega t) + D\sin(\Omega t))
+m\frac{d^2x}{dt^2} + b\frac{dx}{dt} + kx = F_0\cos(\Omega t)
+$$
+
+Then
+
+$$
+m\left(-C\Omega^2\cos(\Omega t) - D\Omega^2\sin(\Omega t)\right)
++ b\left(-C\Omega\sin(\Omega t) + D\Omega\cos(\Omega t)\right)
++ k\left(C\cos(\Omega t) + D\sin(\Omega t)\right)
 = F_0\cos(\Omega t)
 $$
 
-Group the cosine terms:
+Now group the terms with $\cos(\Omega t)$ and $\sin(\Omega t)$.
+
+For $\cos(\Omega t)$:
 
 $$
-(k - m\Omega^2)C + b\Omega D
+\left[(k - m\Omega^2)C + b\Omega D\right]\cos(\Omega t)
 $$
 
-Group the sine terms:
+For $\sin(\Omega t)$:
 
 $$
-(k - m\Omega^2)D - b\Omega C
+\left[(k - m\Omega^2)D - b\Omega C\right]\sin(\Omega t)
 $$
 
-Therefore, we obtain the system:
+Therefore, we obtain the system
 
 $$
 (k - m\Omega^2)C + b\Omega D = F_0
@@ -123,7 +154,7 @@ $$
 
 ---
 
-### 4. Amplitude as a function of $\Omega$
+### 4. Amplitude of oscillations
 
 The steady-state solution can be written in the form
 
@@ -131,49 +162,47 @@ $$
 x_p(t) = A(\Omega)\cos(\Omega t - \phi)
 $$
 
-where the amplitude is
+where $A(\Omega)$ is the amplitude and $\phi$ is the phase shift.
+
+From the system of equations, the amplitude is
 
 $$
 \boxed{
-A(\Omega)=\frac{F_0}{\sqrt{(k-m\Omega^2)^2 + (b\Omega)^2}}
+A(\Omega) = \frac{F_0}{\sqrt{(k - m\Omega^2)^2 + (b\Omega)^2}}
 }
 $$
 
-This is the amplitude-frequency relation.
-
-It shows how the oscillation amplitude depends on the forcing frequency $\Omega$.
+This is the required amplitude as a function of $\Omega$.
 
 ---
 
 ### 5. Phase shift
 
-The phase shift between the external force and the oscillation is
+The phase shift is determined by
 
 $$
 \boxed{
-\tan\phi = \frac{b\Omega}{k-m\Omega^2}
+\tan\phi = \frac{b\Omega}{k - m\Omega^2}
 }
 $$
 
-Thus,
+Therefore,
 
 $$
 \boxed{
-\phi = \arctan\left(\frac{b\Omega}{k-m\Omega^2}\right)
+\phi = \arctan\left(\frac{b\Omega}{k - m\Omega^2}\right)
 }
 $$
 
 Interpretation:
 
-- for small $\Omega$, the phase shift is close to $0$
-- near resonance, the phase shift is close to $\frac{\pi}{2}$
-- for large $\Omega$, the phase shift approaches $\pi$
+- when $\Omega$ is small, $\phi \approx 0$
+- near resonance, $\phi \approx \frac{\pi}{2}$
+- when $\Omega$ is large, $\phi \to \pi$
 
 ---
 
-### 6. Resonance
-
-If damping is small, the amplitude becomes very large when the forcing frequency is close to the natural frequency.
+### 6. Resonance condition
 
 The natural frequency of the undamped oscillator is
 
@@ -181,27 +210,21 @@ $$
 \omega_0 = \sqrt{\frac{k}{m}}
 $$
 
-Resonance occurs near
+Resonance occurs when the forcing frequency $\Omega$ is close to the natural frequency:
 
 $$
 \Omega \approx \omega_0
 $$
 
-When damping is present, the resonance peak is finite and slightly shifted.
+In that case, the denominator in the amplitude formula becomes small, so the amplitude becomes large.
 
-So the resonance curve is the graph of
-
-$$
-A(\Omega)=\frac{F_0}{\sqrt{(k-m\Omega^2)^2 + (b\Omega)^2}}
-$$
-
-as a function of $\Omega$.
+If damping is present, the resonance peak is finite.
 
 ---
 
 ### 7. Numerical solution
 
-To solve the equation numerically, convert it into a first-order system.
+To solve the equation numerically, convert it into a system of first-order equations.
 
 Let
 
@@ -221,7 +244,7 @@ $$
 \frac{dv}{dt} = \frac{1}{m}\left(F_0\cos(\Omega t) - bv - kx\right)
 $$
 
-So the system is
+So the system becomes
 
 $$
 \boxed{
@@ -235,47 +258,49 @@ $$
 }
 $$
 
-This system can be solved numerically using RK4.
-
-For each forcing frequency $\Omega$, we can compute the trajectory $x(t)$ and then measure the steady-state amplitude.
+This system can be solved numerically using the Runge–Kutta 4th order method (RK4).
 
 ---
 
 ### 8. Resonance curve
 
-The resonance curve is the graph of steady-state amplitude versus forcing frequency.
-
-That is,
+The resonance curve is the graph of steady-state amplitude versus forcing frequency:
 
 $$
 A(\Omega) \text{ versus } \Omega
 $$
 
-Properties:
+Using the formula
 
-- small amplitude for very low frequency
-- maximum amplitude near resonance
-- smaller amplitude again for high frequency
+$$
+A(\Omega) = \frac{F_0}{\sqrt{(k - m\Omega^2)^2 + (b\Omega)^2}}
+$$
+
+we observe:
+
+1. for small $\Omega$, the amplitude is small  
+2. near resonance, the amplitude reaches a maximum  
+3. for large $\Omega$, the amplitude decreases again  
 
 If damping $b$ increases:
 
-- the peak becomes lower
-- the curve becomes wider
-- resonance becomes less sharp
+- the resonance peak becomes lower
+- the resonance curve becomes wider
+- the system becomes less sensitive to resonance
 
 ---
 
-### 9. Physical interpretation
+### 9. Physical interpretation of resonance
 
-The external force continuously supplies energy to the oscillator.
+The external force continuously gives energy to the oscillator.
 
-- If the forcing frequency is far from the natural frequency, the response is weak.
-- If the forcing frequency is close to the natural frequency, energy transfer is most efficient.
-- Then the oscillation amplitude becomes large: this is **resonance**.
+If the forcing frequency is far from the natural frequency, the energy transfer is weak, so the amplitude remains small.
 
-Damping removes energy, so it limits the amplitude.
+If the forcing frequency is close to the natural frequency, the energy transfer is most efficient, so the amplitude becomes large.
 
-That is why real systems do not have infinite amplitude at resonance.
+This phenomenon is called **resonance**.
+
+Damping removes energy from the system, so it limits the amplitude and prevents infinite growth.
 
 ---
 
@@ -291,23 +316,23 @@ has a steady-state solution of the form
 
 $$
 \boxed{
-x_p(t)=A(\Omega)\cos(\Omega t-\phi)
+x_p(t) = A(\Omega)\cos(\Omega t - \phi)
 }
 $$
 
-with amplitude
+where the amplitude is
 
 $$
 \boxed{
-A(\Omega)=\frac{F_0}{\sqrt{(k-m\Omega^2)^2 + (b\Omega)^2}}
+A(\Omega) = \frac{F_0}{\sqrt{(k - m\Omega^2)^2 + (b\Omega)^2}}
 }
 $$
 
-and phase shift
+and the phase shift is
 
 $$
 \boxed{
-\tan\phi = \frac{b\Omega}{k-m\Omega^2}
+\tan\phi = \frac{b\Omega}{k - m\Omega^2}
 }
 $$
 
@@ -321,22 +346,36 @@ $$
 
 $$
 \boxed{
-\frac{dv}{dt} = \frac{1}{m}\left(F_0\cos(\Omega t)-bv-kx\right)
+\frac{dv}{dt} = \frac{1}{m}\left(F_0\cos(\Omega t) - bv - kx\right)
 }
 $$
 
-The resonance curve is obtained by plotting $A(\Omega)$ versus $\Omega$.
+The resonance curve is obtained by plotting
+
+$$
+A(\Omega) \text{ versus } \Omega
+$$
 
 ---
 
 ## Conclusion
 
-The forced oscillator shows resonance when the forcing frequency is close to the natural frequency.  
-The oscillation amplitude is determined by the function
+The forced oscillator shows resonance when the forcing frequency is close to the natural frequency.
+
+The oscillation amplitude is
 
 $$
-A(\Omega)=\frac{F_0}{\sqrt{(k-m\Omega^2)^2 + (b\Omega)^2}}
+\boxed{
+A(\Omega) = \frac{F_0}{\sqrt{(k - m\Omega^2)^2 + (b\Omega)^2}}
+}
 $$
 
-and the phase shift changes from approximately $0$ to $\pi$ as the forcing frequency increases.  
+and the phase shift changes with frequency according to
+
+$$
+\boxed{
+\tan\phi = \frac{b\Omega}{k - m\Omega^2}
+}
+$$
+
 Damping reduces the resonance peak and prevents unlimited growth of amplitude.
