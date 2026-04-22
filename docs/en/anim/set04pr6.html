@@ -1,1 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Damped Oscillator - RK4</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f4f4f4;
+      margin: 20px;
+      color: #111;
+    }
 
+    h2 {
+      margin-bottom: 8px;
+    }
+
+    .panel {
+      max-width: 1100px;
+      margin: 0 auto 15px auto;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input[type="range"] {
+      width: 260px;
+    }
+
+    button {
+      padding: 10px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      border: 1px solid #888;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    button:hover {
+      background: #eee;
+    }
+
+    canvas {
+      background: white;
+      border: 1px solid black;
+      margin-top: 15px;
+    }
+
+    .info {
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .equation {
+      font-size: 18px;
+      margin: 8px 0 0 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="panel">
+    <h2>Problem 6 - Damped Oscillator</h2>
+    <div class="equation">
+      <strong>m x'' + b x' + k x = 0</strong>
+    </div>
+
+    <div class="controls">
+      <label for="bSlider">Damping coefficient b:</label>
+      <input type="range" id="bSlider" min="0" max="10" step="0.1" value="1.0">
+      <span id="bValue">1.0</span>
+
+      <button onclick="startAnimation()">Start</button>
+      <button onclick="stopAnimation()">Stop</button>
+      <button onclick="resetAnimation()">Reset</button>
+    </div>
+
+    <div class="info">
+      <div><strong>Critical damping:</strong> <span id="criticalValue"></span></div>
+      <div><strong>Case:</strong> <span id="caseType"></span></div>
+      <div><strong>Parameters:</strong> m = <span id="mValue"></span>, k = <span id="kValue"></span>, x(0) = <span id="x0Value"></span>, v(0) = <span id="v0Value"></span></div>
+    </div>
+  </div>
+
+  <canvas id="canvas" width="1100" height="620"></canvas>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const bSlider = document.getElementById("bSlider");
+    const bValue = document.getElementById("bValue");
+    const caseType = document.getElementById("caseType");
+    const criticalValue = document.getElementById("criticalValue");
+    const mValue = document.getElementById("mValue");
+    const kValue = document.getElementById("kValue");
+    const x0Value = document.getElementById("x0Value");
+    const v0Value = document.getElementById("v0Value");
+
+    // Fixed parameters
+    const m = 1.0;
+    const k = 4.0;
+    const x0 = 1.0;
+    const v0 = 0.0;
+
+    // RK4 settings
+    const dt = 0.02;
+    const tMax = 20;
+    const steps = Math.floor(tMax / dt);
+
+    let b = parseFloat(bSlider.value);
+    let solution = [];
+    let animationIndex = 0;
+    let animationId = null;
+
+    const bc = 2 * Math.sqrt(m * k);
+
+    mValue.textContent = m.toFixed(1);
+    kValue.textContent = k.toFixed(1);
+    x0Value.textContent = x0.toFixed(1);
+    v0Value.textContent = v0.toFixed(1);
+    criticalValue.textContent = bc.toFixed(2);
+
+    function classifyCase() {
+      const D = b * b - 4 * m * k;
+      if (Math.abs(D) < 0.05) {
+        return "Critically damped";
+      } else if (D < 0) {
+        return "Underdamped";
+      } else {
+        return "Overdamped";
+      }
+    }
+
+    function derivatives(x, v) {
+      return {
+        dxdt: v,
+        dvdt: -(b / m) * v - (k / m) * x
+      };
+    }
+
+    function solveRK4() {
+      solution = [];
+
+      let t = 0;
+      let x = x0;
+      let v = v0;
+
+      solution.push({ t, x, v });
+
+      for (let i = 0; i < steps; i++) {
+        const k1 = derivatives(x, v);
+
+        const k2 = derivatives(
+          x + 0.5 * dt * k1.dxdt,
+          v + 0.5 * dt * k1.dvdt
+        );
+
+        const k3 = derivatives(
+          x + 0.5 * dt * k2.dxdt,
+          v + 0.5 * dt * k2.dvdt
+        );
+
+        const k4 = derivatives(
+          x + dt * k3.dxdt,
+          v + dt * k3.dvdt
+        );
+
+        x = x + (dt / 6) * (k1.dxdt + 2 * k2.dxdt + 2 * k3.dxdt + k4.dxdt);
+        v = v + (dt / 6) * (k1.dvdt + 2 * k2.dvdt + 2 * k3.dvdt + k4.dvdt);
+        t = t + dt;
+
+        solution.push({ t, x, v });
+      }
+    }
+
+    function drawAxes() {
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 1;
+      ctx.font = "14px Arial";
+      ctx.fillStyle = "black";
+
+      // Top graph: x(t)
+      const left1 = 70;
+      const right1 = 1050;
+      const top1 = 60;
+      const bottom1 = 280;
+      const centerY1 = (top1 + bottom1) / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(left1, centerY1);
+      ctx.lineTo(right1, centerY1);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(left1, top1);
+      ctx.lineTo(left1, bottom1);
+      ctx.stroke();
+
+      for (let i = 0; i <= 10; i++) {
+        const x = left1 + i * (right1 - left1) / 10;
+        const tLabel = (i * tMax / 10).toFixed(0);
+
+        ctx.beginPath();
+        ctx.moveTo(x, centerY1 - 4);
+        ctx.lineTo(x, centerY1 + 4);
+        ctx.stroke();
+
+        ctx.fillText(tLabel, x - 5, centerY1 + 20);
+      }
+
+      ctx.fillText("x(t)", 25, top1 + 10);
+      ctx.fillText("t", right1 + 8, centerY1 + 5);
+      ctx.fillText("1", left1 - 20, centerY1 - 80);
+      ctx.fillText("0", left1 - 20, centerY1 + 5);
+      ctx.fillText("-1", left1 - 25, centerY1 + 85);
+
+      ctx.font = "18px Arial";
+      ctx.fillText("Displacement x(t)", 450, 35);
+
+      // Bottom graph: phase portrait
+      const left2 = 70;
+      const right2 = 1050;
+      const top2 = 360;
+      const bottom2 = 580;
+      const centerX2 = (left2 + right2) / 2;
+      const centerY2 = (top2 + bottom2) / 2;
+
+      ctx.strokeStyle = "black";
+      ctx.font = "14px Arial";
+
+      ctx.beginPath();
+      ctx.moveTo(left2, centerY2);
+      ctx.lineTo(right2, centerY2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(centerX2, top2);
+      ctx.lineTo(centerX2, bottom2);
+      ctx.stroke();
+
+      // x-axis ticks for phase plot
+      for (let i = -4; i <= 4; i++) {
+        const px = centerX2 + i * 90;
+        ctx.beginPath();
+        ctx.moveTo(px, centerY2 - 4);
+        ctx.lineTo(px, centerY2 + 4);
+        ctx.stroke();
+        if (i !== 0) ctx.fillText((i * 0.5).toFixed(1), px - 10, centerY2 + 20);
+      }
+
+      // y-axis ticks for phase plot
+      for (let i = -4; i <= 4; i++) {
+        const py = centerY2 - i * 45;
+        ctx.beginPath();
+        ctx.moveTo(centerX2 - 4, py);
+        ctx.lineTo(centerX2 + 4, py);
+        ctx.stroke();
+        if (i !== 0) ctx.fillText((i * 0.5).toFixed(1), centerX2 + 10, py + 5);
+      }
+
+      ctx.font = "18px Arial";
+      ctx.fillText("Phase Portrait v(x)", 450, 335);
+      ctx.font = "14px Arial";
+      ctx.fillText("x", right2 + 8, centerY2 + 5);
+      ctx.fillText("v", centerX2 + 8, top2 - 5);
+    }
+
+    function drawDisplacementGraph() {
+      const left = 70;
+      const right = 1050;
+      const top = 60;
+      const bottom = 280;
+      const centerY = (top + bottom) / 2;
+      const xScale = (right - left) / tMax;
+      const yScale = 80;
+
+      ctx.beginPath();
+      ctx.strokeStyle = "blue";
+      ctx.lineWidth = 2;
+
+      for (let i = 0; i <= animationIndex; i++) {
+        const p = solution[i];
+        const px = left + p.t * xScale;
+        const py = centerY - p.x * yScale;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // current point
+      if (solution.length > 0) {
+        const p = solution[Math.min(animationIndex, solution.length - 1)];
+        const px = left + p.t * xScale;
+        const py = centerY - p.x * yScale;
+
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
+
+    function drawPhasePortrait() {
+      const left = 70;
+      const right = 1050;
+      const top = 360;
+      const bottom = 580;
+      const centerX = (left + right) / 2;
+      const centerY = (top + bottom) / 2;
+
+      const xScale = 180;
+      const vScale = 90;
+
+      ctx.beginPath();
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 2;
+
+      for (let i = 0; i <= animationIndex; i++) {
+        const p = solution[i];
+        const px = centerX + p.x * xScale;
+        const py = centerY - p.v * vScale;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // current point
+      if (solution.length > 0) {
+        const p = solution[Math.min(animationIndex, solution.length - 1)];
+        const px = centerX + p.x * xScale;
+        const py = centerY - p.v * vScale;
+
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
+
+    function drawInfo() {
+      ctx.fillStyle = "black";
+      ctx.font = "16px Arial";
+
+      const p = solution[Math.min(animationIndex, solution.length - 1)] || { t: 0, x: x0, v: v0 };
+      ctx.fillText(`Current time: ${p.t.toFixed(2)} s`, 780, 35);
+      ctx.fillText(`x = ${p.x.toFixed(3)}`, 780, 330);
+      ctx.fillText(`v = ${p.v.toFixed(3)}`, 920, 330);
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawAxes();
+      drawDisplacementGraph();
+      drawPhasePortrait();
+      drawInfo();
+    }
+
+    function animate() {
+      render();
+
+      if (animationIndex < solution.length - 1) {
+        animationIndex += 2;
+        animationId = requestAnimationFrame(animate);
+      } else {
+        animationId = null;
+      }
+    }
+
+    function updateSystem() {
+      b = parseFloat(bSlider.value);
+      bValue.textContent = b.toFixed(1);
+      caseType.textContent = classifyCase();
+      solveRK4();
+      animationIndex = 0;
+      render();
+    }
+
+    function startAnimation() {
+      if (!animationId) {
+        animationId = requestAnimationFrame(animate);
+      }
+    }
+
+    function stopAnimation() {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+    }
+
+    function resetAnimation() {
+      stopAnimation();
+      animationIndex = 0;
+      render();
+    }
+
+    bSlider.addEventListener("input", () => {
+      stopAnimation();
+      updateSystem();
+    });
+
+    updateSystem();
+  </script>
+</body>
+</html>
