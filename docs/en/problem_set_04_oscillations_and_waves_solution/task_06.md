@@ -17,7 +17,6 @@ We need to:
 5. Generate the graph of $x(t)$.
 6. Generate the phase portrait.
 
-HTML requirement: interactive slider for $b$.
 
 ---
 
