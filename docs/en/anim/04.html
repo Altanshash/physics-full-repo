@@ -2,18 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Harmonic Wave (Numerical)</title>
+<title>Wave with Axes</title>
 <style>
-  body { text-align: center; font-family: Arial; background: #f4f4f4; }
+  body { text-align: center; font-family: Arial; }
   canvas { background: white; border: 1px solid black; }
-  button { margin: 10px; padding: 10px 20px; font-size: 16px; }
+  button { margin: 10px; padding: 10px; }
 </style>
 </head>
 <body>
 
-<h2>Harmonic Wave (with numbers)</h2>
-
-<p>λ = 0.5 , v = 5</p>
+<h2>Harmonic Wave with Axes</h2>
 
 <canvas id="canvas" width="800" height="300"></canvas><br>
 
@@ -27,16 +25,45 @@ const ctx = canvas.getContext("2d");
 let t = 0;
 let animation;
 
-// REAL VALUES
 const A = 50;
 const k = 4 * Math.PI;
 const w = 20 * Math.PI;
 
-const scale = 200; // to fit screen
+const scale = 200;
 const lambda = 0.5;
+
+function drawAxes() {
+  ctx.strokeStyle = "black";
+
+  // X axis
+  ctx.beginPath();
+  ctx.moveTo(0, 150);
+  ctx.lineTo(800, 150);
+  ctx.stroke();
+
+  // Y axis
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(0, 300);
+  ctx.stroke();
+
+  // X numbers
+  for (let i = 0; i <= 4; i++) {
+    let x = i * 0.5;
+    let px = x * scale;
+    ctx.fillText(x.toFixed(1), px, 170);
+  }
+
+  // Y numbers
+  ctx.fillText("A", 5, 100);
+  ctx.fillText("0", 5, 155);
+  ctx.fillText("-A", 5, 200);
+}
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  drawAxes();
 
   ctx.beginPath();
 
@@ -56,7 +83,7 @@ function draw() {
   ctx.arc(0, 150 - y0, 5, 0, 2 * Math.PI);
   ctx.fill();
 
-  // x = λ = 0.5
+  // x = λ
   let pxLambda = lambda * scale;
   let yLambda = A * Math.sin(k * lambda - w * t / 100);
 
@@ -65,12 +92,10 @@ function draw() {
   ctx.arc(pxLambda, 150 - yLambda, 5, 0, 2 * Math.PI);
   ctx.fill();
 
-  // text
-  ctx.fillStyle = "black";
-  ctx.fillText("x = 0", 10, 20);
-  ctx.fillText("x = 0.5 (λ)", pxLambda - 30, 20);
+  ctx.fillText("x=0", 10, 20);
+  ctx.fillText("x=λ=0.5", pxLambda - 30, 20);
 
-  t += 1;
+  t++;
 }
 
 function start() {
