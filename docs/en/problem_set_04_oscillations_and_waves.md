@@ -1,173 +1,279 @@
-# Problem Set 4
+# Problem 5 – Superposition of waves, beats, and group velocity
 
-Oscillations and waves: dynamical systems and propagation of disturbances.
-
-## Problem 1 – Harmonic motion: motion parameters
-
-A function describing harmonic motion is given:
-
-$$
-x(t) = A \cos(\omega t + \varphi)
-$$
-
-1. Determine the period $T$ and the frequency $f$.
-2. Determine the maximum velocity and the maximum acceleration.
-3. For $A = 0.2$ m, $f = 2$ Hz:
-
-   * calculate $\omega$,
-   * calculate $v_{\max}$,
-   * calculate $a_{\max}$.
-
-Answers: full derivation + interpretation.
-
----
-
-## Problem 2 – Energy of a harmonic oscillator
-
-A system with the following initial parameters is given:
-
-* $m = 1\ \mathrm{kg}$
-* $k = 100\ \mathrm{N/m}$
-* $x(0) = 2\ \mathrm{m}$
-* $v(0) = 1\ \mathrm{m/s}$
-
-1. Determine the natural frequency.
-2. Calculate the total energy of the system.
-3. For what displacement does the kinetic energy account for 50% of the total energy?
-
-Answers: full derivation + interpretation.
-
----
-
-## Problem 3 – Harmonic wave
-
-The wave equation is given:
-
-$$
-y(x,t) = A \sin(kx - \omega t)
-$$
-
-1. Determine the wavelength.
-2. Determine the phase velocity.
-3. Calculate $v$ for $k = 4\pi$, $\omega = 20\pi$.
-4. Does the point $x = \lambda$ oscillate in phase with the point $x = 0$?
-
-Answers: full derivation + interpretation.
-
----
-
-## Problem 4 – Wave equation
-
-The function is given:
-
-$$
-y(x,t) = A \cos(kx - \omega t)
-$$
-
-1. Verify that it satisfies the wave equation:
-$$
-\frac{\partial^2 y}{\partial t^2} = v^2 \frac{\partial^2 y}{\partial x^2}
-$$
-2. Determine the relationship between $v$, $k$, and $\omega$.
-
-Answers: algebraic relation.
-
----
-
-## Problem 5 – Superposition of waves, beats, and group velocity
+## Given
 
 Two harmonic waves are given:
 
 $$
-y_1(x,t)=A\sin(kx-\omega t)
+y_1(x,t) = A\sin(kx - \omega t)
 $$
 
 $$
-y_2(x,t)=A\sin(kx-(\omega+\Delta\omega)t)
+y_2(x,t) = A\sin\big(kx - (\omega + \Delta\omega)t\big)
 $$
 
-1. Determine the resultant wave $y=y_1+y_2$ and reduce it to a product form (carrier × envelope).
-2. Identify the beat frequency and the beat period at the point $x=0$.
-3. Interpret physically: what does the envelope describe, and what does the carrier wave describe?
-4. Use Python/HTML/JS to generate the two waves and their superposition, showing the phenomenon of beats and the motion of the envelope.
+We need to:
+
+1. Determine the resultant wave $y = y_1 + y_2$ and reduce it to product form (carrier × envelope).
+2. Identify the beat frequency and the beat period at the point $x = 0$.
+3. Interpret physically what the envelope describes and what the carrier wave describes.
 
 ---
 
-## Problem 6 – Damped oscillator
+## Solution
 
-Equation:
+### 1. Resultant wave
+
+The total wave is
 
 $$
-m \frac{d^2 x}{dt^2} + b \frac{dx}{dt} + k x = 0
+y = y_1 + y_2
 $$
 
-1. Derive the general solution for each case.
-2. Present the classification of cases: underdamped, critically damped, overdamped.
-3. Solve the equation numerically (RK4).
-4. Investigate the effect of parameter $b$.
-5. Generate the graph of $x(t)$.
-6. Generate the phase portrait.
+Substitute the given functions:
 
-HTML requirement: interactive slider for $b$.
+$$
+y = A\sin(kx - \omega t) + A\sin\big(kx - (\omega + \Delta\omega)t\big)
+$$
+
+Factor out $A$:
+
+$$
+y = A\left[\sin(kx - \omega t) + \sin\big(kx - (\omega + \Delta\omega)t\big)\right]
+$$
+
+Now use the trigonometric identity:
+
+$$
+\sin \alpha + \sin \beta = 2\sin\left(\frac{\alpha+\beta}{2}\right)\cos\left(\frac{\alpha-\beta}{2}\right)
+$$
+
+Let
+
+$$
+\alpha = kx - \omega t
+$$
+
+and
+
+$$
+\beta = kx - (\omega + \Delta\omega)t
+$$
+
+Then
+
+$$
+\frac{\alpha+\beta}{2}
+=
+\frac{(kx-\omega t) + \big(kx-(\omega+\Delta\omega)t\big)}{2}
+$$
+
+$$
+\frac{\alpha+\beta}{2}
+=
+\frac{2kx - 2\omega t - \Delta\omega t}{2}
+$$
+
+$$
+\frac{\alpha+\beta}{2}
+=
+kx - \omega t - \frac{\Delta\omega}{2}t
+$$
+
+Also,
+
+$$
+\frac{\alpha-\beta}{2}
+=
+\frac{(kx-\omega t) - \big(kx-(\omega+\Delta\omega)t\big)}{2}
+$$
+
+$$
+\frac{\alpha-\beta}{2}
+=
+\frac{\Delta\omega t}{2}
+$$
+
+Therefore,
+
+$$
+y = 2A\sin\left(kx - \omega t - \frac{\Delta\omega}{2}t\right)\cos\left(\frac{\Delta\omega}{2}t\right)
+$$
+
+So, the resultant wave in product form is
+
+$$
+\boxed{
+y = 2A\cos\left(\frac{\Delta\omega}{2}t\right)\sin\left(kx - \omega t - \frac{\Delta\omega}{2}t\right)
+}
+$$
+
+This can also be written as
+
+$$
+\boxed{
+y = 2A\cos\left(\frac{\Delta\omega}{2}t\right)\sin\left(kx - \left(\omega + \frac{\Delta\omega}{2}\right)t\right)
+}
+$$
 
 ---
 
-## Problem 7 – Forced oscillator and resonance
+### 2. Beat frequency at $x = 0$
+
+At the point $x = 0$, the wave becomes
 
 $$
-m \frac{d^2 x}{dt^2} + b \frac{dx}{dt} + k x = F_0 \cos(\Omega t)
+y(0,t) = 2A\cos\left(\frac{\Delta\omega}{2}t\right)\sin\left(-\omega t - \frac{\Delta\omega}{2}t\right)
 $$
 
-1. Solve the equation analytically, determining the amplitude of oscillations as a function of $\Omega$.
-2. Solve the equation numerically.
-3. Investigate the steady-state amplitude as a function of $\Omega$.
-4. Generate the resonance curve.
-5. Investigate the phase shift.
-6. Interpret the phenomenon of resonance.
+The beat phenomenon is determined by the slowly varying factor
 
-HTML requirement: interactive change of the forcing frequency.
+$$
+\cos\left(\frac{\Delta\omega}{2}t\right)
+$$
+
+The two ordinary frequencies are
+
+$$
+f_1 = \frac{\omega}{2\pi}
+$$
+
+$$
+f_2 = \frac{\omega + \Delta\omega}{2\pi}
+$$
+
+So the beat frequency is the difference:
+
+$$
+f_b = |f_2 - f_1|
+$$
+
+$$
+f_b = \left|\frac{\omega + \Delta\omega}{2\pi} - \frac{\omega}{2\pi}\right|
+$$
+
+$$
+f_b = \frac{\Delta\omega}{2\pi}
+$$
+
+Thus,
+
+$$
+\boxed{f_b = \frac{\Delta\omega}{2\pi}}
+$$
 
 ---
 
-## Problem 8 – Two coupled springs (two degrees of freedom)
+### 3. Beat period
 
-Two masses connected to walls in a series configuration by springs with constants $k_1$, $k_2$, and $k_3$.
+The beat period is the reciprocal of the beat frequency:
 
-1. Write down the equations of motion.
-2. Determine the natural frequencies.
-3. Find the normal modes.
-4. Solve numerically for arbitrary initial conditions.
-5. Identify the energy exchange between the masses.
+$$
+T_b = \frac{1}{f_b}
+$$
 
-HTML requirement: animation of the motion of both masses.
+Substitute the value of $f_b$:
 
----
+$$
+T_b = \frac{1}{\Delta\omega/(2\pi)}
+$$
 
-## Problem 9 – Chain of $N$ springs (discrete wave model)
+Hence,
 
-System: $N$ masses connected by springs.
-
-1. Write down the equations of motion.
-2. Solve numerically for $N = 20, 50, 100$.
-3. Introduce a local initial disturbance.
-4. Observe the propagation of the pulse.
-5. Investigate the effect of the values of $k$ and $m$ on the propagation speed.
-
-HTML requirement: animation of the entire chain.
+$$
+\boxed{T_b = \frac{2\pi}{\Delta\omega}}
+$$
 
 ---
 
-## Problem 10 – Double pendulum and deterministic chaos
+### 4. Physical interpretation
 
-Objective: **purely numerical analysis** of a double pendulum and visualization of deterministic chaos.
+From the product form
 
-Consider a double pendulum (two massive points $m_1, m_2$ on massless rods $l_1, l_2$) in a uniform gravitational field $g$. Assume the equations of motion from the standard form for a double pendulum (we do not derive them analytically in this problem set).
+$$
+y = 2A\cos\left(\frac{\Delta\omega}{2}t\right)\sin\left(kx - \omega t - \frac{\Delta\omega}{2}t\right)
+$$
 
-1. Write the coordinates $(x_1,y_1)$ and $(x_2,y_2)$ as functions of the angles $(\theta_1,\theta_2)$ (for animation).
-2. Implement a numerical integration of the equations (e.g., RK4) and check numerical stability (e.g., energy drift for different $\Delta t$).
-3. Investigate the sensitivity to initial conditions: **simulate simultaneously 50 copies** of the system with minimally different initial conditions (e.g., a perturbation only in $\theta_2(0)$ on the order of $10^{-4}$–$10^{-2}$ rad).
-4. Experiment with different scales of perturbation and observe the divergence of the trajectories.
+we identify two parts:
 
-Starting parameters (to standardize results): $m_1=m_2=1$, $l_1=l_2=1$, $g=9.81$, integration step $\Delta t\le 0.01$ s.
+#### Envelope
 
-HTML requirement: animation of the double pendulum in "ensemble" mode — **50 pendulums simultaneously**, each in a **different color**, to show the divergence; add a reset and the ability to set the perturbation scale.
+$$
+\boxed{2A\cos\left(\frac{\Delta\omega}{2}t\right)}
+$$
+
+This term changes slowly with time and controls the amplitude of the total wave.  
+It describes how the sound or oscillation becomes stronger and weaker.  
+This is the **beat envelope**.
+
+#### Carrier wave
+
+$$
+\boxed{\sin\left(kx - \omega t - \frac{\Delta\omega}{2}t\right)}
+$$
+
+This is the rapidly oscillating part inside the envelope.  
+It describes the main fast wave motion.
+
+So physically:
+
+- the **envelope** describes the slow modulation of amplitude,
+- the **carrier wave** describes the fast oscillation.
+
+When the envelope is large, the interference is constructive.  
+When the envelope is zero, the interference is destructive.
+
+---
+
+## Final Answer
+
+The resultant wave is
+
+$$
+\boxed{
+y = 2A\cos\left(\frac{\Delta\omega}{2}t\right)\sin\left(kx - \omega t - \frac{\Delta\omega}{2}t\right)
+}
+$$
+
+The beat frequency at $x = 0$ is
+
+$$
+\boxed{f_b = \frac{\Delta\omega}{2\pi}}
+$$
+
+The beat period is
+
+$$
+\boxed{T_b = \frac{2\pi}{\Delta\omega}}
+$$
+
+The envelope is
+
+$$
+\boxed{2A\cos\left(\frac{\Delta\omega}{2}t\right)}
+$$
+
+The carrier wave is
+
+$$
+\boxed{\sin\left(kx - \omega t - \frac{\Delta\omega}{2}t\right)}
+$$
+
+---
+
+## Conclusion
+
+The superposition of two harmonic waves with slightly different angular frequencies produces beats.  
+The resultant wave can be written as the product of a slowly varying envelope and a rapidly oscillating carrier wave.  
+The envelope determines the amplitude modulation, while the carrier wave describes the fast oscillation.  
+The beat frequency is
+
+$$
+\boxed{f_b = \frac{\Delta\omega}{2\pi}}
+$$
+
+and the beat period is
+
+$$
+\boxed{T_b = \frac{2\pi}{\Delta\omega}}
+$$
