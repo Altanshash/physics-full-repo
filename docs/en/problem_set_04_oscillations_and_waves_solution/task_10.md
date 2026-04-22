@@ -50,7 +50,7 @@ $$
 y_2 = -l_1 \cos\theta_1 - l_2 \cos\theta_2
 $$
 
-These formulas are used for visualization and animation.
+These formulas are used directly for animation.
 
 ---
 
@@ -172,7 +172,7 @@ $$
 
 A stable numerical method should show only small energy drift when $\Delta t$ is sufficiently small.
 
-So we compare results for different time steps, for example:
+So we compare results for different time steps, for example
 
 $$
 \Delta t = 0.01, \qquad \Delta t = 0.005, \qquad \Delta t = 0.001
@@ -237,9 +237,9 @@ As time grows, the separation increases rapidly.
 
 This means:
 
-1. tiny initial differences produce large later differences
-2. larger perturbations lead to earlier divergence
-3. long-term motion becomes practically unpredictable
+- tiny initial differences produce large later differences
+- larger perturbations lead to earlier divergence
+- long-term motion becomes practically unpredictable
 
 This is the main property of deterministic chaos.
 
@@ -247,28 +247,31 @@ This is the main property of deterministic chaos.
 
 ### 7. Practical numerical procedure
 
-The numerical experiment is performed as follows:
+The numerical experiment is performed as follows.
 
-1. choose base initial conditions  
-   $$
-   \theta_1(0), \quad \theta_2(0), \quad \omega_1(0), \quad \omega_2(0)
-   $$
+First, choose base initial conditions:
 
-2. create 50 copies with slightly different $\theta_2(0)$
+$$
+\theta_1(0), \qquad \theta_2(0), \qquad \omega_1(0), \qquad \omega_2(0)
+$$
 
-3. integrate all systems simultaneously using RK4
+Second, create 50 copies with slightly different values of $\theta_2(0)$.
 
-4. compute coordinates using  
-   $$
-   x_1 = l_1\sin\theta_1, \qquad y_1 = -l_1\cos\theta_1
-   $$
-   $$
-   x_2 = l_1\sin\theta_1 + l_2\sin\theta_2, \qquad y_2 = -l_1\cos\theta_1 - l_2\cos\theta_2
-   $$
+Third, integrate all systems simultaneously using RK4.
 
-5. animate all 50 pendulums in different colors
+Fourth, compute the coordinates from the angles:
 
-6. observe how initially close trajectories diverge
+$$
+x_1 = l_1\sin\theta_1, \qquad y_1 = -l_1\cos\theta_1
+$$
+
+$$
+x_2 = l_1\sin\theta_1 + l_2\sin\theta_2, \qquad y_2 = -l_1\cos\theta_1 - l_2\cos\theta_2
+$$
+
+Fifth, animate all 50 pendulums in different colors.
+
+Sixth, compare the trajectories and observe how they diverge.
 
 This directly visualizes deterministic chaos.
 
