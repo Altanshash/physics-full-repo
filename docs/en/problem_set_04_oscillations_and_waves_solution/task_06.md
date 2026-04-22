@@ -401,6 +401,3 @@ The damped oscillator has three regimes depending on the value of the damping co
 - For small $b$, the motion is oscillatory with decaying amplitude.
 - At critical damping, the system returns to equilibrium as fast as possible without oscillation.
 - For large $b$, the motion is non-oscillatory and slower.
-
-The RK4 method allows us to compute the numerical solution, plot $x(t)$, and draw the phase portrait.  
-The parameter $b$ controls how fast the energy is lost and how the system approaches equilibrium.
