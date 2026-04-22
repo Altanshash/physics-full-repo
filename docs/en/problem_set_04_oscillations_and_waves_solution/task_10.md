@@ -2,30 +2,27 @@
 
 ## Given
 
-We consider a double pendulum with:
+We consider a double pendulum with masses $m_1$ and $m_2$, rod lengths $l_1$ and $l_2$, and gravitational acceleration $g$.
 
-- masses $m_1$, $m_2$
-- rod lengths $l_1$, $l_2$
-- gravitational acceleration $g$
-
-The starting parameters are
+The standard parameters are:
 
 $$
 m_1 = m_2 = 1, \qquad l_1 = l_2 = 1, \qquad g = 9.81
 $$
 
-We use a numerical integration step
+The numerical integration step is
 
 $$
-\Delta t \le 0.01\ \text{s}
+\Delta t \le 0.01 \text{ s}
 $$
 
 We need to:
 
-1. Write the coordinates $(x_1,y_1)$ and $(x_2,y_2)$ as functions of the angles $(\theta_1,\theta_2)$.
-2. Implement a numerical integration of the equations of motion and check numerical stability.
-3. Investigate sensitivity to initial conditions by simulating 50 copies with very small differences.
-4. Experiment with different perturbation scales and observe divergence of trajectories.
+1. Write the coordinates $(x_1,y_1)$ and $(x_2,y_2)$ as functions of $(\theta_1,\theta_2)$.
+2. Implement numerical integration of the equations of motion.
+3. Check numerical stability, for example by monitoring energy drift.
+4. Simulate 50 copies of the system with slightly different initial conditions.
+5. Investigate how trajectories diverge for different perturbation scales.
 
 ---
 
@@ -33,36 +30,33 @@ We need to:
 
 ### 1. Coordinates of the masses
 
-Let $\theta_1(t)$ be the angle of the first rod and $\theta_2(t)$ the angle of the second rod, measured from the vertical.
+Let $\theta_1(t)$ be the angle of the first rod and $\theta_2(t)$ the angle of the second rod.
 
-Then the coordinates of the first mass are
-
-$$
-\boxed{x_1 = l_1 \sin\theta_1}
-$$
+The coordinates of the first mass are
 
 $$
-\boxed{y_1 = -l_1 \cos\theta_1}
-$$
-
-The second mass is attached to the end of the first rod, so its coordinates are
-
-$$
-\boxed{x_2 = l_1 \sin\theta_1 + l_2 \sin\theta_2}
+x_1 = l_1 \sin\theta_1
 $$
 
 $$
-\boxed{y_2 = -l_1 \cos\theta_1 - l_2 \cos\theta_2}
+y_1 = -l_1 \cos\theta_1
+$$
+
+The coordinates of the second mass are
+
+$$
+x_2 = l_1 \sin\theta_1 + l_2 \sin\theta_2
+$$
+
+$$
+y_2 = -l_1 \cos\theta_1 - l_2 \cos\theta_2
 $$
 
 These formulas are used directly for animation.
 
 ---
 
-### 2. Equations of motion
-
-In this problem we do not derive the equations analytically.  
-We take the standard equations of motion for the double pendulum in first-order form.
+### 2. First-order numerical system
 
 Introduce the angular velocities
 
@@ -70,7 +64,7 @@ $$
 \omega_1 = \dot{\theta}_1, \qquad \omega_2 = \dot{\theta}_2
 $$
 
-Then the system becomes
+Then
 
 $$
 \dot{\theta}_1 = \omega_1
@@ -80,17 +74,7 @@ $$
 \dot{\theta}_2 = \omega_2
 $$
 
-and
-
-$$
-\dot{\omega}_1 = f_1(\theta_1,\theta_2,\omega_1,\omega_2)
-$$
-
-$$
-\dot{\omega}_2 = f_2(\theta_1,\theta_2,\omega_1,\omega_2)
-$$
-
-For equal masses and general rod lengths, the standard equations are
+We use the standard numerical form of the double pendulum equations:
 
 $$
 \dot{\omega}_1 =
@@ -116,7 +100,7 @@ l_2\left(m_1 + m_2\sin^2(\theta_1-\theta_2)\right)
 }
 $$
 
-So the full numerical system is
+So the full system is
 
 $$
 \boxed{\dot{\theta}_1 = \omega_1}
@@ -136,9 +120,7 @@ $$
 
 ---
 
-### 3. Numerical integration
-
-We solve this system numerically using RK4.
+### 3. RK4 numerical integration
 
 Let the state vector be
 
@@ -152,13 +134,13 @@ $$
 \end{bmatrix}
 $$
 
-Then the system has the form
+Then the system can be written as
 
 $$
 \dot{\mathbf{y}} = F(\mathbf{y})
 $$
 
-The RK4 update is
+The Runge–Kutta 4th order method is
 
 $$
 k_1 = F(\mathbf{y}_n)
@@ -176,230 +158,199 @@ $$
 k_4 = F\left(\mathbf{y}_n + \Delta t\,k_3\right)
 $$
 
-and
+and the update formula is
 
 $$
-\boxed{
-\mathbf{y}_{n+1}
-=
-\mathbf{y}_n
-+
-\frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)
-}
+\mathbf{y}_{n+1} = \mathbf{y}_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)
 $$
 
-This gives the numerical trajectory of the double pendulum.
+This method is used for all 50 pendulums simultaneously.
 
 ---
 
 ### 4. Numerical stability
 
-To check numerical stability, we compare the behavior for different time steps:
-
-$$
-\Delta t = 0.01,\ 0.005,\ 0.001
-$$
-
-A useful criterion is the total mechanical energy.
+To check numerical stability, we monitor the total mechanical energy.
 
 The kinetic energy is
 
 $$
-T =
-\frac{1}{2}(m_1+m_2)l_1^2\omega_1^2
-+
-\frac{1}{2}m_2 l_2^2\omega_2^2
-+
-m_2 l_1 l_2 \omega_1 \omega_2 \cos(\theta_1-\theta_2)
+T = \frac{1}{2}(m_1+m_2)l_1^2\omega_1^2 + \frac{1}{2}m_2l_2^2\omega_2^2 + m_2l_1l_2\omega_1\omega_2\cos(\theta_1-\theta_2)
 $$
 
 The potential energy is
 
 $$
-V =
--(m_1+m_2)g l_1 \cos\theta_1
--
-m_2 g l_2 \cos\theta_2
+V = -(m_1+m_2)g l_1 \cos\theta_1 - m_2 g l_2 \cos\theta_2
 $$
 
-Therefore the total energy is
+Therefore, the total energy is
 
 $$
-\boxed{E = T + V}
+E = T + V
 $$
 
-If the method is stable and the time step is sufficiently small, the energy drift should remain small over time.
+If $\Delta t$ is small enough, the energy drift should remain small during the simulation.
 
-So numerical stability is checked by monitoring:
+So numerical stability is checked by:
 
-- whether the trajectories remain physically reasonable
-- whether the total energy changes only slightly
-- whether smaller $\Delta t$ gives better energy conservation
+1. comparing results for different $\Delta t$
+2. observing whether the trajectories remain physically reasonable
+3. checking whether the total energy changes only slightly
 
 ---
 
 ### 5. Sensitivity to initial conditions
 
-The main goal of this problem is to demonstrate deterministic chaos.
+To demonstrate deterministic chaos, we simulate 50 copies of the double pendulum.
 
-We simulate 50 copies of the same system.
+All parameters are the same, but the initial angle $\theta_2(0)$ is perturbed very slightly.
 
-All parameters are the same, but the initial value of $\theta_2(0)$ is changed slightly.
-
-For example:
+For the $j$-th pendulum, we take
 
 $$
 \theta_1^{(j)}(0) = \theta_{1,0}
 $$
 
 $$
-\theta_2^{(j)}(0) = \theta_{2,0} + j\,\varepsilon
-\qquad \text{for } j = 0,1,2,\dots,49
+\theta_2^{(j)}(0) = \theta_{2,0} + j\varepsilon
 $$
 
-with small perturbation scale
+for
 
 $$
-\varepsilon \sim 10^{-4} \text{ to } 10^{-2}
+j = 0,1,2,\dots,49
 $$
 
-and with the same initial angular velocities:
+The initial angular velocities are the same for all copies:
 
 $$
 \omega_1^{(j)}(0) = 0, \qquad \omega_2^{(j)}(0) = 0
 $$
 
-At the beginning, all trajectories are almost identical.
+The perturbation scale is small, for example
 
-After some time, the trajectories separate strongly, even though the initial differences were extremely small.
+$$
+\varepsilon \sim 10^{-4} \text{ to } 10^{-2}
+$$
 
-This is the signature of deterministic chaos.
+At the beginning, all pendulums move almost identically.  
+After some time, their trajectories separate strongly.
+
+This is the main signature of deterministic chaos.
 
 ---
 
 ### 6. Divergence of trajectories
 
-To observe divergence, we compare the positions of the pendulums over time.
-
-For two nearby solutions, one can define a separation measure such as
+To measure divergence, we can compare two nearby solutions and define
 
 $$
-d(t) =
-\sqrt{
-(\theta_1^{(a)} - \theta_1^{(b)})^2
-+
-(\theta_2^{(a)} - \theta_2^{(b)})^2
-}
+d(t) = \sqrt{(\theta_1^{(a)}-\theta_1^{(b)})^2 + (\theta_2^{(a)}-\theta_2^{(b)})^2}
 $$
 
-Initially, $d(0)$ is very small.
+At the start, $d(0)$ is very small.
 
-In a chaotic regime, this separation typically grows rapidly with time.
-
-So by changing the perturbation scale $\varepsilon$, we observe:
-
-- for very small perturbation, divergence still appears
-- for larger perturbation, divergence appears earlier
-- after sufficient time, the trajectories become completely different
-
-Thus the system is highly sensitive to initial conditions.
-
----
-
-### 7. Interpretation of deterministic chaos
-
-The double pendulum is governed by deterministic equations, so there is no randomness in the model.
-
-However, the long-term evolution is extremely sensitive to the initial state.
+As time increases, the separation grows rapidly.
 
 This means:
 
-- if the initial conditions differ only by a tiny amount
-- then after some time the motions become very different
+- very small perturbations produce large differences later
+- larger perturbations lead to earlier divergence
+- after enough time, the trajectories look completely different
 
-This is called **deterministic chaos**.
-
-So chaos does not mean “random equations.”  
-It means that a deterministic nonlinear system can produce motion that is practically unpredictable over long times.
+So the double pendulum is extremely sensitive to initial conditions.
 
 ---
 
-### 8. Practical numerical procedure
+### 7. Practical numerical procedure
 
-A typical numerical experiment is:
+The numerical experiment is:
 
-1. choose the base initial conditions  
+1. choose base initial conditions  
    $$
-   \theta_1(0),\ \theta_2(0),\ \omega_1(0),\ \omega_2(0)
+   \theta_1(0), \quad \theta_2(0), \quad \omega_1(0), \quad \omega_2(0)
    $$
 
-2. create 50 copies with slightly perturbed $\theta_2(0)$
+2. create 50 copies with slightly different values of $\theta_2(0)$
 
 3. integrate all systems simultaneously using RK4
 
 4. compute coordinates using  
    $$
-   x_1 = l_1\sin\theta_1,\quad y_1 = -l_1\cos\theta_1
+   x_1 = l_1\sin\theta_1, \qquad y_1 = -l_1\cos\theta_1
    $$
    $$
-   x_2 = l_1\sin\theta_1 + l_2\sin\theta_2,\quad y_2 = -l_1\cos\theta_1 - l_2\cos\theta_2
+   x_2 = l_1\sin\theta_1 + l_2\sin\theta_2, \qquad y_2 = -l_1\cos\theta_1 - l_2\cos\theta_2
    $$
 
 5. animate all 50 pendulums with different colors
 
 6. compare the trajectories and observe how they diverge
 
-This directly visualizes chaos.
+This directly visualizes deterministic chaos.
 
 ---
 
 ## Final Answer
 
-The coordinates used for animation are
+The coordinates for animation are
 
 $$
-\boxed{x_1 = l_1\sin\theta_1,\qquad y_1 = -l_1\cos\theta_1}
+\boxed{x_1 = l_1\sin\theta_1, \qquad y_1 = -l_1\cos\theta_1}
 $$
 
 $$
-\boxed{x_2 = l_1\sin\theta_1 + l_2\sin\theta_2,\qquad y_2 = -l_1\cos\theta_1 - l_2\cos\theta_2}
+\boxed{x_2 = l_1\sin\theta_1 + l_2\sin\theta_2, \qquad y_2 = -l_1\cos\theta_1 - l_2\cos\theta_2}
 $$
 
 The double pendulum is solved numerically in first-order form:
 
 $$
-\boxed{\dot{\theta}_1 = \omega_1,\qquad \dot{\theta}_2 = \omega_2}
+\boxed{\dot{\theta}_1 = \omega_1, \qquad \dot{\theta}_2 = \omega_2}
 $$
 
 $$
-\boxed{\dot{\omega}_1 = f_1(\theta_1,\theta_2,\omega_1,\omega_2),\qquad \dot{\omega}_2 = f_2(\theta_1,\theta_2,\omega_1,\omega_2)}
+\boxed{\dot{\omega}_1 = f_1(\theta_1,\theta_2,\omega_1,\omega_2), \qquad \dot{\omega}_2 = f_2(\theta_1,\theta_2,\omega_1,\omega_2)}
 $$
 
-The integration is performed using RK4 with
+The RK4 method is used with
 
 $$
-\boxed{\Delta t \le 0.01\ \text{s}}
+\boxed{\Delta t \le 0.01 \text{ s}}
 $$
 
-Numerical stability is checked through energy drift:
+The total energy is
 
 $$
 \boxed{E = T + V}
 $$
 
-To demonstrate deterministic chaos, we simulate 50 copies of the pendulum with slightly different initial values of $\theta_2(0)$.
+where
 
-Even for extremely small perturbations, the trajectories diverge strongly after some time, which demonstrates sensitivity to initial conditions.
+$$
+T = \frac{1}{2}(m_1+m_2)l_1^2\omega_1^2 + \frac{1}{2}m_2l_2^2\omega_2^2 + m_2l_1l_2\omega_1\omega_2\cos(\theta_1-\theta_2)
+$$
+
+and
+
+$$
+V = -(m_1+m_2)g l_1 \cos\theta_1 - m_2 g l_2 \cos\theta_2
+$$
+
+To show chaos, we simulate 50 pendulums with slightly different initial values of $\theta_2(0)$.
+
+Even tiny perturbations lead to large differences in trajectories after some time.
 
 ---
 
 ## Conclusion
 
-The double pendulum is a deterministic but chaotic system.
+The double pendulum is a deterministic nonlinear system, but it shows chaotic behavior.
 
-- Its motion is obtained numerically.
-- The coordinates are computed directly from the angles.
-- Energy drift is used to test numerical stability.
-- Small perturbations in initial conditions produce large differences in trajectories over time.
+- The motion is computed numerically.
+- The coordinates are obtained directly from the angles.
+- Stability is checked through energy drift.
+- Tiny differences in initial conditions grow strongly with time.
 
-Therefore, the double pendulum is a classic example of deterministic chaos.
+Therefore, the double pendulum is a classical example of deterministic chaos.
