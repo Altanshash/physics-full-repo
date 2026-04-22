@@ -2,197 +2,166 @@
 
 ## Given
 
-The function is
+The function is:
 
 $$
-y(x,t)=A\cos(kx-\omega t)
+y(x,t) = A \cos(kx - \omega t)
 $$
 
 We need to:
 
 1. Verify that it satisfies the wave equation
-   $$
-   \frac{\partial^2 y}{\partial t^2}=v^2\frac{\partial^2 y}{\partial x^2}
-   $$
+
+$$
+\frac{\partial^2 y}{\partial t^2} = v^2 \frac{\partial^2 y}{\partial x^2}
+$$
+
 2. Determine the relationship between $v$, $k$, and $\omega$.
 
 ---
 
 ## Solution
 
-### 1. Given wave function
-
-We start with
+We are given the function
 
 $$
-y(x,t)=A\cos(kx-\omega t)
+y(x,t) = A \cos(kx - \omega t)
 $$
 
 Let
 
 $$
-\phi = kx-\omega t
+\phi = kx - \omega t
 $$
 
-Then the function becomes
+Then
 
 $$
-y(x,t)=A\cos\phi
+y(x,t) = A \cos \phi
 $$
 
 ---
 
-### 2. Second derivative with respect to time
+### 1. Derivative with respect to time
 
-First, find the first derivative with respect to $t$:
+First derivative:
 
 $$
 \frac{\partial y}{\partial t}
-=
--A\sin(kx-\omega t)\cdot \frac{\partial}{\partial t}(kx-\omega t)
+= -A \sin(kx - \omega t)\cdot \frac{\partial}{\partial t}(kx - \omega t)
 $$
 
 Since
 
 $$
-\frac{\partial}{\partial t}(kx-\omega t)=-\omega
+\frac{\partial}{\partial t}(kx - \omega t) = -\omega
 $$
 
 we get
 
 $$
 \frac{\partial y}{\partial t}
-=
--A\sin(kx-\omega t)(-\omega)
+= -A \sin(kx - \omega t)(-\omega)
 $$
 
 $$
 \frac{\partial y}{\partial t}
-=
-A\omega \sin(kx-\omega t)
+= A\omega \sin(kx - \omega t)
 $$
 
 Now take the second derivative:
 
 $$
 \frac{\partial^2 y}{\partial t^2}
-=
-A\omega \cos(kx-\omega t)\cdot \frac{\partial}{\partial t}(kx-\omega t)
-$$
-
-Again,
-
-$$
-\frac{\partial}{\partial t}(kx-\omega t)=-\omega
-$$
-
-so
-
-$$
-\frac{\partial^2 y}{\partial t^2}
-=
-A\omega \cos(kx-\omega t)(-\omega)
+= A\omega \cos(kx - \omega t)\cdot \frac{\partial}{\partial t}(kx - \omega t)
 $$
 
 $$
 \frac{\partial^2 y}{\partial t^2}
-=
--A\omega^2 \cos(kx-\omega t)
+= A\omega \cos(kx - \omega t)(-\omega)
 $$
 
-Thus,
-
 $$
-\boxed{\frac{\partial^2 y}{\partial t^2}=-A\omega^2\cos(kx-\omega t)}
-$$
-
----
-
-### 3. Second derivative with respect to position
-
-First, find the first derivative with respect to $x$:
-
-$$
-\frac{\partial y}{\partial x}
-=
--A\sin(kx-\omega t)\cdot \frac{\partial}{\partial x}(kx-\omega t)
-$$
-
-Since
-
-$$
-\frac{\partial}{\partial x}(kx-\omega t)=k
-$$
-
-we get
-
-$$
-\frac{\partial y}{\partial x}
-=
--Ak\sin(kx-\omega t)
-$$
-
-Now take the second derivative:
-
-$$
-\frac{\partial^2 y}{\partial x^2}
-=
--Ak\cos(kx-\omega t)\cdot \frac{\partial}{\partial x}(kx-\omega t)
+\frac{\partial^2 y}{\partial t^2}
+= -A\omega^2 \cos(kx - \omega t)
 $$
 
 So,
 
 $$
-\frac{\partial^2 y}{\partial x^2}
-=
--Ak\cos(kx-\omega t)\cdot k
-$$
-
-$$
-\frac{\partial^2 y}{\partial x^2}
-=
--Ak^2\cos(kx-\omega t)
-$$
-
-Thus,
-
-$$
-\boxed{\frac{\partial^2 y}{\partial x^2}=-Ak^2\cos(kx-\omega t)}
+\boxed{\frac{\partial^2 y}{\partial t^2} = -A\omega^2 \cos(kx - \omega t)}
 $$
 
 ---
 
-### 4. Substitute into the wave equation
+### 2. Derivative with respect to position
+
+First derivative:
+
+$$
+\frac{\partial y}{\partial x}
+= -A \sin(kx - \omega t)\cdot \frac{\partial}{\partial x}(kx - \omega t)
+$$
+
+Since
+
+$$
+\frac{\partial}{\partial x}(kx - \omega t) = k
+$$
+
+we get
+
+$$
+\frac{\partial y}{\partial x}
+= -Ak \sin(kx - \omega t)
+$$
+
+Now take the second derivative:
+
+$$
+\frac{\partial^2 y}{\partial x^2}
+= -Ak \cos(kx - \omega t)\cdot \frac{\partial}{\partial x}(kx - \omega t)
+$$
+
+$$
+\frac{\partial^2 y}{\partial x^2}
+= -Ak \cos(kx - \omega t)\cdot k
+$$
+
+$$
+\frac{\partial^2 y}{\partial x^2}
+= -Ak^2 \cos(kx - \omega t)
+$$
+
+So,
+
+$$
+\boxed{\frac{\partial^2 y}{\partial x^2} = -Ak^2 \cos(kx - \omega t)}
+$$
+
+---
+
+### 3. Substitution into the wave equation
 
 The wave equation is
 
 $$
-\frac{\partial^2 y}{\partial t^2}
-=
-v^2\frac{\partial^2 y}{\partial x^2}
+\frac{\partial^2 y}{\partial t^2} = v^2 \frac{\partial^2 y}{\partial x^2}
 $$
 
 Substitute the derivatives:
 
 $$
--A\omega^2\cos(kx-\omega t)
-=
-v^2\left(-Ak^2\cos(kx-\omega t)\right)
+-A\omega^2 \cos(kx - \omega t) = v^2(-Ak^2 \cos(kx - \omega t))
 $$
 
-Cancel the common factor
+Cancel the common factor $-A\cos(kx - \omega t)$:
 
 $$
--A\cos(kx-\omega t)
+\omega^2 = v^2 k^2
 $$
 
-and obtain
-
-$$
-\omega^2=v^2k^2
-$$
-
-Taking the positive root for wave speed:
+Taking the positive root:
 
 $$
 \omega = vk
@@ -201,7 +170,7 @@ $$
 Therefore,
 
 $$
-\boxed{v=\frac{\omega}{k}}
+\boxed{v = \frac{\omega}{k}}
 $$
 
 ---
@@ -211,35 +180,35 @@ $$
 The function
 
 $$
-y(x,t)=A\cos(kx-\omega t)
+y(x,t) = A\cos(kx - \omega t)
 $$
 
-is a standard harmonic traveling wave.
+is a harmonic traveling wave.
 
-- $A$ is the amplitude.
-- $k$ is the wave number.
-- $\omega$ is the angular frequency.
-- $v$ is the wave speed.
+Where:
 
-After substitution into the wave equation, we get the condition
+- $A$ is the amplitude
+- $k$ is the wave number
+- $\omega$ is the angular frequency
+- $v$ is the wave speed
+
+This function satisfies the wave equation only if
 
 $$
-\omega^2=v^2k^2
+\omega^2 = v^2 k^2
 $$
 
-This means the function is a solution of the wave equation only when the parameters satisfy
+or equivalently,
 
 $$
 \boxed{\omega = vk}
 $$
 
-or equivalently
+and
 
 $$
-\boxed{v=\frac{\omega}{k}}
+\boxed{v = \frac{\omega}{k}}
 $$
-
-So, the wave speed depends on the ratio of angular frequency to wave number.
 
 ---
 
@@ -248,36 +217,37 @@ So, the wave speed depends on the ratio of angular frequency to wave number.
 The function
 
 $$
-y(x,t)=A\cos(kx-\omega t)
+y(x,t) = A\cos(kx - \omega t)
 $$
 
 satisfies the wave equation
 
 $$
-\frac{\partial^2 y}{\partial t^2}=v^2\frac{\partial^2 y}{\partial x^2}
+\frac{\partial^2 y}{\partial t^2} = v^2 \frac{\partial^2 y}{\partial x^2}
 $$
 
-provided that
+if the parameters satisfy the algebraic relation
 
 $$
-\omega^2=v^2k^2
+\boxed{\omega^2 = v^2 k^2}
 $$
 
-Hence, the relation between $v$, $k$, and $\omega$ is
+Hence,
 
 $$
-\boxed{v=\frac{\omega}{k}}
+\boxed{\omega = vk}
+\qquad \text{or} \qquad
+\boxed{v = \frac{\omega}{k}}
 $$
 
 ---
 
 ## Conclusion
 
-We verified by direct differentiation that the given function satisfies the wave equation.  
-The required algebraic relation between the wave speed, wave number, and angular frequency is
+By calculating the second derivative with respect to time and position, we proved that the given function is a solution of the wave equation.
+
+The required relation between the wave speed, wave number, and angular frequency is:
 
 $$
-\boxed{\omega = vk}
-\quad \text{or} \quad
-\boxed{v=\frac{\omega}{k}}
+\boxed{v = \frac{\omega}{k}}
 $$
