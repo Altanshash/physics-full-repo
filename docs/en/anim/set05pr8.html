@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Three-Charge Energy Animation</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #f4f7fb;
+}
+
+canvas {
+  background: white;
+  border: 2px solid #222;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 16px;
+  margin: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.info {
+  font-size: 17px;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Problem 8 – Energy of a Three-Charge System</h2>
+<p>Move the third charge and observe the total potential energy.</p>
+
+<canvas id="canvas" width="850" height="520"></canvas>
+
+<div>
+  <button onclick="start()">Start</button>
+  <button onclick="stop()">Stop</button>
+  <button onclick="resetPositive()">All Positive</button>
+  <button onclick="resetOneNegative()">One Negative</button>
+</div>
+
+<div class="info" id="info"></div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const k = 9e9;
+const q = 1e-6;
+
+const originX = canvas.width / 2;
+const originY = canvas.height / 2;
+const scale = 120;
+
+let running = false;
+let anim;
+let time = 0;
+
+// charges
+let q1 = q;
+let q2 = q;
+let q3 = q;
+
+// fixed charges
+const r1 = {x: -1, y: 0};
+const r2 = {x: 1, y: 0};
+
+// moving charge
+let r3 = {x: 0, y: 1.7};
+
+let path = [];
+
+function toPx(x) {
+  return originX + x * scale;
+}
+
+function toPy(y) {
+  return originY - y * scale;
+}
+
+function distance(a, b) {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return Math.sqrt(dx*dx + dy*dy);
+}
+
+function totalEnergy() {
+  const r12 = distance(r1, r2);
+  const r13 = distance(r1, r3);
+  const r23 = distance(r2, r3);
+
+  const U12 = k * q1 * q2 / r12;
+  const U13 = k * q1 * q3 / r13;
+  const U23 = k * q2 * q3 / r23;
+
+  return {
+    U12,
+    U13,
+    U23,
+    U: U12 + U13 + U23,
+    r12,
+    r13,
+    r23
+  };
+}
+
+function energyAt(x, y) {
+  const p = {x, y};
+
+  const r12 = distance(r1, r2);
+  const r13 = distance(r1, p);
+  const r23 = distance(r2, p);
+
+  if (r13 < 0.15 || r23 < 0.15) return null;
+
+  return k * (
+    q1*q2/r12 +
+    q1*q3/r13 +
+    q2*q3/r23
+  );
+}
+
+function findMinimum() {
+  let bestX = 0;
+  let bestY = 0;
+  let bestU = Infinity;
+
+  for (let x = -2.5; x <= 2.5; x += 0.05) {
+    for (let y = -2; y <= 2.5; y += 0.05) {
+      const U = energyAt(x, y);
+
+      if (U === null) continue;
+
+      if (U < bestU) {
+        bestU = U;
+        bestX = x;
+        bestY = y;
+      }
+    }
+  }
+
+  return {x: bestX, y: bestY, U: bestU};
+}
+
+function drawCharge(pos, charge, label) {
+  const px = toPx(pos.x);
+  const py = toPy(pos.y);
+
+  ctx.beginPath();
+  ctx.arc(px, py, 20, 0, Math.PI * 2);
+  ctx.fillStyle = charge > 0 ? "#e74c3c" : "#3498db";
+  ctx.fill();
+  ctx.strokeStyle = "#222";
+  ctx.stroke();
+
+  ctx.fillStyle = "white";
+  ctx.font = "bold 18px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(charge > 0 ? "+" : "-", px, py);
+
+  ctx.fillStyle = "#111";
+  ctx.font = "14px Arial";
+  ctx.fillText(label, px, py - 30);
+
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+}
+
+function drawLine(a, b) {
+  ctx.beginPath();
+  ctx.moveTo(toPx(a.x), toPy(a.y));
+  ctx.lineTo(toPx(b.x), toPy(b.y));
+  ctx.strokeStyle = "#999";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+function drawEnergyBar(U) {
+  const x = 650;
+  const y = 430;
+  const width = 130;
+  const height = 22;
+
+  ctx.strokeStyle = "#222";
+  ctx.strokeRect(x, y, width, height);
+
+  let normalized = Math.max(-1, Math.min(1, U / 0.015));
+  let fillWidth = Math.abs(normalized) * width;
+
+  ctx.fillStyle = U >= 0 ? "#e74c3c" : "#3498db";
+
+  if (U >= 0) {
+    ctx.fillRect(x, y, fillWidth, height);
+  } else {
+    ctx.fillRect(x + width - fillWidth, y, fillWidth, height);
+  }
+
+  ctx.fillStyle = "#111";
+  ctx.font = "14px Arial";
+  ctx.fillText("Energy bar", x, y - 8);
+  ctx.fillText("blue = negative", x, y + 42);
+  ctx.fillText("red = positive", x, y + 60);
+}
+
+function drawGraph() {
+  const x0 = 560;
+  const y0 = 300;
+  const w = 240;
+  const h = 150;
+
+  ctx.strokeStyle = "#222";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(x0, y0);
+  ctx.lineTo(x0, y0 - h);
+  ctx.lineTo(x0 + w, y0 - h);
+  ctx.stroke();
+
+  ctx.fillStyle = "#111";
+  ctx.font = "14px Arial";
+  ctx.fillText("Energy vs time", x0, y0 - h - 10);
+
+  ctx.beginPath();
+
+  for (let i = 0; i < path.length; i++) {
+    const px = x0 + i * w / Math.max(1, path.length - 1);
+    const U = path[i].U;
+    const py = y0 - h / 2 - U * 6000;
+
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+
+  ctx.strokeStyle = "#0066cc";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = "#111";
+  ctx.fillText("U", x0 - 15, y0 - h);
+  ctx.fillText("t", x0 + w - 10, y0 + 18);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const energy = totalEnergy();
+  const min = findMinimum();
+
+  // triangle lines
+  drawLine(r1, r2);
+  drawLine(r1, r3);
+  drawLine(r2, r3);
+
+  // draw minimum point
+  ctx.beginPath();
+  ctx.arc(toPx(min.x), toPy(min.y), 6, 0, Math.PI * 2);
+  ctx.fillStyle = "#111";
+  ctx.fill();
+
+  ctx.fillStyle = "#111";
+  ctx.font = "13px Arial";
+  ctx.fillText("minimum", toPx(min.x) + 10, toPy(min.y) - 10);
+
+  // draw charges
+  drawCharge(r1, q1, "q1");
+  drawCharge(r2, q2, "q2");
+  drawCharge(r3, q3, "q3");
+
+  drawGraph();
+  drawEnergyBar(energy.U);
+
+  ctx.fillStyle = "#111";
+  ctx.font = "15px Arial";
+  ctx.fillText("U12 = " + energy.U12.toExponential(2) + " J", 25, 35);
+  ctx.fillText("U13 = " + energy.U13.toExponential(2) + " J", 25, 60);
+  ctx.fillText("U23 = " + energy.U23.toExponential(2) + " J", 25, 85);
+  ctx.fillText("Total U = " + energy.U.toExponential(2) + " J", 25, 115);
+
+  ctx.fillText("Minimum point:", 25, 150);
+  ctx.fillText("x = " + min.x.toFixed(2) + " m", 25, 175);
+  ctx.fillText("y = " + min.y.toFixed(2) + " m", 25, 200);
+  ctx.fillText("Umin = " + min.U.toExponential(2) + " J", 25, 225);
+
+  document.getElementById("info").innerHTML =
+    "Total energy U = " + energy.U.toExponential(3) +
+    " J | q3 position = (" + r3.x.toFixed(2) +
+    ", " + r3.y.toFixed(2) + ")";
+}
+
+function update() {
+  time += 0.03;
+
+  // q3 moves around the two fixed charges
+  r3.x = 0.0 + 1.2 * Math.cos(time);
+  r3.y = 1.2 + 0.8 * Math.sin(time);
+
+  const energy = totalEnergy();
+
+  path.push({U: energy.U});
+
+  if (path.length > 200) {
+    path.shift();
+  }
+}
+
+function animate() {
+  if (!running) return;
+
+  update();
+  draw();
+
+  anim = requestAnimationFrame(animate);
+}
+
+function start() {
+  if (!running) {
+    running = true;
+    animate();
+  }
+}
+
+function stop() {
+  running = false;
+  cancelAnimationFrame(anim);
+}
+
+function resetPositive() {
+  running = false;
+  cancelAnimationFrame(anim);
+
+  q1 = q;
+  q2 = q;
+  q3 = q;
+
+  r3 = {x: 0, y: 1.7};
+  time = 0;
+  path = [];
+
+  draw();
+}
+
+function resetOneNegative() {
+  running = false;
+  cancelAnimationFrame(anim);
+
+  q1 = q;
+  q2 = q;
+  q3 = -q;
+
+  r3 = {x: 0, y: 1.7};
+  time = 0;
+  path = [];
+
+  draw();
+}
+
+draw();
+</script>
+
+</body>
+</html>
