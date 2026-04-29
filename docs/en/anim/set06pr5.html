@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Moving Rod Induction</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0f172a;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+canvas {
+    background: white;
+    border: 3px solid #38bdf8;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#start { background: #22c55e; color: white; }
+#stop { background: #ef4444; color: white; }
+</style>
+</head>
+
+<body>
+
+<h2>Induction in a Moving Rod</h2>
+
+<canvas id="c" width="800" height="500"></canvas>
+
+<div>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+</div>
+
+<p>EMF: ℰ = B L v</p>
+
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+let running = false;
+
+// physical parameters
+const B = 0.6;
+const L = 150;
+let v = 2;
+
+// rod position
+let x = 200;
+
+// charges
+let charges = [];
+
+function initCharges() {
+    charges = [];
+    for (let i = 0; i < 12; i++) {
+        charges.push({
+            y: 120 + i * (L / 12),
+            offset: 0
+        });
+    }
+}
+
+initCharges();
+
+function drawArrow(x1,y1,x2,y2,color,label){
+    const angle = Math.atan2(y2-y1, x2-x1);
+    const head = 10;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-head*Math.cos(angle-Math.PI/6), y2-head*Math.sin(angle-Math.PI/6));
+    ctx.lineTo(x2-head*Math.cos(angle+Math.PI/6), y2-head*Math.sin(angle+Math.PI/6));
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillText(label, x2+5, y2+5);
+}
+
+function drawField() {
+    ctx.fillStyle = "#111827";
+    ctx.font = "18px Arial";
+
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 10; j++) {
+            ctx.fillText("×", 40 + i * 35, 50 + j * 40);
+        }
+    }
+
+    ctx.fillText("Magnetic field B (into screen)", 20, 30);
+}
+
+function drawRod() {
+    ctx.strokeStyle = "#2563eb";
+    ctx.lineWidth = 6;
+
+    ctx.beginPath();
+    ctx.moveTo(x, 120);
+    ctx.lineTo(x, 120 + L);
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("Rod", x - 20, 110);
+}
+
+function drawCharges() {
+    charges.forEach(c => {
+        // magnetic force shifts charges
+        if (running) {
+            c.offset += 0.3;
+            if (c.offset > 20) c.offset = 20;
+        }
+
+        // positive (top)
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(x + c.offset, c.y, 4, 0, 2*Math.PI);
+        ctx.fill();
+
+        // negative (bottom)
+        ctx.fillStyle = "blue";
+        ctx.beginPath();
+        ctx.arc(x - c.offset, c.y, 4, 0, 2*Math.PI);
+        ctx.fill();
+    });
+
+    ctx.fillStyle = "black";
+    ctx.fillText("+ charges →", x + 25, 130);
+    ctx.fillText("← - charges", x - 100, 150);
+}
+
+function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    drawField();
+    drawRod();
+    drawCharges();
+
+    // velocity arrow
+    drawArrow(x, 300, x + 80, 300, "green", "v");
+
+    // emf text
+    const emf = (0.6 * 0.25 * 4).toFixed(2);
+
+    ctx.fillStyle = "black";
+    ctx.fillText("ℰ = " + emf + " V", 600, 50);
+
+    ctx.fillText("Motion →", 600, 80);
+
+    if (running) {
+        x += v;
+
+        if (x > canvas.width - 100) {
+            x = 200;
+            initCharges();
+        }
+
+        requestAnimationFrame(draw);
+    }
+}
+
+document.getElementById("start").onclick = () => {
+    running = true;
+    draw();
+};
+
+document.getElementById("stop").onclick = () => {
+    running = false;
+};
+
+draw();
+</script>
+
+</body>
+</html>
