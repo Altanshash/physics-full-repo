@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Motion in a Central Field</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #f4f7fb;
+}
+
+canvas {
+  background: white;
+  border: 2px solid #222;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 16px;
+  margin: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Problem 7 – Motion in a Central Field</h2>
+<p>Animation of a charged particle moving in a central inverse-square field</p>
+
+<canvas id="canvas" width="800" height="550"></canvas>
+
+<div>
+  <button onclick="start()">Start</button>
+  <button onclick="stop()">Stop</button>
+  <button onclick="resetBounded()">Bounded Motion</button>
+  <button onclick="resetEscape()">Positive Energy</button>
+</div>
+
+<p id="info"></p>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const originX = canvas.width / 2;
+const originY = canvas.height / 2;
+const scale = 90;
+
+// Dimensionless constant: alpha = kqQ/m
+// Negative alpha means attractive central field
+const alpha = -1.0;
+
+let dt = 0.01;
+let running = false;
+let anim;
+
+// Particle state
+let state = {
+  x: 2,
+  y: 0,
+  vx: 0,
+  vy: 0.65
+};
+
+let path = [];
+
+function toPx(x) {
+  return originX + x * scale;
+}
+
+function toPy(y) {
+  return originY - y * scale;
+}
+
+function acceleration(x, y) {
+  const r2 = x*x + y*y;
+  const r = Math.sqrt(r2);
+
+  if (r < 0.08) {
+    return { ax: 0, ay: 0 };
+  }
+
+  const r3 = r2 * r;
+
+  const ax = alpha * x / r3;
+  const ay = alpha * y / r3;
+
+  return { ax, ay };
+}
+
+function derivatives(s) {
+  const a = acceleration(s.x, s.y);
+
+  return {
+    dx: s.vx,
+    dy: s.vy,
+    dvx: a.ax,
+    dvy: a.ay
+  };
+}
+
+function rk4Step(s, h) {
+  const k1 = derivatives(s);
+
+  const s2 = {
+    x: s.x + 0.5*h*k1.dx,
+    y: s.y + 0.5*h*k1.dy,
+    vx: s.vx + 0.5*h*k1.dvx,
+    vy: s.vy + 0.5*h*k1.dvy
+  };
+
+  const k2 = derivatives(s2);
+
+  const s3 = {
+    x: s.x + 0.5*h*k2.dx,
+    y: s.y + 0.5*h*k2.dy,
+    vx: s.vx + 0.5*h*k2.dvx,
+    vy: s.vy + 0.5*h*k2.dvy
+  };
+
+  const k3 = derivatives(s3);
+
+  const s4 = {
+    x: s.x + h*k3.dx,
+    y: s.y + h*k3.dy,
+    vx: s.vx + h*k3.dvx,
+    vy: s.vy + h*k3.dvy
+  };
+
+  const k4 = derivatives(s4);
+
+  return {
+    x: s.x + h/6*(k1.dx + 2*k2.dx + 2*k3.dx + k4.dx),
+    y: s.y + h/6*(k1.dy + 2*k2.dy + 2*k3.dy + k4.dy),
+    vx: s.vx + h/6*(k1.dvx + 2*k2.dvx + 2*k3.dvx + k4.dvx),
+    vy: s.vy + h/6*(k1.dvy + 2*k2.dvy + 2*k3.dvy + k4.dvy)
+  };
+}
+
+function energy() {
+  const r = Math.sqrt(state.x*state.x + state.y*state.y);
+  const v2 = state.vx*state.vx + state.vy*state.vy;
+
+  const K = 0.5 * v2;
+  const U = alpha / r;
+  const E = K + U;
+
+  return { K, U, E };
+}
+
+function drawArrow(x1, y1, x2, y2, color) {
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(
+    x2 - 10 * Math.cos(angle - Math.PI / 6),
+    y2 - 10 * Math.sin(angle - Math.PI / 6)
+  );
+  ctx.lineTo(
+    x2 - 10 * Math.cos(angle + Math.PI / 6),
+    y2 - 10 * Math.sin(angle + Math.PI / 6)
+  );
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+function drawFieldLines() {
+  ctx.strokeStyle = "#ddd";
+  ctx.lineWidth = 1;
+
+  for (let r = 1; r <= 4; r++) {
+    ctx.beginPath();
+    ctx.arc(originX, originY, r * scale, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  for (let angle = 0; angle < 2*Math.PI; angle += Math.PI/8) {
+    const x1 = originX + Math.cos(angle) * 30;
+    const y1 = originY + Math.sin(angle) * 30;
+    const x2 = originX + Math.cos(angle) * 330;
+    const y2 = originY + Math.sin(angle) * 330;
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  drawFieldLines();
+
+  // central charge
+  ctx.beginPath();
+  ctx.arc(originX, originY, 18, 0, Math.PI * 2);
+  ctx.fillStyle = "#e74c3c";
+  ctx.fill();
+
+  ctx.fillStyle = "white";
+  ctx.font = "20px Arial";
+  ctx.fillText("+Q", originX - 13, originY + 7);
+
+  // trajectory
+  ctx.beginPath();
+  for (let i = 0; i < path.length; i++) {
+    if (i === 0) ctx.moveTo(path[i].x, path[i].y);
+    else ctx.lineTo(path[i].x, path[i].y);
+  }
+  ctx.strokeStyle = "#0066cc";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  const px = toPx(state.x);
+  const py = toPy(state.y);
+
+  // particle
+  ctx.beginPath();
+  ctx.arc(px, py, 7, 0, Math.PI * 2);
+  ctx.fillStyle = "#111";
+  ctx.fill();
+
+  // velocity vector
+  drawArrow(px, py, px + state.vx * 60, py - state.vy * 60, "#27ae60");
+
+  // radius vector
+  drawArrow(originX, originY, px, py, "#8e44ad");
+
+  const en = energy();
+
+  ctx.fillStyle = "#111";
+  ctx.font = "16px Arial";
+  ctx.fillText("Green arrow: velocity", 20, 30);
+  ctx.fillText("Purple arrow: radius vector", 20, 55);
+  ctx.fillText("Blue curve: trajectory", 20, 80);
+  ctx.fillText("Total energy E = " + en.E.toFixed(3), 20, 110);
+
+  document.getElementById("info").innerHTML =
+    "x = " + state.x.toFixed(2) +
+    ", y = " + state.y.toFixed(2) +
+    " | vx = " + state.vx.toFixed(2) +
+    ", vy = " + state.vy.toFixed(2) +
+    " | Total energy = " + en.E.toFixed(3);
+}
+
+function update() {
+  state = rk4Step(state, dt);
+  path.push({ x: toPx(state.x), y: toPy(state.y) });
+
+  if (path.length > 3000) {
+    path.shift();
+  }
+}
+
+function animate() {
+  if (!running) return;
+
+  for (let i = 0; i < 4; i++) {
+    update();
+  }
+
+  draw();
+  anim = requestAnimationFrame(animate);
+}
+
+function start() {
+  if (!running) {
+    running = true;
+    animate();
+  }
+}
+
+function stop() {
+  running = false;
+  cancelAnimationFrame(anim);
+}
+
+function resetBounded() {
+  running = false;
+  cancelAnimationFrame(anim);
+
+  state = {
+    x: 2,
+    y: 0,
+    vx: 0,
+    vy: 0.65
+  };
+
+  path = [];
+  draw();
+}
+
+function resetEscape() {
+  running = false;
+  cancelAnimationFrame(anim);
+
+  state = {
+    x: 2,
+    y: 0,
+    vx: 0,
+    vy: 1.2
+  };
+
+  path = [];
+  draw();
+}
+
+draw();
+</script>
+
+</body>
+</html>
