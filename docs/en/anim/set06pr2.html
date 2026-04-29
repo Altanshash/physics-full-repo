@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Velocity Selector Animation</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0f172a;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+canvas {
+    background: white;
+    border: 3px solid #38bdf8;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#start { background: #22c55e; color: white; }
+#stop { background: #ef4444; color: white; }
+</style>
+</head>
+
+<body>
+
+<h2>Velocity Selector (Crossed Fields)</h2>
+
+<canvas id="c" width="800" height="450"></canvas>
+
+<div>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+</div>
+
+<p>
+Only particles with velocity <b>v = E / B</b> move straight.
+</p>
+
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+// constants
+const q = 1;
+const m = 1;
+const E = 2;   // electric field
+const B = 1;   // magnetic field
+
+// try changing this:
+// const vx = 2; // straight line (E/B = 2)
+let vx = 1.5;   // change to see deflection
+
+let vy = 0;
+
+let x = 50;
+let y = canvas.height / 2;
+
+let running = false;
+
+function drawArrow(x1,y1,x2,y2,color,label){
+    const angle = Math.atan2(y2-y1, x2-x1);
+    const head = 10;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-head*Math.cos(angle-Math.PI/6), y2-head*Math.sin(angle-Math.PI/6));
+    ctx.lineTo(x2-head*Math.cos(angle+Math.PI/6), y2-head*Math.sin(angle+Math.PI/6));
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillText(label, x2+5, y2+5);
+}
+
+function step(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // forces
+    const Fy_E = q * E;
+    const Fy_B = -q * vx * B;
+
+    const Fy = Fy_E + Fy_B;
+
+    // update motion
+    const ay = Fy / m;
+
+    vy += ay * 0.1;
+    y += vy;
+    x += vx;
+
+    // particle
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(x,y,6,0,2*Math.PI);
+    ctx.fill();
+
+    // arrows
+    drawArrow(x,y,x+30,y,"green","v");
+    drawArrow(x,y,x,y-40,"purple","E");
+    drawArrow(x,y,x,y+40,"orange","B");
+
+    // text
+    ctx.fillStyle = "black";
+    ctx.fillText("Correct velocity: v = E/B = 2", 20,20);
+    ctx.fillText("Current v = " + vx.toFixed(2), 20,40);
+
+    if(running && x < canvas.width){
+        requestAnimationFrame(step);
+    }
+}
+
+document.getElementById("start").onclick = ()=>{
+    running = true;
+    step();
+};
+
+document.getElementById("stop").onclick = ()=>{
+    running = false;
+};
+
+// initial draw
+step();
+</script>
+
+</body>
+</html>
