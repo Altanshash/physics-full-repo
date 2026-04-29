@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dipole in External Field</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #f4f7fb;
+}
+
+canvas {
+  background: white;
+  border: 2px solid #222;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 16px;
+  margin: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Problem 9 – Dipole in an External Field</h2>
+<p>Dipole rotates and oscillates in a uniform electric field</p>
+
+<canvas id="canvas" width="850" height="520"></canvas>
+
+<div>
+  <button onclick="start()">Start</button>
+  <button onclick="stop()">Stop</button>
+  <button onclick="reset()">Reset</button>
+</div>
+
+<p id="info"></p>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const cx = canvas.width / 2;
+const cy = canvas.height / 2;
+
+let theta = Math.PI / 3;
+let omega = 0;
+
+const dt = 0.03;
+
+// dimensionless constant: pE0 / I
+const alpha = 1.2;
+
+let running = false;
+let anim;
+let time = 0;
+
+let graph = [];
+
+function drawArrow(x1, y1, x2, y2, color) {
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(
+    x2 - 10 * Math.cos(angle - Math.PI / 6),
+    y2 - 10 * Math.sin(angle - Math.PI / 6)
+  );
+  ctx.lineTo(
+    x2 - 10 * Math.cos(angle + Math.PI / 6),
+    y2 - 10 * Math.sin(angle + Math.PI / 6)
+  );
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+function update() {
+  // equation: theta'' + alpha sin(theta) = 0
+  const angularAcceleration = -alpha * Math.sin(theta);
+
+  omega += angularAcceleration * dt;
+  theta += omega * dt;
+
+  time += dt;
+
+  const energy = 0.5 * omega * omega - alpha * Math.cos(theta);
+
+  graph.push({ t: time, theta: theta, energy: energy });
+
+  if (graph.length > 260) {
+    graph.shift();
+  }
+}
+
+function drawField() {
+  ctx.fillStyle = "#111";
+  ctx.font = "16px Arial";
+  ctx.fillText("Uniform electric field E₀", 40, 40);
+
+  for (let y = 80; y <= 430; y += 55) {
+    drawArrow(40, y, 240, y, "#27ae60");
+  }
+}
+
+function drawDipole() {
+  const L = 170;
+
+  const x1 = cx - Math.cos(theta) * L / 2;
+  const y1 = cy + Math.sin(theta) * L / 2;
+
+  const x2 = cx + Math.cos(theta) * L / 2;
+  const y2 = cy - Math.sin(theta) * L / 2;
+
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.strokeStyle = "#222";
+  ctx.lineWidth = 5;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(x1, y1, 24, 0, Math.PI * 2);
+  ctx.fillStyle = "#3498db";
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(x2, y2, 24, 0, Math.PI * 2);
+  ctx.fillStyle = "#e74c3c";
+  ctx.fill();
+
+  ctx.fillStyle = "white";
+  ctx.font = "bold 22px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("-", x1, y1);
+  ctx.fillText("+", x2, y2);
+
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+
+  // dipole moment p points from negative to positive
+  drawArrow(x1, y1, x2, y2, "#8e44ad");
+
+  ctx.fillStyle = "#8e44ad";
+  ctx.font = "16px Arial";
+  ctx.fillText("dipole moment p", cx + 20, cy - 95);
+
+  // angle arc
+  ctx.beginPath();
+  ctx.arc(cx, cy, 55, 0, -theta, theta > 0);
+  ctx.strokeStyle = "#f39c12";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.fillStyle = "#f39c12";
+  ctx.fillText("θ", cx + 65, cy - 20);
+}
+
+function drawGraph() {
+  const x0 = 560;
+  const y0 = 390;
+  const w = 240;
+  const h = 150;
+
+  ctx.strokeStyle = "#222";
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+  ctx.moveTo(x0, y0);
+  ctx.lineTo(x0, y0 - h);
+  ctx.lineTo(x0 + w, y0 - h);
+  ctx.stroke();
+
+  ctx.fillStyle = "#111";
+  ctx.font = "14px Arial";
+  ctx.fillText("Angle θ vs time", x0, y0 - h - 12);
+
+  ctx.beginPath();
+
+  for (let i = 0; i < graph.length; i++) {
+    const px = x0 + i * w / Math.max(1, graph.length - 1);
+    const py = y0 - h / 2 - graph[i].theta * 45;
+
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+
+  ctx.strokeStyle = "#0066cc";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = "#111";
+  ctx.fillText("θ", x0 - 15, y0 - h);
+  ctx.fillText("t", x0 + w - 10, y0 + 18);
+}
+
+function drawEnergyCurve() {
+  const x0 = 560;
+  const y0 = 170;
+  const w = 240;
+  const h = 100;
+
+  ctx.strokeStyle = "#222";
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+  ctx.moveTo(x0, y0);
+  ctx.lineTo(x0, y0 - h);
+  ctx.lineTo(x0 + w, y0 - h);
+  ctx.stroke();
+
+  ctx.fillStyle = "#111";
+  ctx.font = "14px Arial";
+  ctx.fillText("Potential energy", x0, y0 - h - 12);
+  ctx.fillText("U(θ) = -pE₀ cosθ", x0, y0 - h + 6);
+
+  ctx.beginPath();
+
+  for (let i = 0; i <= w; i++) {
+    const th = -Math.PI + (2 * Math.PI * i / w);
+    const U = -Math.cos(th);
+    const px = x0 + i;
+    const py = y0 - h / 2 - U * 35;
+
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+
+  ctx.strokeStyle = "#e67e22";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  const currentX = x0 + ((theta + Math.PI) / (2 * Math.PI)) * w;
+  const currentU = -Math.cos(theta);
+  const currentY = y0 - h / 2 - currentU * 35;
+
+  ctx.beginPath();
+  ctx.arc(currentX, currentY, 5, 0, Math.PI * 2);
+  ctx.fillStyle = "red";
+  ctx.fill();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  drawField();
+  drawDipole();
+  drawEnergyCurve();
+  drawGraph();
+
+  const torque = -Math.sin(theta);
+  const potential = -Math.cos(theta);
+
+  ctx.fillStyle = "#111";
+  ctx.font = "16px Arial";
+  ctx.fillText("Torque τ = -pE₀ sinθ", 40, 470);
+  ctx.fillText("Potential energy U = -pE₀ cosθ", 40, 495);
+
+  document.getElementById("info").innerHTML =
+    "θ = " + theta.toFixed(3) +
+    " rad | angular velocity = " + omega.toFixed(3) +
+    " | torque ∝ " + torque.toFixed(3) +
+    " | U ∝ " + potential.toFixed(3);
+}
+
+function animate() {
+  if (!running) return;
+
+  update();
+  draw();
+
+  anim = requestAnimationFrame(animate);
+}
+
+function start() {
+  if (!running) {
+    running = true;
+    animate();
+  }
+}
+
+function stop() {
+  running = false;
+  cancelAnimationFrame(anim);
+}
+
+function reset() {
+  running = false;
+  cancelAnimationFrame(anim);
+
+  theta = Math.PI / 3;
+  omega = 0;
+  time = 0;
+  graph = [];
+
+  draw();
+}
+
+draw();
+</script>
+
+</body>
+</html>
