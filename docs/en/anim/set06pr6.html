@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rod on Rails in Magnetic Field</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0f172a;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+canvas {
+    background: white;
+    border: 3px solid #38bdf8;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 22px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#start {
+    background: #22c55e;
+    color: white;
+}
+
+#stop {
+    background: #ef4444;
+    color: white;
+}
+
+#reset {
+    background: #3b82f6;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Problem 6 – Rod on Metal Rails in a Magnetic Field</h2>
+
+<canvas id="canvas" width="950" height="560"></canvas>
+
+<div>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <button id="reset">Reset</button>
+</div>
+
+<p>
+    Motional EMF: <b>ℰ = BLv</b> |
+    Current: <b>I = BLv / R</b> |
+    Braking force: <b>F = −B²L²v / R</b>
+</p>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let running = false;
+let animationId;
+
+// Given values
+const m = 0.20;
+const L = 0.30;
+const B = 0.80;
+const R = 0.50;
+const alphaDeg = 25;
+const g = 9.81;
+
+const alpha = alphaDeg * Math.PI / 180;
+
+// Physics
+const k = (B * B * L * L) / R;
+const vTerminal = (m * g * R * Math.sin(alpha)) / (B * B * L * L);
+
+// Animation values
+let s = 0;
+let v = 0;
+let t = 0;
+
+// Drawing geometry
+const originX = 140;
+const originY = 430;
+const railLength = 600;
+const railGap = 130;
+const scale = 18;
+
+function resetMotion() {
+    s = 0;
+    v = 0;
+    t = 0;
+}
+
+function pointOnIncline(distance, offset) {
+    const ux = Math.cos(alpha);
+    const uy = -Math.sin(alpha);
+
+    const nx = -Math.sin(alpha);
+    const ny = -Math.cos(alpha);
+
+    return {
+        x: originX + distance * ux + offset * nx,
+        y: originY + distance * uy + offset * ny
+    };
+}
+
+function drawArrow(x1, y1, x2, y2, color, label, labelOffsetX = 8, labelOffsetY = 5) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const head = 10;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(
+        x2 - head * Math.cos(angle - Math.PI / 6),
+        y2 - head * Math.sin(angle - Math.PI / 6)
+    );
+    ctx.lineTo(
+        x2 - head * Math.cos(angle + Math.PI / 6),
+        y2 - head * Math.sin(angle + Math.PI / 6)
+    );
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.font = "16px Arial";
+    ctx.fillText(label, x2 + labelOffsetX, y2 + labelOffsetY);
+}
+
+function drawMagneticField() {
+    ctx.fillStyle = "#111827";
+    ctx.font = "20px Arial";
+
+    for (let x = 70; x <= 760; x += 70) {
+        for (let y = 70; y <= 500; y += 70) {
+            ctx.fillText("×", x, y);
+        }
+    }
+
+    ctx.font = "16px Arial";
+    ctx.fillText("Magnetic field B into the screen", 610, 35);
+}
+
+function drawRails() {
+    const rail1Start = pointOnIncline(0, -railGap / 2);
+    const rail1End = pointOnIncline(railLength, -railGap / 2);
+
+    const rail2Start = pointOnIncline(0, railGap / 2);
+    const rail2End = pointOnIncline(railLength, railGap / 2);
+
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 5;
+
+    ctx.beginPath();
+    ctx.moveTo(rail1Start.x, rail1Start.y);
+    ctx.lineTo(rail1End.x, rail1End.y);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(rail2Start.x, rail2Start.y);
+    ctx.lineTo(rail2End.x, rail2End.y);
+    ctx.stroke();
+
+    // fixed connection at left side
+    ctx.strokeStyle = "#64748b";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(rail1Start.x, rail1Start.y);
+    ctx.lineTo(rail2Start.x, rail2Start.y);
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+    ctx.fillText("rails", rail1End.x - 10, rail1End.y - 15);
+}
+
+function drawRod() {
+    const distance = 90 + s * scale;
+
+    const p1 = pointOnIncline(distance, -railGap / 2);
+    const p2 = pointOnIncline(distance, railGap / 2);
+
+    ctx.strokeStyle = "#2563eb";
+    ctx.lineWidth = 8;
+
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+    ctx.fillText("sliding rod", p1.x - 35, p1.y - 18);
+
+    const mid = pointOnIncline(distance, 0);
+
+    // velocity arrow along rails
+    drawArrow(
+        mid.x,
+        mid.y,
+        mid.x + 75 * Math.cos(alpha),
+        mid.y - 75 * Math.sin(alpha),
+        "#16a34a",
+        "v",
+        10,
+        -8
+    );
+
+    // braking force opposite motion
+    drawArrow(
+        mid.x,
+        mid.y + 35,
+        mid.x - 70 * Math.cos(alpha),
+        mid.y + 35 + 70 * Math.sin(alpha),
+        "#dc2626",
+        "F brake",
+        -65,
+        20
+    );
+
+    // current arrow on rod
+    drawArrow(
+        p1.x + 12,
+        p1.y + 12,
+        p2.x - 12,
+        p2.y - 12,
+        "#f97316",
+        "I",
+        12,
+        15
+    );
+}
+
+function drawInclineLabel() {
+    ctx.strokeStyle = "#94a3b8";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(originX, originY);
+    ctx.lineTo(originX + 130, originY);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(originX, originY, 70, -alpha, 0);
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+    ctx.fillText("α = 25°", originX + 80, originY - 12);
+}
+
+function drawInfoBox() {
+    const emf = B * L * v;
+    const current = emf / R;
+    const brake = (B * B * L * L / R) * v;
+
+    ctx.fillStyle = "rgba(255,255,255,0.92)";
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.roundRect(760, 70, 165, 230, 12);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "15px Arial";
+
+    ctx.fillText("Values", 805, 100);
+    ctx.fillText("m = 0.20 kg", 775, 130);
+    ctx.fillText("L = 0.30 m", 775, 155);
+    ctx.fillText("B = 0.80 T", 775, 180);
+    ctx.fillText("R = 0.50 Ω", 775, 205);
+
+    ctx.fillText("v = " + v.toFixed(2) + " m/s", 775, 235);
+    ctx.fillText("ℰ = " + emf.toFixed(2) + " V", 775, 260);
+    ctx.fillText("I = " + current.toFixed(2) + " A", 775, 285);
+
+    ctx.fillText("v∞ ≈ " + vTerminal.toFixed(2) + " m/s", 775, 325);
+}
+
+function drawExplanation() {
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+
+    ctx.fillText("Gravity pulls the rod down the rails.", 40, 35);
+    ctx.fillText("Motion in magnetic field creates EMF and current.", 40, 60);
+    ctx.fillText("The magnetic force acts opposite to motion, so the rod reaches terminal velocity.", 40, 85);
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawMagneticField();
+    drawExplanation();
+    drawRails();
+    drawRod();
+    drawInclineLabel();
+    drawInfoBox();
+
+    if (running) {
+        const dt = 0.04;
+
+        const acceleration =
+            g * Math.sin(alpha) -
+            (B * B * L * L / (m * R)) * v;
+
+        v += acceleration * dt;
+        s += v * dt;
+        t += dt;
+
+        if (90 + s * scale > railLength - 20) {
+            resetMotion();
+        }
+
+        animationId = requestAnimationFrame(draw);
+    }
+}
+
+document.getElementById("start").onclick = function () {
+    if (!running) {
+        running = true;
+        draw();
+    }
+};
+
+document.getElementById("stop").onclick = function () {
+    running = false;
+    cancelAnimationFrame(animationId);
+};
+
+document.getElementById("reset").onclick = function () {
+    running = false;
+    cancelAnimationFrame(animationId);
+    resetMotion();
+    draw();
+};
+
+draw();
+</script>
+
+</body>
+</html>
