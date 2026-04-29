@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Loop Entering Magnetic Field</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0f172a;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+canvas {
+    background: white;
+    border: 3px solid #38bdf8;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#start { background: #22c55e; color: white; }
+#stop { background: #ef4444; color: white; }
+#reset { background: #3b82f6; color: white; }
+</style>
+</head>
+
+<body>
+
+<h2>Loop Entering Magnetic Field</h2>
+
+<canvas id="c" width="900" height="520"></canvas>
+
+<div>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <button id="reset">Reset</button>
+</div>
+
+<p>EMF appears only while loop is entering field</p>
+
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+let running = false;
+let x = 80;
+
+// parameters
+const a = 160; // loop width
+const b = 100; // height
+const B = 0.6;
+const v = 2;
+const R = 0.4;
+
+function drawField() {
+    ctx.fillStyle = "#111827";
+    ctx.font = "20px Arial";
+
+    for (let i = 0; i < 15; i++) {
+        for (let j = 0; j < 8; j++) {
+            ctx.fillText("×", 450 + i * 30, 80 + j * 50);
+        }
+    }
+
+    ctx.fillText("Magnetic field region", 600, 40);
+}
+
+function drawLoop() {
+    ctx.strokeStyle = "#2563eb";
+    ctx.lineWidth = 5;
+
+    ctx.strokeRect(x, 200, a, b);
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("Loop", x, 190);
+}
+
+function drawArrow(x1,y1,x2,y2,color,label){
+    const angle = Math.atan2(y2-y1, x2-x1);
+    const head = 10;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-head*Math.cos(angle-Math.PI/6), y2-head*Math.sin(angle-Math.PI/6));
+    ctx.lineTo(x2-head*Math.cos(angle+Math.PI/6), y2-head*Math.sin(angle+Math.PI/6));
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillText(label, x2+5, y2+5);
+}
+
+function compute() {
+    let overlap = Math.max(0, Math.min(a, x + a - 450));
+
+    let emf = B * b * v * (overlap > 0 && overlap < a ? 1 : 0);
+    let current = emf / R;
+
+    return {overlap, emf, current};
+}
+
+function drawInfo(emf, current) {
+    ctx.fillStyle = "#111827";
+    ctx.font = "18px Arial";
+
+    ctx.fillText("ℰ = " + emf.toFixed(2) + " V", 40, 50);
+    ctx.fillText("I = " + current.toFixed(2) + " A", 40, 80);
+
+    if (emf > 0) {
+        ctx.fillText("Induction ON (entering)", 40, 110);
+    } else {
+        ctx.fillText("No induction", 40, 110);
+    }
+}
+
+function drawCurrentDirection(emf) {
+    if (emf === 0) return;
+
+    // clockwise current (Lenz law)
+    drawArrow(x,200, x+50,200, "orange","");
+    drawArrow(x+160,200, x+160,250, "orange","");
+    drawArrow(x+160,300, x+110,300, "orange","");
+    drawArrow(x,300, x,250, "orange","I");
+}
+
+function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    drawField();
+    drawLoop();
+
+    let {overlap, emf, current} = compute();
+
+    drawInfo(emf, current);
+    drawCurrentDirection(emf);
+
+    // velocity arrow
+    drawArrow(x+80,350, x+160,350, "green","v");
+
+    if (running) {
+        x += v;
+
+        if (x > 800) x = 80;
+
+        requestAnimationFrame(draw);
+    }
+}
+
+document.getElementById("start").onclick = ()=>{
+    running = true;
+    draw();
+};
+
+document.getElementById("stop").onclick = ()=>{
+    running = false;
+};
+
+document.getElementById("reset").onclick = ()=>{
+    running = false;
+    x = 80;
+    draw();
+};
+
+draw();
+</script>
+
+</body>
+</html>
