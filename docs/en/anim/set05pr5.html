@@ -31,7 +31,6 @@
   .info {
     font-size: 17px;
     margin-top: 10px;
-    line-height: 1.7;
   }
 </style>
 </head>
@@ -41,7 +40,7 @@
 <h2>Capacitor: Energy and Force Animation</h2>
 <p>Parallel plate capacitor: electric field, energy density, and attractive force</p>
 
-<canvas id="canvas" width="950" height="520"></canvas>
+<canvas id="canvas" width="1000" height="540"></canvas>
 
 <div>
   <button onclick="start()">Start</button>
@@ -71,7 +70,7 @@ function values(U) {
   const W = 0.5 * C * U * U;
   const w = 0.5 * eps0 * E * E;
   const F = 0.5 * eps0 * E * E * S;
-  return {E, W, w, F};
+  return { E, W, w, F };
 }
 
 function drawArrow(x1, y1, x2, y2, color) {
@@ -86,13 +85,26 @@ function drawArrow(x1, y1, x2, y2, color) {
 
   ctx.beginPath();
   ctx.moveTo(x2, y2);
-  ctx.lineTo(x2 - 10 * Math.cos(angle - Math.PI / 6),
-             y2 - 10 * Math.sin(angle - Math.PI / 6));
-  ctx.lineTo(x2 - 10 * Math.cos(angle + Math.PI / 6),
-             y2 - 10 * Math.sin(angle + Math.PI / 6));
+  ctx.lineTo(
+    x2 - 10 * Math.cos(angle - Math.PI / 6),
+    y2 - 10 * Math.sin(angle - Math.PI / 6)
+  );
+  ctx.lineTo(
+    x2 - 10 * Math.cos(angle + Math.PI / 6),
+    y2 - 10 * Math.sin(angle + Math.PI / 6)
+  );
   ctx.closePath();
   ctx.fillStyle = color;
   ctx.fill();
+}
+
+function currentFunction(label, u) {
+  const val = values(u);
+
+  if (label.includes("Energy")) return val.W;
+  if (label.includes("Force")) return val.F;
+
+  return val.E;
 }
 
 function drawGraph(x0, y0, width, height, label, formula, maxY, currentY) {
@@ -107,11 +119,12 @@ function drawGraph(x0, y0, width, height, label, formula, maxY, currentY) {
 
   ctx.fillStyle = "#111";
   ctx.font = "14px Arial";
-  ctx.fillText(label, x0, y0 - height - 18);
-  ctx.fillText(formula, x0, y0 - height - 2);
+  ctx.fillText(label, x0, y0 - height - 20);
+  ctx.fillText(formula, x0, y0 - height - 5);
   ctx.fillText("U", x0 + width - 10, y0 + 18);
 
   ctx.beginPath();
+
   for (let i = 0; i <= width; i++) {
     const u = Umax * i / width;
     const val = currentFunction(label, u);
@@ -135,51 +148,43 @@ function drawGraph(x0, y0, width, height, label, formula, maxY, currentY) {
   ctx.fill();
 }
 
-function currentFunction(label, u) {
-  const val = values(u);
-
-  if (label.includes("Energy")) return val.W;
-  if (label.includes("Density")) return val.w;
-  if (label.includes("Force")) return val.F;
-  return val.E;
-}
-
 function drawCapacitor(E, F) {
-  const left = 160;
-  const right = 360;
-  const top = 130;
-  const bottom = 350;
+  const left = 230;
+  const right = 430;
+  const top = 145;
+  const bottom = 365;
 
   ctx.fillStyle = "#222";
   ctx.fillRect(left, top, 14, bottom - top);
   ctx.fillRect(right, top, 14, bottom - top);
 
   ctx.fillStyle = "#e74c3c";
-  ctx.font = "22px Arial";
-  ctx.fillText("+", left - 28, 245);
+  ctx.font = "24px Arial";
+  ctx.fillText("+", left - 35, 265);
 
   ctx.fillStyle = "#2980b9";
-  ctx.fillText("-", right + 28, 245);
+  ctx.fillText("-", right + 35, 265);
 
   ctx.font = "15px Arial";
   ctx.fillStyle = "#111";
-  ctx.fillText("Positive plate", left - 55, top - 15);
-  ctx.fillText("Negative plate", right - 45, top - 15);
+  ctx.fillText("Positive plate", left - 40, top - 25);
+  ctx.fillText("Negative plate", right - 45, top - 25);
 
-  for (let y = 155; y <= 325; y += 35) {
+  for (let y = 170; y <= 340; y += 35) {
     drawArrow(left + 35, y, right - 20, y, "#27ae60");
   }
 
   ctx.fillStyle = "#111";
   ctx.font = "16px Arial";
-  ctx.fillText("Electric field E", 220, 385);
+  ctx.fillText("Electric field E", 255, 405);
 
-  const forceLength = Math.min(70, 20 + F / 8.85e-4 * 50);
+  const forceLength = Math.min(70, 20 + (F / 8.85e-4) * 50);
 
-  drawArrow(left - 45, 245, left - 45 + forceLength, 245, "#8e44ad");
-  drawArrow(right + 65, 245, right + 65 - forceLength, 245, "#8e44ad");
+  drawArrow(left - 70, 265, left - 70 + forceLength, 265, "#8e44ad");
+  drawArrow(right + 90, 265, right + 90 - forceLength, 265, "#8e44ad");
 
-  ctx.fillText("Attractive force", 190, 420);
+  ctx.fillStyle = "#8e44ad";
+  ctx.fillText("Attractive force", 260, 440);
 }
 
 function draw() {
@@ -189,19 +194,38 @@ function draw() {
 
   drawCapacitor(val.E, val.F);
 
-  drawGraph(500, 190, 330, 110, "Energy W", "W = 1/2 C U²", values(Umax).W, val.W);
-  drawGraph(500, 370, 330, 110, "Force F", "F = 1/2 ε₀ E² S", values(Umax).F, val.F);
+  drawGraph(
+    560,
+    200,
+    340,
+    110,
+    "Energy W",
+    "W = 1/2 C U²",
+    values(Umax).W,
+    val.W
+  );
+
+  drawGraph(
+    560,
+    390,
+    340,
+    110,
+    "Force F",
+    "F = 1/2 ε₀ E² S",
+    values(Umax).F,
+    val.F
+  );
 
   ctx.fillStyle = "#111";
   ctx.font = "16px Arial";
 
   ctx.fillText("Live values:", 40, 40);
   ctx.fillText("U = " + U.toFixed(1) + " V", 40, 70);
-  ctx.fillText("C = " + C.toExponential(2) + " F", 40, 95);
-  ctx.fillText("E = " + val.E.toExponential(2) + " V/m", 40, 120);
-  ctx.fillText("W = " + val.W.toExponential(2) + " J", 40, 145);
-  ctx.fillText("w = " + val.w.toExponential(2) + " J/m³", 40, 170);
-  ctx.fillText("F = " + val.F.toExponential(2) + " N", 40, 195);
+  ctx.fillText("C = " + C.toExponential(2) + " F", 40, 100);
+  ctx.fillText("E = " + val.E.toExponential(2) + " V/m", 40, 130);
+  ctx.fillText("W = " + val.W.toExponential(2) + " J", 40, 160);
+  ctx.fillText("w = " + val.w.toExponential(2) + " J/m³", 40, 190);
+  ctx.fillText("F = " + val.F.toExponential(2) + " N", 40, 220);
 
   document.getElementById("info").innerHTML =
     "At U = " + U.toFixed(1) + " V: " +
