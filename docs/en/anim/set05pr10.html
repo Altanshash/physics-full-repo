@@ -29,9 +29,9 @@ button, input {
 <body>
 
 <h2>Problem 10 – Field Flux Verification of Gauss's Law</h2>
-<p>Numerical flux approaches analytical result as grid points increase.</p>
+<p>Numerical flux approaches the analytical result as grid points increase.</p>
 
-<canvas id="canvas" width="900" height="560"></canvas>
+<canvas id="canvas" width="950" height="620"></canvas>
 
 <div>
   <button onclick="start()">Start</button>
@@ -78,8 +78,14 @@ function drawArrow(x1, y1, x2, y2, color) {
 
   ctx.beginPath();
   ctx.moveTo(x2, y2);
-  ctx.lineTo(x2 - 9 * Math.cos(angle - Math.PI / 6), y2 - 9 * Math.sin(angle - Math.PI / 6));
-  ctx.lineTo(x2 - 9 * Math.cos(angle + Math.PI / 6), y2 - 9 * Math.sin(angle + Math.PI / 6));
+  ctx.lineTo(
+    x2 - 9 * Math.cos(angle - Math.PI / 6),
+    y2 - 9 * Math.sin(angle - Math.PI / 6)
+  );
+  ctx.lineTo(
+    x2 - 9 * Math.cos(angle + Math.PI / 6),
+    y2 - 9 * Math.sin(angle + Math.PI / 6)
+  );
   ctx.closePath();
   ctx.fillStyle = color;
   ctx.fill();
@@ -106,8 +112,10 @@ function drawSphere(cx, cy, R) {
 function drawField(cx, cy, R) {
   for (let i = 0; i < N; i++) {
     const angle = (2 * Math.PI * i) / N;
-    const x1 = cx + Math.cos(angle) * 25;
-    const y1 = cy + Math.sin(angle) * 25;
+
+    const x1 = cx + Math.cos(angle) * 30;
+    const y1 = cy + Math.sin(angle) * 30;
+
     const x2 = cx + Math.cos(angle) * (R + 45);
     const y2 = cy + Math.sin(angle) * (R + 45);
 
@@ -118,6 +126,7 @@ function drawField(cx, cy, R) {
 function drawGridPoints(cx, cy, R) {
   for (let i = 0; i < N; i++) {
     const angle = (2 * Math.PI * i) / N;
+
     const x = cx + Math.cos(angle) * R;
     const y = cy + Math.sin(angle) * R;
 
@@ -129,10 +138,14 @@ function drawGridPoints(cx, cy, R) {
 }
 
 function drawGraph() {
-  const x0 = 570;
-  const y0 = 390;
-  const w = 260;
-  const h = 240;
+  const x0 = 560;
+  const y0 = 520;
+  const w = 320;
+  const h = 250;
+
+  ctx.fillStyle = "#111";
+  ctx.font = "16px Arial";
+  ctx.fillText("Numerical flux vs grid N", x0, 210);
 
   ctx.strokeStyle = "#222";
   ctx.lineWidth = 2;
@@ -144,10 +157,13 @@ function drawGraph() {
   ctx.stroke();
 
   ctx.fillStyle = "#111";
-  ctx.font = "15px Arial";
-  ctx.fillText("Numerical flux vs grid N", x0, y0 - h - 18);
+  ctx.font = "14px Arial";
+  ctx.fillText("Flux", x0 - 45, y0 - h + 5);
+  ctx.fillText("N", x0 + w - 10, y0 + 22);
 
+  // Exact flux line
   ctx.strokeStyle = "#e74c3c";
+  ctx.lineWidth = 2;
   ctx.setLineDash([6, 4]);
   ctx.beginPath();
   ctx.moveTo(x0, y0 - h);
@@ -156,8 +172,10 @@ function drawGraph() {
   ctx.setLineDash([]);
 
   ctx.fillStyle = "#e74c3c";
-  ctx.fillText("Exact flux", x0 + 160, y0 - h - 5);
+  ctx.font = "14px Arial";
+  ctx.fillText("Exact flux", x0 + 185, y0 - h - 10);
 
+  // Numerical flux curve
   ctx.beginPath();
 
   for (let n = 4; n <= 80; n += 2) {
@@ -165,14 +183,18 @@ function drawGraph() {
     const px = x0 + ((n - 4) / (80 - 4)) * w;
     const py = y0 - (flux / exactFlux) * h;
 
-    if (n === 4) ctx.moveTo(px, py);
-    else ctx.lineTo(px, py);
+    if (n === 4) {
+      ctx.moveTo(px, py);
+    } else {
+      ctx.lineTo(px, py);
+    }
   }
 
   ctx.strokeStyle = "#0066cc";
   ctx.lineWidth = 3;
   ctx.stroke();
 
+  // Current point
   const currentFlux = numericalFlux(N);
   const currentX = x0 + ((N - 4) / (80 - 4)) * w;
   const currentY = y0 - (currentFlux / exactFlux) * h;
@@ -181,30 +203,48 @@ function drawGraph() {
   ctx.arc(currentX, currentY, 6, 0, Math.PI * 2);
   ctx.fillStyle = "#111";
   ctx.fill();
+}
 
+function drawTexts(flux, error) {
   ctx.fillStyle = "#111";
-  ctx.fillText("N", x0 + w - 10, y0 + 18);
-  ctx.fillText("Flux", x0 - 35, y0 - h + 5);
+  ctx.font = "16px Arial";
+
+  ctx.fillText("Sphere around a point charge", 50, 45);
+  ctx.fillText("Blue dots: surface grid points", 50, 70);
+  ctx.fillText("Green arrows: electric field", 50, 95);
+
+  ctx.fillText("Gauss's law:", 560, 45);
+
+  ctx.font = "15px Arial";
+  ctx.fillText("Exact flux = q / ε₀", 560, 75);
+  ctx.fillText("Exact flux = " + exactFlux.toExponential(3) + " N·m²/C", 560, 105);
+  ctx.fillText("Numerical flux = " + flux.toExponential(3) + " N·m²/C", 560, 135);
+  ctx.fillText("Error = " + error.toFixed(3) + " %", 560, 165);
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const cx = 260;
-  const cy = 280;
-  const R = 130;
+  const cy = 320;
+  const R = 135;
+
+  const flux = numericalFlux(N);
+  const error = errorPercent(N);
+
+  drawTexts(flux, error);
 
   drawSphere(cx, cy, R);
   drawField(cx, cy, R);
   drawGridPoints(cx, cy, R);
 
   ctx.beginPath();
-  ctx.arc(cx, cy, 16, 0, Math.PI * 2);
+  ctx.arc(cx, cy, 17, 0, Math.PI * 2);
   ctx.fillStyle = "#e74c3c";
   ctx.fill();
 
   ctx.fillStyle = "white";
-  ctx.font = "bold 20px Arial";
+  ctx.font = "bold 18px Arial";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText("+q", cx, cy);
@@ -213,20 +253,6 @@ function draw() {
   ctx.textBaseline = "alphabetic";
 
   drawGraph();
-
-  const flux = numericalFlux(N);
-  const error = errorPercent(N);
-
-  ctx.fillStyle = "#111";
-  ctx.font = "16px Arial";
-  ctx.fillText("Sphere around a point charge", 70, 40);
-  ctx.fillText("Blue dots: surface grid points", 70, 65);
-  ctx.fillText("Green arrows: electric field", 70, 90);
-
-  ctx.fillText("Exact flux = q / ε₀", 570, 60);
-  ctx.fillText("Exact flux = " + exactFlux.toExponential(3) + " N·m²/C", 570, 85);
-  ctx.fillText("Numerical flux = " + flux.toExponential(3) + " N·m²/C", 570, 110);
-  ctx.fillText("Error = " + error.toFixed(3) + " %", 570, 135);
 
   document.getElementById("info").innerHTML =
     "N = " + N +
@@ -282,6 +308,7 @@ function setGrid() {
   if (N < 4) N = 4;
   if (N > 80) N = 80;
 
+  document.getElementById("gridInput").value = N;
   draw();
 }
 
