@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rotating Loop Induction</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0f172a;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+canvas {
+    background: white;
+    border: 3px solid #38bdf8;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#start {
+    background: #22c55e;
+    color: white;
+}
+
+#stop {
+    background: #ef4444;
+    color: white;
+}
+
+.info {
+    font-size: 17px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Problem 4 – Rotating Loop (Induction)</h2>
+
+<canvas id="canvas" width="900" height="520"></canvas>
+
+<div>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+</div>
+
+<div class="info">
+    <p>
+        Magnetic flux: <b>Φ(t) = NBS cos(ωt)</b> |
+        Induced EMF: <b>ℰ(t) = NBSω sin(ωt)</b>
+    </p>
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let running = false;
+let t = 0;
+
+// simple normalized constants
+const N = 1;
+const B = 1;
+const S = 1;
+const omega = 0.04;
+
+const cx = 230;
+const cy = 250;
+
+function drawArrow(x1, y1, x2, y2, color, label) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const head = 10;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(
+        x2 - head * Math.cos(angle - Math.PI / 6),
+        y2 - head * Math.sin(angle - Math.PI / 6)
+    );
+    ctx.lineTo(
+        x2 - head * Math.cos(angle + Math.PI / 6),
+        y2 - head * Math.sin(angle + Math.PI / 6)
+    );
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.font = "17px Arial";
+    ctx.fillText(label, x2 + 8, y2 + 5);
+}
+
+function drawGraph(originX, originY, title, color, type) {
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(originX, originY);
+    ctx.lineTo(originX + 360, originY);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(originX, originY - 80);
+    ctx.lineTo(originX, originY + 80);
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+    ctx.fillText(title, originX, originY - 95);
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+
+    for (let i = 0; i <= 360; i++) {
+        const time = (t - 180 + i) * 0.05;
+        let value;
+
+        if (type === "flux") {
+            value = Math.cos(time);
+        } else {
+            value = Math.sin(time);
+        }
+
+        const x = originX + i;
+        const y = originY - value * 60;
+
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+
+    ctx.stroke();
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const angle = omega * t;
+
+    const flux = N * B * S * Math.cos(angle);
+    const emf = N * B * S * omega * Math.sin(angle);
+
+    // Magnetic field arrows
+    for (let y = 90; y <= 410; y += 70) {
+        drawArrow(40, y, 420, y, "#16a34a", "B");
+    }
+
+    // Rotating loop
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    ctx.strokeStyle = "#2563eb";
+    ctx.lineWidth = 5;
+
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 35 * Math.abs(Math.cos(angle)) + 8, 120, 0, 0, 2 * Math.PI);
+    ctx.stroke();
+
+    // loop axis
+    ctx.strokeStyle = "#64748b";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -140);
+    ctx.lineTo(0, 140);
+    ctx.stroke();
+
+    ctx.restore();
+
+    // Normal vector of loop
+    const nx = cx + 120 * Math.cos(angle);
+    const ny = cy - 40 * Math.sin(angle);
+
+    drawArrow(cx, cy, nx, ny, "#dc2626", "n");
+
+    // Rotation symbol
+    ctx.strokeStyle = "#f97316";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 150, -0.7, 0.7);
+    ctx.stroke();
+
+    drawArrow(cx + 115, cy - 95, cx + 130, cy - 70, "#f97316", "ω");
+
+    // Graphs
+    drawGraph(500, 170, "Magnetic flux Φ(t) = NBS cos(ωt)", "#2563eb", "flux");
+    drawGraph(500, 390, "Induced EMF ℰ(t) = NBSω sin(ωt)", "#dc2626", "emf");
+
+    // Text
+    ctx.fillStyle = "#111827";
+    ctx.font = "17px Arial";
+
+    ctx.fillText("Blue loop: rotating conducting loop", 30, 30);
+    ctx.fillText("Green arrows: magnetic field B", 30, 55);
+    ctx.fillText("Red arrow: normal vector n", 30, 80);
+
+    ctx.fillText("Φ = " + flux.toFixed(2), 30, 455);
+    ctx.fillText("ℰ = " + emf.toFixed(3), 30, 480);
+    ctx.fillText("ℰ₀ = NBSω", 30, 505);
+
+    if (running) {
+        t += 1;
+        requestAnimationFrame(draw);
+    }
+}
+
+document.getElementById("start").onclick = function() {
+    running = true;
+    draw();
+};
+
+document.getElementById("stop").onclick = function() {
+    running = false;
+};
+
+draw();
+</script>
+
+</body>
+</html>
