@@ -2,10 +2,9 @@
 
 ## Problem Statement
 
-A rectangular conducting loop with resistance $R$ has dimensions $a \times b$.  
-It is pulled with constant velocity $v$ into a region of uniform magnetic field $B$ perpendicular to the loop.
+A rectangular conducting loop with resistance $R$ has dimensions $a \times b$.
 
-The magnetic field exists only in a certain region of space.
+It is pulled with constant velocity $v$ into a region of uniform magnetic field $B$ perpendicular to the loop.
 
 For example data:
 
@@ -83,7 +82,7 @@ $$
 A(t) = b x(t)
 $$
 
-So:
+Substitute $x(t) = vt$:
 
 $$
 A(t) = bvt
@@ -101,7 +100,7 @@ $$
 \Phi(t) = Bbvt
 $$
 
-This formula is valid while:
+This formula is valid for:
 
 $$
 0 \le vt \le a
@@ -135,6 +134,8 @@ $$
 \mathcal{E} = -\frac{d}{dt}(Bbvt)
 $$
 
+Since $B$, $b$, and $v$ are constants:
+
 $$
 \mathcal{E} = -Bbv
 $$
@@ -155,11 +156,13 @@ $$
 |\mathcal{E}| = 0.09\ \text{V}
 $$
 
-Current:
+The current is:
 
 $$
 I = \frac{|\mathcal{E}|}{R}
 $$
+
+Substitute:
 
 $$
 I = \frac{0.09}{0.40}
@@ -173,7 +176,7 @@ $$
 
 ## 3. Braking Force
 
-The magnetic braking force is:
+The magnetic force on the vertical side of the loop inside the magnetic field is:
 
 $$
 F = I b B
@@ -185,14 +188,14 @@ $$
 I = \frac{Bbv}{R}
 $$
 
-So:
+Then:
 
 $$
-F(v) = \frac{Bbv}{R} bB
+F(v) = \frac{Bbv}{R} \cdot bB
 $$
 
 $$
-F(v) = \frac{B^2b^2v}{R}
+F(v) = \frac{B^2 b^2 v}{R}
 $$
 
 Substitute the values:
@@ -206,6 +209,10 @@ F = \frac{0.36 \cdot 0.01 \cdot 1.5}{0.40}
 $$
 
 $$
+F = \frac{0.0054}{0.40}
+$$
+
+$$
 F = 0.0135\ \text{N}
 $$
 
@@ -215,7 +222,7 @@ This force acts opposite to the motion.
 
 ## 4. Mechanical Power and Thermal Power
 
-Mechanical power needed to maintain constant velocity is:
+The mechanical power required to maintain constant velocity is:
 
 $$
 P_{\text{mech}} = Fv
@@ -225,3 +232,134 @@ Substitute:
 
 $$
 P_{\text{mech}} = 0.0135 \cdot 1.5
+$$
+
+$$
+P_{\text{mech}} = 0.02025\ \text{W}
+$$
+
+The thermal power is:
+
+$$
+P_{\text{thermal}} = I^2R
+$$
+
+Substitute:
+
+$$
+P_{\text{thermal}} = (0.225)^2 \cdot 0.40
+$$
+
+$$
+P_{\text{thermal}} = 0.050625 \cdot 0.40
+$$
+
+$$
+P_{\text{thermal}} = 0.02025\ \text{W}
+$$
+
+Therefore:
+
+$$
+P_{\text{mech}} = P_{\text{thermal}}
+$$
+
+or:
+
+$$
+Fv = I^2R
+$$
+
+---
+
+## 5. Current When the Loop Is Entirely in the Field
+
+When the loop is completely inside the uniform magnetic field, the magnetic flux becomes constant:
+
+$$
+\Phi = BS
+$$
+
+Since the flux does not change:
+
+$$
+\frac{d\Phi}{dt} = 0
+$$
+
+Therefore:
+
+$$
+\mathcal{E} = 0
+$$
+
+and
+
+$$
+I = 0
+$$
+
+So, when the loop is entirely in the uniform magnetic field, the current disappears.
+
+---
+
+## Final Conclusion
+
+During the entering phase, the magnetic flux is:
+
+$$
+\Phi(t) = Bbvt
+$$
+
+The induced EMF is:
+
+$$
+|\mathcal{E}| = Bbv
+$$
+
+For the given values:
+
+$$
+|\mathcal{E}| = 0.09\ \text{V}
+$$
+
+The current is:
+
+$$
+I = 0.225\ \text{A}
+$$
+
+The braking force is:
+
+$$
+F(v) = \frac{B^2b^2v}{R}
+$$
+
+For the given values:
+
+$$
+F = 0.0135\ \text{N}
+$$
+
+The mechanical power is:
+
+$$
+P_{\text{mech}} = 0.02025\ \text{W}
+$$
+
+The thermal power is:
+
+$$
+I^2R = 0.02025\ \text{W}
+$$
+
+So:
+
+$$
+P_{\text{mech}} = I^2R
+$$
+
+When the loop is completely inside the magnetic field:
+
+$$
+I = 0
+$$
