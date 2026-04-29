@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Motion in Uniform Electric Field</title>
+
+<style>
+  body {
+    text-align: center;
+    font-family: Arial;
+    background: #f4f7fb;
+  }
+
+  canvas {
+    background: white;
+    border: 2px solid black;
+    margin-top: 20px;
+  }
+
+  button {
+    padding: 10px 15px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<h2>Particle Motion in Uniform Electric Field</h2>
+
+<canvas id="canvas" width="800" height="400"></canvas>
+
+<div>
+  <button onclick="start()">Start</button>
+  <button onclick="stop()">Stop</button>
+  <button onclick="reset()">Reset</button>
+</div>
+
+<p id="info"></p>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+// physical constants
+const m = 0.02;
+const q = 1e-3;
+const Ex = 30;
+const Ey = 100;
+
+// acceleration
+const ax = q * Ex / m; // 1.5
+const ay = q * Ey / m; // 5
+
+// initial conditions
+const v0x = 20;
+const v0y = 0;
+
+let t = 0;
+let dt = 0.02;
+let running = false;
+let anim;
+
+// scaling
+const scale = 15;
+
+// draw grid
+function drawField() {
+  for (let i = 50; i < 800; i += 80) {
+    drawArrow(i, 50, i + Ex, 50 + Ey);
+  }
+}
+
+function drawArrow(x1, y1, x2, y2) {
+  let angle = Math.atan2(y2 - y1, x2 - x1);
+
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.strokeStyle = "#888";
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(
+    x2 - 10 * Math.cos(angle - Math.PI / 6),
+    y2 - 10 * Math.sin(angle - Math.PI / 6)
+  );
+  ctx.lineTo(
+    x2 - 10 * Math.cos(angle + Math.PI / 6),
+    y2 - 10 * Math.sin(angle + Math.PI / 6)
+  );
+  ctx.closePath();
+  ctx.fillStyle = "#888";
+  ctx.fill();
+}
+
+// trajectory list
+let path = [];
+
+function position(t) {
+  let x = v0x * t + 0.5 * ax * t * t;
+  let y = v0y * t + 0.5 * ay * t * t;
+  return { x, y };
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  drawField();
+
+  let pos = position(t);
+
+  // scale and shift
+  let px = 50 + pos.x * scale;
+  let py = 350 - pos.y * scale;
+
+  path.push({ x: px, y: py });
+
+  // draw trajectory
+  ctx.beginPath();
+  for (let i = 0; i < path.length; i++) {
+    if (i === 0) ctx.moveTo(path[i].x, path[i].y);
+    else ctx.lineTo(path[i].x, path[i].y);
+  }
+  ctx.strokeStyle = "blue";
+  ctx.stroke();
+
+  // particle
+  ctx.beginPath();
+  ctx.arc(px, py, 6, 0, Math.PI * 2);
+  ctx.fillStyle = "red";
+  ctx.fill();
+
+  // velocity
+  let vx = v0x + ax * t;
+  let vy = v0y + ay * t;
+
+  drawArrow(px, py, px + vx * 3, py - vy * 3);
+
+  document.getElementById("info").innerHTML =
+    "t = " + t.toFixed(2) +
+    " s | v = (" + vx.toFixed(2) + ", " + vy.toFixed(2) + ") m/s";
+}
+
+function animate() {
+  if (!running) return;
+
+  t += dt;
+
+  if (t > 3) running = false;
+
+  draw();
+  anim = requestAnimationFrame(animate);
+}
+
+function start() {
+  if (!running) {
+    running = true;
+    animate();
+  }
+}
+
+function stop() {
+  running = false;
+  cancelAnimationFrame(anim);
+}
+
+function reset() {
+  running = false;
+  cancelAnimationFrame(anim);
+  t = 0;
+  path = [];
+  draw();
+}
+
+draw();
+</script>
+
+</body>
+</html>
