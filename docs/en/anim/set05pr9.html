@@ -32,7 +32,7 @@ button {
 <h2>Problem 9 – Dipole in an External Field</h2>
 <p>Dipole rotates and oscillates in a uniform electric field</p>
 
-<canvas id="canvas" width="850" height="520"></canvas>
+<canvas id="canvas" width="900" height="560"></canvas>
 
 <div>
   <button onclick="start()">Start</button>
@@ -46,21 +46,18 @@ button {
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const cx = canvas.width / 2;
-const cy = canvas.height / 2;
+const cx = 430;
+const cy = 290;
 
 let theta = Math.PI / 3;
 let omega = 0;
 
 const dt = 0.03;
-
-// dimensionless constant: pE0 / I
 const alpha = 1.2;
 
 let running = false;
 let anim;
 let time = 0;
-
 let graph = [];
 
 function drawArrow(x1, y1, x2, y2, color) {
@@ -75,29 +72,23 @@ function drawArrow(x1, y1, x2, y2, color) {
 
   ctx.beginPath();
   ctx.moveTo(x2, y2);
-  ctx.lineTo(
-    x2 - 10 * Math.cos(angle - Math.PI / 6),
-    y2 - 10 * Math.sin(angle - Math.PI / 6)
-  );
-  ctx.lineTo(
-    x2 - 10 * Math.cos(angle + Math.PI / 6),
-    y2 - 10 * Math.sin(angle + Math.PI / 6)
-  );
+  ctx.lineTo(x2 - 10 * Math.cos(angle - Math.PI / 6),
+             y2 - 10 * Math.sin(angle - Math.PI / 6));
+  ctx.lineTo(x2 - 10 * Math.cos(angle + Math.PI / 6),
+             y2 - 10 * Math.sin(angle + Math.PI / 6));
   ctx.closePath();
   ctx.fillStyle = color;
   ctx.fill();
 }
 
 function update() {
-  // equation: theta'' + alpha sin(theta) = 0
   const angularAcceleration = -alpha * Math.sin(theta);
 
   omega += angularAcceleration * dt;
   theta += omega * dt;
-
   time += dt;
 
-  const energy = 0.5 * omega * omega - alpha * Math.cos(theta);
+  const energy = -Math.cos(theta);
 
   graph.push({ t: time, theta: theta, energy: energy });
 
@@ -111,8 +102,8 @@ function drawField() {
   ctx.font = "16px Arial";
   ctx.fillText("Uniform electric field E₀", 40, 40);
 
-  for (let y = 80; y <= 430; y += 55) {
-    drawArrow(40, y, 240, y, "#27ae60");
+  for (let y = 80; y <= 460; y += 55) {
+    drawArrow(40, y, 250, y, "#27ae60");
   }
 }
 
@@ -152,14 +143,12 @@ function drawDipole() {
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
 
-  // dipole moment p points from negative to positive
   drawArrow(x1, y1, x2, y2, "#8e44ad");
 
   ctx.fillStyle = "#8e44ad";
   ctx.font = "16px Arial";
-  ctx.fillText("dipole moment p", cx + 20, cy - 95);
+  ctx.fillText("dipole moment p", cx + 25, cy - 105);
 
-  // angle arc
   ctx.beginPath();
   ctx.arc(cx, cy, 55, 0, -theta, theta > 0);
   ctx.strokeStyle = "#f39c12";
@@ -167,52 +156,19 @@ function drawDipole() {
   ctx.stroke();
 
   ctx.fillStyle = "#f39c12";
-  ctx.fillText("θ", cx + 65, cy - 20);
-}
-
-function drawGraph() {
-  const x0 = 560;
-  const y0 = 390;
-  const w = 240;
-  const h = 150;
-
-  ctx.strokeStyle = "#222";
-  ctx.lineWidth = 2;
-
-  ctx.beginPath();
-  ctx.moveTo(x0, y0);
-  ctx.lineTo(x0, y0 - h);
-  ctx.lineTo(x0 + w, y0 - h);
-  ctx.stroke();
-
-  ctx.fillStyle = "#111";
-  ctx.font = "14px Arial";
-  ctx.fillText("Angle θ vs time", x0, y0 - h - 12);
-
-  ctx.beginPath();
-
-  for (let i = 0; i < graph.length; i++) {
-    const px = x0 + i * w / Math.max(1, graph.length - 1);
-    const py = y0 - h / 2 - graph[i].theta * 45;
-
-    if (i === 0) ctx.moveTo(px, py);
-    else ctx.lineTo(px, py);
-  }
-
-  ctx.strokeStyle = "#0066cc";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  ctx.fillStyle = "#111";
-  ctx.fillText("θ", x0 - 15, y0 - h);
-  ctx.fillText("t", x0 + w - 10, y0 + 18);
+  ctx.fillText("θ", cx + 65, cy - 25);
 }
 
 function drawEnergyCurve() {
-  const x0 = 560;
-  const y0 = 170;
-  const w = 240;
-  const h = 100;
+  const x0 = 600;
+  const y0 = 190;
+  const w = 250;
+  const h = 95;
+
+  ctx.fillStyle = "#111";
+  ctx.font = "15px Arial";
+  ctx.fillText("Potential energy", x0, y0 - h - 30);
+  ctx.fillText("U(θ) = -pE₀ cosθ", x0, y0 - h - 10);
 
   ctx.strokeStyle = "#222";
   ctx.lineWidth = 2;
@@ -222,11 +178,6 @@ function drawEnergyCurve() {
   ctx.lineTo(x0, y0 - h);
   ctx.lineTo(x0 + w, y0 - h);
   ctx.stroke();
-
-  ctx.fillStyle = "#111";
-  ctx.font = "14px Arial";
-  ctx.fillText("Potential energy", x0, y0 - h - 12);
-  ctx.fillText("U(θ) = -pE₀ cosθ", x0, y0 - h + 6);
 
   ctx.beginPath();
 
@@ -254,21 +205,59 @@ function drawEnergyCurve() {
   ctx.fill();
 }
 
+function drawAngleGraph() {
+  const x0 = 600;
+  const y0 = 430;
+  const w = 250;
+  const h = 140;
+
+  ctx.fillStyle = "#111";
+  ctx.font = "15px Arial";
+  ctx.fillText("Angle θ vs time", x0, y0 - h - 15);
+
+  ctx.strokeStyle = "#222";
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+  ctx.moveTo(x0, y0);
+  ctx.lineTo(x0, y0 - h);
+  ctx.lineTo(x0 + w, y0 - h);
+  ctx.stroke();
+
+  ctx.beginPath();
+
+  for (let i = 0; i < graph.length; i++) {
+    const px = x0 + i * w / Math.max(1, graph.length - 1);
+    const py = y0 - h / 2 - graph[i].theta * 45;
+
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+
+  ctx.strokeStyle = "#0066cc";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = "#111";
+  ctx.fillText("θ", x0 - 18, y0 - h);
+  ctx.fillText("t", x0 + w - 10, y0 + 18);
+}
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   drawField();
   drawDipole();
   drawEnergyCurve();
-  drawGraph();
+  drawAngleGraph();
 
   const torque = -Math.sin(theta);
   const potential = -Math.cos(theta);
 
   ctx.fillStyle = "#111";
   ctx.font = "16px Arial";
-  ctx.fillText("Torque τ = -pE₀ sinθ", 40, 470);
-  ctx.fillText("Potential energy U = -pE₀ cosθ", 40, 495);
+  ctx.fillText("Torque τ = -pE₀ sinθ", 40, 505);
+  ctx.fillText("Potential energy U = -pE₀ cosθ", 40, 530);
 
   document.getElementById("info").innerHTML =
     "θ = " + theta.toFixed(3) +
