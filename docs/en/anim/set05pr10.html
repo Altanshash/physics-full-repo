@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gauss Law Flux Animation</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #f4f7fb;
+}
+
+canvas {
+  background: white;
+  border: 2px solid #222;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+button, input {
+  padding: 8px 12px;
+  margin: 8px;
+  font-size: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Problem 10 – Field Flux Verification of Gauss's Law</h2>
+<p>Numerical flux approaches analytical result as grid points increase.</p>
+
+<canvas id="canvas" width="900" height="560"></canvas>
+
+<div>
+  <button onclick="start()">Start</button>
+  <button onclick="stop()">Stop</button>
+  <button onclick="reset()">Reset</button>
+  Grid N:
+  <input id="gridInput" type="number" value="8" min="4" max="80" step="2">
+  <button onclick="setGrid()">Update Grid</button>
+</div>
+
+<p id="info"></p>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const eps0 = 8.85e-12;
+const q = 1e-6;
+const exactFlux = q / eps0;
+
+let N = 8;
+let running = false;
+let anim;
+
+function numericalFlux(N) {
+  const ratio = Math.sin(Math.PI / N) / (Math.PI / N);
+  return exactFlux * ratio;
+}
+
+function errorPercent(N) {
+  const flux = numericalFlux(N);
+  return Math.abs((flux - exactFlux) / exactFlux) * 100;
+}
+
+function drawArrow(x1, y1, x2, y2, color) {
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - 9 * Math.cos(angle - Math.PI / 6), y2 - 9 * Math.sin(angle - Math.PI / 6));
+  ctx.lineTo(x2 - 9 * Math.cos(angle + Math.PI / 6), y2 - 9 * Math.sin(angle + Math.PI / 6));
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+function drawSphere(cx, cy, R) {
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = "#222";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, R, R * 0.35, 0, 0, Math.PI * 2);
+  ctx.strokeStyle = "#aaa";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, R * 0.35, R, 0, 0, Math.PI * 2);
+  ctx.stroke();
+}
+
+function drawField(cx, cy, R) {
+  for (let i = 0; i < N; i++) {
+    const angle = (2 * Math.PI * i) / N;
+    const x1 = cx + Math.cos(angle) * 25;
+    const y1 = cy + Math.sin(angle) * 25;
+    const x2 = cx + Math.cos(angle) * (R + 45);
+    const y2 = cy + Math.sin(angle) * (R + 45);
+
+    drawArrow(x1, y1, x2, y2, "#27ae60");
+  }
+}
+
+function drawGridPoints(cx, cy, R) {
+  for (let i = 0; i < N; i++) {
+    const angle = (2 * Math.PI * i) / N;
+    const x = cx + Math.cos(angle) * R;
+    const y = cy + Math.sin(angle) * R;
+
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = "#0066cc";
+    ctx.fill();
+  }
+}
+
+function drawGraph() {
+  const x0 = 570;
+  const y0 = 390;
+  const w = 260;
+  const h = 240;
+
+  ctx.strokeStyle = "#222";
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+  ctx.moveTo(x0, y0);
+  ctx.lineTo(x0, y0 - h);
+  ctx.lineTo(x0 + w, y0 - h);
+  ctx.stroke();
+
+  ctx.fillStyle = "#111";
+  ctx.font = "15px Arial";
+  ctx.fillText("Numerical flux vs grid N", x0, y0 - h - 18);
+
+  ctx.strokeStyle = "#e74c3c";
+  ctx.setLineDash([6, 4]);
+  ctx.beginPath();
+  ctx.moveTo(x0, y0 - h);
+  ctx.lineTo(x0 + w, y0 - h);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = "#e74c3c";
+  ctx.fillText("Exact flux", x0 + 160, y0 - h - 5);
+
+  ctx.beginPath();
+
+  for (let n = 4; n <= 80; n += 2) {
+    const flux = numericalFlux(n);
+    const px = x0 + ((n - 4) / (80 - 4)) * w;
+    const py = y0 - (flux / exactFlux) * h;
+
+    if (n === 4) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+
+  ctx.strokeStyle = "#0066cc";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  const currentFlux = numericalFlux(N);
+  const currentX = x0 + ((N - 4) / (80 - 4)) * w;
+  const currentY = y0 - (currentFlux / exactFlux) * h;
+
+  ctx.beginPath();
+  ctx.arc(currentX, currentY, 6, 0, Math.PI * 2);
+  ctx.fillStyle = "#111";
+  ctx.fill();
+
+  ctx.fillStyle = "#111";
+  ctx.fillText("N", x0 + w - 10, y0 + 18);
+  ctx.fillText("Flux", x0 - 35, y0 - h + 5);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const cx = 260;
+  const cy = 280;
+  const R = 130;
+
+  drawSphere(cx, cy, R);
+  drawField(cx, cy, R);
+  drawGridPoints(cx, cy, R);
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, 16, 0, Math.PI * 2);
+  ctx.fillStyle = "#e74c3c";
+  ctx.fill();
+
+  ctx.fillStyle = "white";
+  ctx.font = "bold 20px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("+q", cx, cy);
+
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+
+  drawGraph();
+
+  const flux = numericalFlux(N);
+  const error = errorPercent(N);
+
+  ctx.fillStyle = "#111";
+  ctx.font = "16px Arial";
+  ctx.fillText("Sphere around a point charge", 70, 40);
+  ctx.fillText("Blue dots: surface grid points", 70, 65);
+  ctx.fillText("Green arrows: electric field", 70, 90);
+
+  ctx.fillText("Exact flux = q / ε₀", 570, 60);
+  ctx.fillText("Exact flux = " + exactFlux.toExponential(3) + " N·m²/C", 570, 85);
+  ctx.fillText("Numerical flux = " + flux.toExponential(3) + " N·m²/C", 570, 110);
+  ctx.fillText("Error = " + error.toFixed(3) + " %", 570, 135);
+
+  document.getElementById("info").innerHTML =
+    "N = " + N +
+    " | Numerical flux = " + flux.toExponential(3) +
+    " | Exact flux = " + exactFlux.toExponential(3) +
+    " | Error = " + error.toFixed(3) + "%";
+}
+
+function animate() {
+  if (!running) return;
+
+  N += 2;
+
+  if (N > 80) {
+    N = 80;
+    running = false;
+  }
+
+  document.getElementById("gridInput").value = N;
+  draw();
+
+  anim = requestAnimationFrame(() => {
+    setTimeout(animate, 150);
+  });
+}
+
+function start() {
+  if (!running) {
+    running = true;
+    animate();
+  }
+}
+
+function stop() {
+  running = false;
+  cancelAnimationFrame(anim);
+}
+
+function reset() {
+  running = false;
+  cancelAnimationFrame(anim);
+  N = 8;
+  document.getElementById("gridInput").value = N;
+  draw();
+}
+
+function setGrid() {
+  running = false;
+  cancelAnimationFrame(anim);
+
+  N = Number(document.getElementById("gridInput").value);
+
+  if (N < 4) N = 4;
+  if (N > 80) N = 80;
+
+  draw();
+}
+
+draw();
+</script>
+
+</body>
+</html>
