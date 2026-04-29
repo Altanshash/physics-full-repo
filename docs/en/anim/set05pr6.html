@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>2D Field Animation</title>
+<title>2D Electric Field Animation</title>
 
 <style>
 body {
@@ -20,6 +20,8 @@ canvas {
 button {
   padding: 10px;
   margin: 10px;
+  font-size: 16px;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -42,73 +44,116 @@ const ctx = canvas.getContext("2d");
 
 const k = 9e9;
 const scale = 80;
-const originX = canvas.width/2;
-const originY = canvas.height/2;
+const originX = canvas.width / 2;
+const originY = canvas.height / 2;
 
+// Charges
 let charges = [
-  {q: 3e-6, x:-2, y:0},
-  {q:-2e-6, x:2, y:0},
-  {q: 2e-6, x:0, y:2}
+  {q: 3e-6, x: -2, y: 0},
+  {q: -2e-6, x: 2, y: 0},
+  {q: 2e-6, x: 0, y: 2}
 ];
 
-// test particle
-let p = {
-  x: -1,
-  y: 1,
-  vx: 0,
-  vy: 0
-};
+// Test particle
+let p = {x: -1, y: 1, vx: 0, vy: 0};
+
+// Trajectory
+let path = [];
 
 let running = false;
 
-function toPx(x){ return originX + x*scale; }
-function toPy(y){ return originY - y*scale; }
+function toPx(x) { return originX + x * scale; }
+function toPy(y) { return originY - y * scale; }
 
-function field(x,y){
-  let Ex=0, Ey=0;
+// Electric field
+function field(x, y) {
+  let Ex = 0, Ey = 0;
 
-  for(let c of charges){
+  for (let c of charges) {
     let dx = x - c.x;
     let dy = y - c.y;
     let r2 = dx*dx + dy*dy;
 
-    if(r2 < 0.05) continue;
+    if (r2 < 0.05) continue;
 
     let r = Math.sqrt(r2);
-    let r3 = r2*r;
+    let r3 = r2 * r;
 
-    Ex += k*c.q*dx/r3;
-    Ey += k*c.q*dy/r3;
+    Ex += k * c.q * dx / r3;
+    Ey += k * c.q * dy / r3;
   }
 
-  return {Ex,Ey};
+  return {Ex, Ey};
 }
 
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+// Draw arrow
+function drawArrow(x1, y1, x2, y2) {
+  let angle = Math.atan2(y2 - y1, x2 - x1);
 
-  // draw charges
-  for(let c of charges){
-    ctx.beginPath();
-    ctx.arc(toPx(c.x), toPy(c.y), 15, 0, Math.PI*2);
-    ctx.fillStyle = c.q>0 ? "red":"blue";
-    ctx.fill();
-
-    ctx.fillStyle="white";
-    ctx.fillText(c.q>0?"+":"-", toPx(c.x)-4, toPy(c.y)+4);
-  }
-
-  // draw particle
   ctx.beginPath();
-  ctx.arc(toPx(p.x), toPy(p.y), 6, 0, Math.PI*2);
-  ctx.fillStyle="black";
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.strokeStyle = "green";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(
+    x2 - 8 * Math.cos(angle - Math.PI/6),
+    y2 - 8 * Math.sin(angle - Math.PI/6)
+  );
+  ctx.lineTo(
+    x2 - 8 * Math.cos(angle + Math.PI/6),
+    y2 - 8 * Math.sin(angle + Math.PI/6)
+  );
+  ctx.closePath();
+  ctx.fillStyle = "green";
   ctx.fill();
 }
 
-function update(){
-  let E = field(p.x,p.y);
+// Draw everything
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // simple physics
+  // Draw charges
+  for (let c of charges) {
+    ctx.beginPath();
+    ctx.arc(toPx(c.x), toPy(c.y), 15, 0, Math.PI*2);
+    ctx.fillStyle = c.q > 0 ? "red" : "blue";
+    ctx.fill();
+
+    ctx.fillStyle = "white";
+    ctx.font = "16px Arial";
+    ctx.fillText(c.q > 0 ? "+" : "-", toPx(c.x)-5, toPy(c.y)+5);
+  }
+
+  // Draw trajectory
+  ctx.beginPath();
+  for (let i = 0; i < path.length; i++) {
+    if (i === 0) ctx.moveTo(path[i].x, path[i].y);
+    else ctx.lineTo(path[i].x, path[i].y);
+  }
+  ctx.strokeStyle = "black";
+  ctx.stroke();
+
+  // Draw particle
+  let px = toPx(p.x);
+  let py = toPy(p.y);
+
+  ctx.beginPath();
+  ctx.arc(px, py, 6, 0, Math.PI*2);
+  ctx.fillStyle = "black";
+  ctx.fill();
+
+  // Draw velocity vector
+  drawArrow(px, py, px + p.vx * 2, py - p.vy * 2);
+}
+
+// Physics update
+function update() {
+  let E = field(p.x, p.y);
+
   let ax = E.Ex * 1e-6;
   let ay = E.Ey * 1e-6;
 
@@ -117,10 +162,13 @@ function update(){
 
   p.x += p.vx * 0.02;
   p.y += p.vy * 0.02;
+
+  path.push({x: toPx(p.x), y: toPy(p.y)});
 }
 
-function animate(){
-  if(!running) return;
+// Animation loop
+function animate() {
+  if (!running) return;
 
   update();
   draw();
@@ -128,21 +176,24 @@ function animate(){
   requestAnimationFrame(animate);
 }
 
-function start(){
+// Controls
+function start() {
   running = true;
   animate();
 }
 
-function stop(){
+function stop() {
   running = false;
 }
 
-function reset(){
+function reset() {
   running = false;
-  p = {x:-1, y:1, vx:0, vy:0};
+  p = {x: -1, y: 1, vx: 0, vy: 0};
+  path = [];
   draw();
 }
 
+// Initial draw
 draw();
 </script>
 
