@@ -10,17 +10,17 @@
 
 Find:
 
-1. Equations of motion
+1. Equations of motion and analytical solution
 2. Motion trajectory
-3. Time when $v_y = 50 \ \text{m/s}$
-4. Kinetic energy after $t=0.05 \ \text{s}$
+3. Time to reach $v_y = 50 \ \text{m/s}$
+4. Kinetic energy after $t = 0.05 \ \text{s}$
 5. Energy balance check
 
 ---
 
 ## Solution
 
-Force in electric field:
+Force:
 
 ```math
 \mathbf{F}=q\mathbf{E}
