@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Magnetic Moment of a Loop</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0f172a;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+canvas {
+    background: white;
+    border: 3px solid #38bdf8;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#start {
+    background: #22c55e;
+    color: white;
+}
+
+#stop {
+    background: #ef4444;
+    color: white;
+}
+
+.info {
+    font-size: 17px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Problem 3 – Magnetic Moment of a Loop</h2>
+
+<canvas id="canvas" width="800" height="500"></canvas>
+
+<div>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+</div>
+
+<div class="info">
+    <p>
+        Magnetic moment: <b>μ = NIS</b> |
+        Torque: <b>M = μB sinθ</b> |
+        Potential energy: <b>U = −μB cosθ</b>
+    </p>
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let running = false;
+let angle = Math.PI * 0.75;
+let angularVelocity = 0;
+
+const cx = canvas.width / 2;
+const cy = canvas.height / 2;
+
+const B = 1;
+const mu = 1;
+
+function drawArrow(x1, y1, x2, y2, color, label) {
+    const angleArrow = Math.atan2(y2 - y1, x2 - x1);
+    const head = 12;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 4;
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(
+        x2 - head * Math.cos(angleArrow - Math.PI / 6),
+        y2 - head * Math.sin(angleArrow - Math.PI / 6)
+    );
+    ctx.lineTo(
+        x2 - head * Math.cos(angleArrow + Math.PI / 6),
+        y2 - head * Math.sin(angleArrow + Math.PI / 6)
+    );
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.font = "18px Arial";
+    ctx.fillText(label, x2 + 8, y2 + 8);
+}
+
+function drawLoop() {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+
+    ctx.strokeStyle = "#2563eb";
+    ctx.lineWidth = 5;
+
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 45, 110, 0, 0, 2 * Math.PI);
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Magnetic field B
+    for (let y = 80; y <= 420; y += 70) {
+        drawArrow(80, y, 720, y, "#16a34a", "B");
+    }
+
+    // Loop
+    drawLoop();
+
+    // Magnetic moment vector
+    const muLength = 140;
+    const mux = cx + muLength * Math.cos(angle);
+    const muy = cy + muLength * Math.sin(angle);
+
+    drawArrow(cx, cy, mux, muy, "#dc2626", "μ");
+
+    // Angle arc
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 55, 0, angle, angle < 0);
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "18px Arial";
+    ctx.fillText("θ", cx + 65, cy + 25);
+
+    // Torque and energy
+    const thetaDeg = Math.abs(angle * 180 / Math.PI);
+    const torque = mu * B * Math.sin(angle);
+    const energy = -mu * B * Math.cos(angle);
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "17px Arial";
+
+    ctx.fillText("Magnetic field B →", 30, 35);
+    ctx.fillText("Red arrow: magnetic moment μ", 30, 60);
+    ctx.fillText("Blue loop: current loop", 30, 85);
+
+    ctx.fillText("θ = " + thetaDeg.toFixed(1) + "°", 30, 420);
+    ctx.fillText("M = μB sinθ = " + torque.toFixed(2), 30, 445);
+    ctx.fillText("U = -μB cosθ = " + energy.toFixed(2), 30, 470);
+
+    ctx.fillText("Stable position: θ = 0°", 540, 420);
+    ctx.fillText("Unstable position: θ = 180°", 540, 445);
+    ctx.fillText("Maximum torque: θ = 90°", 540, 470);
+
+    if (running) {
+        // torque tries to rotate μ toward B
+        const acceleration = -0.01 * Math.sin(angle);
+
+        angularVelocity += acceleration;
+        angularVelocity *= 0.98;
+        angle += angularVelocity;
+
+        requestAnimationFrame(draw);
+    }
+}
+
+document.getElementById("start").onclick = function() {
+    running = true;
+    draw();
+};
+
+document.getElementById("stop").onclick = function() {
+    running = false;
+};
+
+draw();
+</script>
+
+</body>
+</html>
