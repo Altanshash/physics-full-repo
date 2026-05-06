@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Problem 8 – Self-Induction</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0f172a;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+canvas {
+    background: white;
+    border: 3px solid #38bdf8;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 22px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#start { background: #22c55e; color: white; }
+#stop { background: #ef4444; color: white; }
+#reset { background: #3b82f6; color: white; }
+</style>
+</head>
+
+<body>
+
+<h2>Problem 8 – Self-Induction in an RL Circuit</h2>
+
+<canvas id="canvas" width="900" height="540"></canvas>
+
+<div>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <button id="reset">Reset</button>
+</div>
+
+<p>
+    Current: <b>I(t) = I₀e<sup>−t/τ</sup></b> |
+    Time constant: <b>τ = L/R</b> |
+    Energy: <b>W = ½LI₀²</b>
+</p>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let running = false;
+let animationId;
+let t = 0;
+
+// Given values
+const L = 0.20;
+const R = 5.0;
+const U = 12;
+
+const I0 = U / R;          // 2.4 A
+const tau = L / R;         // 0.04 s
+const W0 = 0.5 * L * I0 * I0;
+
+function reset() {
+    t = 0;
+}
+
+function drawArrow(x1, y1, x2, y2, color, label) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const head = 10;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - head * Math.cos(angle - Math.PI / 6),
+               y2 - head * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(x2 - head * Math.cos(angle + Math.PI / 6),
+               y2 - head * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.font = "16px Arial";
+    ctx.fillText(label, x2 + 8, y2 + 5);
+}
+
+function drawCircuit(I) {
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 4;
+
+    // wires
+    ctx.beginPath();
+    ctx.moveTo(120, 160);
+    ctx.lineTo(300, 160);
+    ctx.lineTo(300, 360);
+    ctx.lineTo(120, 360);
+    ctx.lineTo(120, 160);
+    ctx.stroke();
+
+    // resistor
+    ctx.strokeStyle = "#dc2626";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(300, 210);
+    for (let i = 0; i < 6; i++) {
+        ctx.lineTo(285, 220 + i * 15);
+        ctx.lineTo(315, 227 + i * 15);
+    }
+    ctx.lineTo(300, 310);
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "17px Arial";
+    ctx.fillText("R = 5 Ω", 325, 265);
+
+    // inductor coil
+    ctx.strokeStyle = "#2563eb";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+
+    let startX = 135;
+    for (let i = 0; i < 6; i++) {
+        ctx.arc(startX + i * 22, 360, 11, Math.PI, 0, false);
+    }
+
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("L = 0.20 H", 125, 405);
+
+    // switch open
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(120, 160);
+    ctx.lineTo(170, 125);
+    ctx.stroke();
+
+    ctx.fillText("switch opened at t = 0", 80, 115);
+
+    // current arrow
+    if (I > 0.05) {
+        drawArrow(145, 160, 230, 160, "#16a34a", "I");
+    }
+
+    // magnetic field around coil
+    const glow = Math.max(0, I / I0);
+    ctx.strokeStyle = `rgba(37, 99, 235, ${0.2 + 0.6 * glow})`;
+    ctx.lineWidth = 2;
+
+    for (let r = 25; r <= 70; r += 18) {
+        ctx.beginPath();
+        ctx.ellipse(190, 360, r, r / 2, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+    }
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("Magnetic field energy decreases", 80, 455);
+}
+
+function drawGraph(originX, originY, title, color, type) {
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(originX, originY);
+    ctx.lineTo(originX + 390, originY);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(originX, originY - 90);
+    ctx.lineTo(originX, originY + 10);
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+    ctx.fillText(title, originX, originY - 105);
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+
+    for (let px = 0; px <= 390; px++) {
+        const time = px / 260;
+        let value;
+
+        if (type === "current") {
+            value = Math.exp(-time / tau);
+        } else {
+            value = Math.exp(-2 * time / tau);
+        }
+
+        const x = originX + px;
+        const y = originY - value * 80;
+
+        if (px === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+
+    ctx.stroke();
+
+    // moving marker
+    const markerX = originX + Math.min(t * 260, 390);
+    let markerValue;
+
+    if (type === "current") {
+        markerValue = Math.exp(-t / tau);
+    } else {
+        markerValue = Math.exp(-2 * t / tau);
+    }
+
+    const markerY = originY - markerValue * 80;
+
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(markerX, markerY, 5, 0, 2 * Math.PI);
+    ctx.fill();
+}
+
+function drawInfo(I, UL, W) {
+    ctx.fillStyle = "rgba(255,255,255,0.95)";
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.roundRect(610, 345, 250, 150, 12);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+
+    ctx.fillText("I₀ = U/R = 2.4 A", 630, 375);
+    ctx.fillText("τ = L/R = 0.040 s", 630, 400);
+    ctx.fillText("I(t) = " + I.toFixed(2) + " A", 630, 425);
+    ctx.fillText("U_L(t) = " + UL.toFixed(2) + " V", 630, 450);
+    ctx.fillText("W(t) = " + W.toFixed(3) + " J", 630, 475);
+}
+
+function drawExplanation() {
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+
+    ctx.fillText("After disconnection, the inductor tries to keep current flowing.", 40, 35);
+    ctx.fillText("Current decreases exponentially, and magnetic energy becomes Joule heat in R.", 40, 60);
+    ctx.fillText("A large voltage can appear if current is interrupted very quickly.", 40, 85);
+}
+
+function drawSpark(I) {
+    if (t < 0.08) {
+        ctx.strokeStyle = "#f97316";
+        ctx.lineWidth = 3;
+
+        ctx.beginPath();
+        ctx.moveTo(135, 145);
+        ctx.lineTo(150, 130);
+        ctx.lineTo(145, 150);
+        ctx.lineTo(165, 132);
+        ctx.stroke();
+
+        ctx.fillStyle = "#f97316";
+        ctx.font = "16px Arial";
+        ctx.fillText("overvoltage spark", 170, 135);
+    }
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const I = I0 * Math.exp(-t / tau);
+    const UL = -R * I;
+    const W = 0.5 * L * I * I;
+
+    drawExplanation();
+    drawCircuit(I);
+    drawSpark(I);
+
+    drawGraph(460, 190, "Current decay: I(t)", "#16a34a", "current");
+    drawGraph(460, 315, "Magnetic energy decay: W(t)", "#2563eb", "energy");
+
+    drawInfo(I, UL, W);
+
+    if (running) {
+        t += 0.0015;
+
+        if (t > 0.18) {
+            running = false;
+        }
+
+        animationId = requestAnimationFrame(draw);
+    }
+}
+
+document.getElementById("start").onclick = function () {
+    if (!running) {
+        running = true;
+        draw();
+    }
+};
+
+document.getElementById("stop").onclick = function () {
+    running = false;
+    cancelAnimationFrame(animationId);
+};
+
+document.getElementById("reset").onclick = function () {
+    running = false;
+    cancelAnimationFrame(animationId);
+    reset();
+    draw();
+};
+
+draw();
+</script>
+
+</body>
+</html>
