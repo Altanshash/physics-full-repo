@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Problem 7 Animation</title>
+
+<style>
+
+body{
+    background:#f5f5f5;
+    font-family:Arial;
+    text-align:center;
+}
+
+h1{
+    margin-top:20px;
+}
+
+button{
+    padding:10px 20px;
+    font-size:18px;
+    margin:10px;
+    cursor:pointer;
+}
+
+svg{
+    background:white;
+    border:2px solid #ccc;
+    margin-top:20px;
+}
+
+.wire{
+    stroke:black;
+    stroke-width:4;
+    fill:none;
+}
+
+.resistor{
+    fill:#eeeeee;
+    stroke:black;
+    stroke-width:3;
+}
+
+.label{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.formula{
+    font-size:22px;
+    font-weight:bold;
+    fill:darkblue;
+}
+
+.dot{
+    fill:red;
+    offset-path:path("M100 300 H220 V150 H420 H650 V300 H800");
+    offset-distance:0%;
+}
+
+.run{
+    animation:move 6s linear infinite;
+}
+
+@keyframes move{
+    to{
+        offset-distance:100%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Problem 7 — Potential Difference</h1>
+
+<h2>U = 3 V</h2>
+
+<button onclick="startAnimation()">Start</button>
+<button onclick="stopAnimation()">Stop</button>
+
+<svg width="950" height="650">
+
+<!-- LEFT -->
+<path class="wire"
+d="M100 300 H220"/>
+
+<!-- LEFT VERTICAL -->
+<path class="wire"
+d="M220 150 V420"/>
+
+<!-- TOP -->
+<path class="wire"
+d="M220 150 H420 H650 H800"/>
+
+<!-- BOTTOM -->
+<path class="wire"
+d="M220 320 H420 H650 H800"/>
+
+<!-- RIGHT -->
+<path class="wire"
+d="M800 150 V420"/>
+
+<!-- BATTERY -->
+<path class="wire"
+d="M220 420 H390"/>
+
+<path class="wire"
+d="M470 420 H800"/>
+
+<!-- BATTERY SYMBOL -->
+<line x1="410" y1="390" x2="410" y2="450"
+stroke="black"
+stroke-width="4"/>
+
+<line x1="450" y1="400" x2="450" y2="440"
+stroke="black"
+stroke-width="8"/>
+
+<!-- RESISTORS -->
+
+<!-- TOP LEFT -->
+<rect class="resistor"
+x="300" y="135"
+width="90" height="30"/>
+
+<!-- TOP RIGHT -->
+<rect class="resistor"
+x="520" y="135"
+width="90" height="30"/>
+
+<!-- BOTTOM LEFT -->
+<rect class="resistor"
+x="300" y="305"
+width="90" height="30"/>
+
+<!-- BOTTOM RIGHT -->
+<rect class="resistor"
+x="520" y="305"
+width="90" height="30"/>
+
+<!-- LABELS -->
+<text x="325" y="128" class="label">6 Ω</text>
+
+<text x="545" y="128" class="label">4 Ω</text>
+
+<text x="325" y="298" class="label">3 Ω</text>
+
+<text x="540" y="298" class="label">12 Ω</text>
+
+<!-- POINTS -->
+<circle cx="470" cy="150" r="7"/>
+<circle cx="470" cy="320" r="7"/>
+
+<!-- POINT LABELS -->
+<text x="485" y="155"
+font-size="28"
+font-weight="bold">
+A
+</text>
+
+<text x="485" y="325"
+font-size="28"
+font-weight="bold">
+B
+</text>
+
+<!-- VOLTAGE -->
+<text x="390" y="500"
+font-size="32"
+font-weight="bold">
+U = 3 V
+</text>
+
+<!-- CURRENT DOT -->
+<circle id="dot"
+class="dot"
+r="10"/>
+
+<!-- FORMULAS -->
+<text x="40" y="540" class="formula">
+Rtop = 6 + 4 = 10 Ω
+</text>
+
+<text x="40" y="575" class="formula">
+Rbottom = 3 + 12 = 15 Ω
+</text>
+
+<text x="40" y="610" class="formula">
+Req = (10 × 15) / (10 + 15) = 6 Ω
+</text>
+
+<text x="500" y="540" class="formula">
+Itop = 3 / 10 = 0.3 A
+</text>
+
+<text x="500" y="575" class="formula">
+Ibottom = 3 / 15 = 0.2 A
+</text>
+
+<text x="500" y="610" class="formula">
+UAB = 1.8 − 0.6 = 1.2 V
+</text>
+
+</svg>
+
+<script>
+
+const dot = document.getElementById("dot");
+
+function startAnimation(){
+    dot.classList.add("run");
+}
+
+function stopAnimation(){
+    dot.classList.remove("run");
+}
+
+</script>
+
+</body>
+</html>
