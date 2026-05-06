@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Problem 9 – Ideal vs Real Transformer</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0f172a;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+canvas {
+    background: white;
+    border: 3px solid #38bdf8;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 22px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#start { background: #22c55e; color: white; }
+#stop { background: #ef4444; color: white; }
+#reset { background: #3b82f6; color: white; }
+</style>
+</head>
+
+<body>
+
+<h2>Problem 9 – Ideal vs Real Transformer</h2>
+
+<canvas id="canvas" width="950" height="560"></canvas>
+
+<div>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <button id="reset">Reset</button>
+</div>
+
+<p>
+    Ideal transformer: <b>U₂/U₁ = N₂/N₁</b> |
+    Power: <b>P₁ ≈ P₂</b> |
+    Efficiency: <b>η = Pout/Pin</b>
+</p>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let running = false;
+let animationId;
+let t = 0;
+
+// Example transformer values
+const N1 = 6;
+const N2 = 12;
+const U1 = 120;
+const ratio = N2 / N1;
+const U2ideal = U1 * ratio;
+const efficiency = 0.92;
+const U2real = U2ideal * efficiency;
+
+function reset() {
+    t = 0;
+}
+
+function drawArrow(x1, y1, x2, y2, color, label) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const head = 10;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(
+        x2 - head * Math.cos(angle - Math.PI / 6),
+        y2 - head * Math.sin(angle - Math.PI / 6)
+    );
+    ctx.lineTo(
+        x2 - head * Math.cos(angle + Math.PI / 6),
+        y2 - head * Math.sin(angle + Math.PI / 6)
+    );
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.font = "16px Arial";
+    ctx.fillText(label, x2 + 8, y2 + 5);
+}
+
+function drawCore() {
+    ctx.strokeStyle = "#475569";
+    ctx.lineWidth = 18;
+
+    ctx.strokeRect(330, 110, 210, 300);
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "17px Arial";
+    ctx.fillText("magnetic core", 380, 95);
+}
+
+function drawCoil(x, turns, color, label) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 4;
+
+    const y0 = 145;
+    const spacing = 260 / turns;
+
+    for (let i = 0; i < turns; i++) {
+        const y = y0 + i * spacing;
+
+        ctx.beginPath();
+        ctx.arc(x, y, 16, Math.PI / 2, -Math.PI / 2, true);
+        ctx.arc(x, y + spacing / 2, 16, -Math.PI / 2, Math.PI / 2, true);
+        ctx.stroke();
+    }
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "17px Arial";
+    ctx.fillText(label, x - 65, 445);
+}
+
+function drawFlux() {
+    const strength = 0.5 + 0.5 * Math.sin(t);
+    const alpha = 0.25 + 0.55 * Math.abs(strength);
+
+    ctx.strokeStyle = `rgba(22, 163, 74, ${alpha})`;
+    ctx.lineWidth = 5;
+
+    ctx.beginPath();
+    ctx.moveTo(355, 135);
+    ctx.lineTo(515, 135);
+    ctx.lineTo(515, 385);
+    ctx.lineTo(355, 385);
+    ctx.lineTo(355, 135);
+    ctx.stroke();
+
+    drawArrow(390, 135, 470, 135, "#16a34a", "Φ(t)");
+    drawArrow(515, 190, 515, 300, "#16a34a", "");
+    drawArrow(470, 385, 390, 385, "#16a34a", "");
+    drawArrow(355, 300, 355, 190, "#16a34a", "");
+}
+
+function drawACWave(x, y, title, color, amplitude, phase) {
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + 210, y);
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "15px Arial";
+    ctx.fillText(title, x, y - 45);
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+
+    for (let i = 0; i <= 210; i++) {
+        const value = Math.sin(i * 0.06 + t + phase);
+        const px = x + i;
+        const py = y - value * amplitude;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+    }
+
+    ctx.stroke();
+}
+
+function drawEnergyFlow() {
+    drawArrow(95, 260, 285, 260, "#f97316", "AC input");
+    drawArrow(560, 260, 760, 260, "#f97316", "AC output");
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+    ctx.fillText("Primary", 150, 310);
+    ctx.fillText("Secondary", 665, 310);
+}
+
+function drawLosses() {
+    // heat losses
+    ctx.fillStyle = "#dc2626";
+    ctx.font = "16px Arial";
+
+    ctx.fillText("Real losses:", 690, 85);
+    ctx.fillText("• copper loss I²R", 690, 115);
+    ctx.fillText("• hysteresis", 690, 140);
+    ctx.fillText("• eddy currents", 690, 165);
+    ctx.fillText("• flux leakage", 690, 190);
+
+    // leakage flux
+    ctx.strokeStyle = "#dc2626";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 6]);
+
+    ctx.beginPath();
+    ctx.arc(440, 260, 170, 0.3, 2.4);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = "#dc2626";
+    ctx.fillText("leakage flux", 455, 65);
+}
+
+function drawInfoBox() {
+    ctx.fillStyle = "rgba(255,255,255,0.95)";
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.roundRect(40, 360, 260, 150, 12);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+
+    ctx.fillText("Example:", 60, 390);
+    ctx.fillText("N₁ = 6 turns", 60, 415);
+    ctx.fillText("N₂ = 12 turns", 60, 440);
+    ctx.fillText("U₁ = 120 V", 60, 465);
+    ctx.fillText("Ideal U₂ = 240 V", 60, 490);
+}
+
+function drawRealBox() {
+    ctx.fillStyle = "rgba(255,255,255,0.95)";
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.roundRect(620, 360, 280, 150, 12);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+
+    ctx.fillText("Real transformer:", 645, 390);
+    ctx.fillText("η = 92%", 645, 415);
+    ctx.fillText("U₂ ideal = " + U2ideal.toFixed(0) + " V", 645, 440);
+    ctx.fillText("U₂ real ≈ " + U2real.toFixed(0) + " V", 645, 465);
+    ctx.fillText("Part of energy becomes heat", 645, 490);
+}
+
+function drawExplanation() {
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+
+    ctx.fillText("Alternating current in the primary coil creates changing magnetic flux.", 35, 35);
+    ctx.fillText("This changing flux induces voltage in the secondary coil.", 35, 60);
+    ctx.fillText("More turns on the secondary side gives higher voltage.", 35, 85);
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawExplanation();
+
+    drawACWave(55, 210, "Primary voltage U₁(t)", "#2563eb", 35, 0);
+
+    drawCore();
+    drawFlux();
+
+    drawCoil(315, N1, "#2563eb", "N₁ primary");
+    drawCoil(555, N2, "#dc2626", "N₂ secondary");
+
+    drawEnergyFlow();
+
+    drawACWave(690, 300, "Secondary voltage U₂(t)", "#dc2626", 55, 0);
+
+    drawLosses();
+    drawInfoBox();
+    drawRealBox();
+
+    if (running) {
+        t += 0.06;
+        animationId = requestAnimationFrame(draw);
+    }
+}
+
+document.getElementById("start").onclick = function () {
+    if (!running) {
+        running = true;
+        draw();
+    }
+};
+
+document.getElementById("stop").onclick = function () {
+    running = false;
+    cancelAnimationFrame(animationId);
+};
+
+document.getElementById("reset").onclick = function () {
+    running = false;
+    cancelAnimationFrame(animationId);
+    reset();
+    draw();
+};
+
+draw();
+</script>
+
+</body>
+</html>
