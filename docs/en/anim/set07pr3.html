@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Problem 3 Animation</title>
+
+<style>
+
+body{
+    background:#f5f5f5;
+    font-family:Arial;
+    text-align:center;
+}
+
+h1{
+    margin-top:20px;
+}
+
+button{
+    padding:10px 20px;
+    font-size:18px;
+    margin:10px;
+    cursor:pointer;
+}
+
+svg{
+    background:white;
+    border:2px solid #ccc;
+    margin-top:20px;
+}
+
+.wire{
+    stroke:black;
+    stroke-width:4;
+    fill:none;
+}
+
+.resistor{
+    fill:#eeeeee;
+    stroke:black;
+    stroke-width:3;
+}
+
+.label{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.formula{
+    font-size:22px;
+    font-weight:bold;
+    fill:darkblue;
+}
+
+.dot{
+    fill:red;
+    offset-path:path("M60 400 H180 V120 H470 H700 V400 H840");
+    offset-distance:0%;
+}
+
+.run{
+    animation:move 6s linear infinite;
+}
+
+@keyframes move{
+    to{
+        offset-distance:100%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Problem 3 — Equivalent Resistance</h1>
+
+<h2>All resistors: R = 10 Ω</h2>
+
+<button onclick="startAnimation()">Start</button>
+<button onclick="stopAnimation()">Stop</button>
+
+<svg width="950" height="600">
+
+<!-- MAIN WIRES -->
+
+<!-- LEFT -->
+<path class="wire"
+d="M60 400 H180"/>
+
+<!-- LEFT VERTICAL -->
+<path class="wire"
+d="M180 400 V120"/>
+
+<!-- TOP -->
+<path class="wire"
+d="M180 120 H470 H700"/>
+
+<!-- RIGHT -->
+<path class="wire"
+d="M700 120 V400"/>
+
+<!-- BOTTOM -->
+<path class="wire"
+d="M180 400 H470 H700"/>
+
+<!-- OUTPUT -->
+<path class="wire"
+d="M700 400 H840"/>
+
+<!-- MIDDLE BRANCH -->
+<path class="wire"
+d="M470 120 V220 V320 H320"/>
+
+<!-- RESISTORS -->
+
+<!-- LEFT VERTICAL -->
+<rect class="resistor"
+x="165" y="210"
+width="30" height="90"/>
+
+<!-- TOP -->
+<rect class="resistor"
+x="270" y="105"
+width="90" height="30"/>
+
+<!-- CENTER TOP -->
+<rect class="resistor"
+x="455" y="160"
+width="30" height="90"/>
+
+<!-- CENTER BOTTOM -->
+<rect class="resistor"
+x="455" y="270"
+width="30" height="90"/>
+
+<!-- CENTER HORIZONTAL -->
+<rect class="resistor"
+x="320" y="385"
+width="90" height="30"/>
+
+<!-- RIGHT TOP -->
+<rect class="resistor"
+x="685" y="180"
+width="30" height="90"/>
+
+<!-- RIGHT BOTTOM -->
+<rect class="resistor"
+x="685" y="300"
+width="30" height="90"/>
+
+<!-- BOTTOM -->
+<rect class="resistor"
+x="430" y="385"
+width="90" height="30"/>
+
+<!-- LABELS -->
+<text x="150" y="205" class="label">10 Ω</text>
+
+<text x="285" y="98" class="label">10 Ω</text>
+
+<text x="495" y="210" class="label">10 Ω</text>
+<text x="495" y="320" class="label">10 Ω</text>
+
+<text x="330" y="378" class="label">10 Ω</text>
+
+<text x="720" y="230" class="label">10 Ω</text>
+<text x="720" y="350" class="label">10 Ω</text>
+
+<text x="445" y="378" class="label">10 Ω</text>
+
+<!-- CONNECTION DOTS -->
+<circle cx="180" cy="400" r="7"/>
+<circle cx="470" cy="120" r="7"/>
+<circle cx="700" cy="400" r="7"/>
+
+<!-- CURRENT DOT -->
+<circle id="dot"
+class="dot"
+r="10"/>
+
+<!-- FORMULAS -->
+<text x="40" y="500" class="formula">
+R₁ = 10 + 10 = 20 Ω
+</text>
+
+<text x="40" y="535" class="formula">
+R₂ = 10 + 10 + 10 = 30 Ω
+</text>
+
+<text x="40" y="570" class="formula">
+R₁₂ = (20 × 30) / (20 + 30) = 12 Ω
+</text>
+
+<text x="500" y="500" class="formula">
+R₃ = 10 + 10 = 20 Ω
+</text>
+
+<text x="500" y="535" class="formula">
+R₄ = 12 + 20 = 32 Ω
+</text>
+
+<text x="500" y="570" class="formula">
+Req = (32 × 10) / (32 + 10) = 7.62 Ω
+</text>
+
+</svg>
+
+<script>
+
+const dot = document.getElementById("dot");
+
+function startAnimation(){
+    dot.classList.add("run");
+}
+
+function stopAnimation(){
+    dot.classList.remove("run");
+}
+
+</script>
+
+</body>
+</html>
