@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Problem 6 Animation</title>
+
+<style>
+
+body{
+    background:#f5f5f5;
+    font-family:Arial;
+    text-align:center;
+}
+
+h1{
+    margin-top:20px;
+}
+
+button{
+    padding:10px 20px;
+    font-size:18px;
+    margin:10px;
+    cursor:pointer;
+}
+
+svg{
+    background:white;
+    border:2px solid #ccc;
+    margin-top:20px;
+}
+
+.wire{
+    stroke:black;
+    stroke-width:4;
+    fill:none;
+}
+
+.resistor{
+    fill:#eeeeee;
+    stroke:black;
+    stroke-width:3;
+}
+
+.label{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.formula{
+    font-size:22px;
+    font-weight:bold;
+    fill:darkblue;
+}
+
+.dot{
+    fill:red;
+    offset-path:path("M100 250 H220 H400 H620 H800");
+    offset-distance:0%;
+}
+
+.run{
+    animation:move 6s linear infinite;
+}
+
+@keyframes move{
+    to{
+        offset-distance:100%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Problem 6 — Equivalent Resistance</h1>
+
+<h2>Bridge Circuit</h2>
+
+<button onclick="startAnimation()">Start</button>
+<button onclick="stopAnimation()">Stop</button>
+
+<svg width="950" height="650">
+
+<!-- LEFT -->
+<path class="wire"
+d="M100 250 H220"/>
+
+<!-- LEFT VERTICAL -->
+<path class="wire"
+d="M220 150 V350"/>
+
+<!-- TOP -->
+<path class="wire"
+d="M220 150 H400 H620 H800"/>
+
+<!-- BOTTOM -->
+<path class="wire"
+d="M220 350 H400 H620 H800"/>
+
+<!-- RIGHT VERTICAL -->
+<path class="wire"
+d="M800 150 V350"/>
+
+<!-- CENTER -->
+<path class="wire"
+d="M510 150 V350"/>
+
+<!-- RESISTORS -->
+
+<!-- R1 -->
+<rect class="resistor"
+x="330" y="135"
+width="90" height="30"/>
+
+<!-- R2 -->
+<rect class="resistor"
+x="600" y="135"
+width="90" height="30"/>
+
+<!-- R3 -->
+<rect class="resistor"
+x="330" y="335"
+width="90" height="30"/>
+
+<!-- R4 -->
+<rect class="resistor"
+x="600" y="335"
+width="90" height="30"/>
+
+<!-- R5 -->
+<rect class="resistor"
+x="495" y="220"
+width="30" height="90"/>
+
+<!-- LABELS -->
+<text x="360" y="128" class="label">r</text>
+
+<text x="630" y="128" class="label">2r</text>
+
+<text x="360" y="328" class="label">r</text>
+
+<text x="630" y="328" class="label">r</text>
+
+<text x="535" y="270" class="label">6r</text>
+
+<!-- POINTS -->
+<circle cx="510" cy="150" r="7"/>
+<circle cx="510" cy="350" r="7"/>
+
+<!-- NODE LABELS -->
+<text x="85" y="255"
+font-size="34"
+font-weight="bold">
+A
+</text>
+
+<text x="815" y="255"
+font-size="34"
+font-weight="bold">
+B
+</text>
+
+<text x="525" y="140"
+font-size="28"
+font-weight="bold">
+C
+</text>
+
+<text x="525" y="370"
+font-size="28"
+font-weight="bold">
+D
+</text>
+
+<!-- CURRENT DOT -->
+<circle id="dot"
+class="dot"
+r="10"/>
+
+<!-- FORMULAS -->
+<text x="40" y="470" class="formula">
+Req = 43r / 36
+</text>
+
+<text x="40" y="510" class="formula">
+I₁ = 15U / 43r
+</text>
+
+<text x="40" y="550" class="formula">
+I₂ = 14U / 43r
+</text>
+
+<text x="500" y="470" class="formula">
+I₃ = 21U / 43r
+</text>
+
+<text x="500" y="510" class="formula">
+I₄ = 22U / 43r
+</text>
+
+<text x="500" y="550" class="formula">
+I₅ = U / 43r
+</text>
+
+</svg>
+
+<script>
+
+const dot = document.getElementById("dot");
+
+function startAnimation(){
+    dot.classList.add("run");
+}
+
+function stopAnimation(){
+    dot.classList.remove("run");
+}
+
+</script>
+
+</body>
+</html>
