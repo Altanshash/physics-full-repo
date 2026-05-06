@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Problem 10 – Eddy Currents</title>
+
+<style>
+body{
+    margin:0;
+    background:#0f172a;
+    color:white;
+    font-family:Arial,sans-serif;
+    text-align:center;
+}
+
+canvas{
+    background:white;
+    border:3px solid #38bdf8;
+    border-radius:12px;
+    margin-top:20px;
+}
+
+button{
+    margin:10px;
+    padding:10px 22px;
+    font-size:16px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+#start{background:#22c55e;color:white;}
+#stop{background:#ef4444;color:white;}
+#reset{background:#3b82f6;color:white;}
+</style>
+</head>
+
+<body>
+
+<h2>Problem 10 – Eddy Current Braking</h2>
+
+<canvas id="canvas" width="950" height="560"></canvas>
+
+<div>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <button id="reset">Reset</button>
+</div>
+
+<p>
+    Eddy currents oppose motion (Lenz's law) and create magnetic braking.
+</p>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let running = false;
+let animationId;
+
+// motion
+let x = 120;
+let v = 6;
+
+// constants
+const B = 1.0;
+const damping = 0.015;
+
+function resetSystem(){
+    x = 120;
+    v = 6;
+}
+
+function drawArrow(x1,y1,x2,y2,color,label){
+    const angle = Math.atan2(y2-y1,x2-x1);
+    const head = 10;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(
+        x2-head*Math.cos(angle-Math.PI/6),
+        y2-head*Math.sin(angle-Math.PI/6)
+    );
+    ctx.lineTo(
+        x2-head*Math.cos(angle+Math.PI/6),
+        y2-head*Math.sin(angle+Math.PI/6)
+    );
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.font = "16px Arial";
+    ctx.fillText(label,x2+8,y2+5);
+}
+
+function drawMetalPlate(){
+    ctx.fillStyle = "#cbd5e1";
+    ctx.fillRect(60,180,830,220);
+
+    ctx.strokeStyle = "#94a3b8";
+    ctx.lineWidth = 2;
+
+    for(let i=0;i<8;i++){
+        ctx.beginPath();
+        ctx.moveTo(60,180+i*28);
+        ctx.lineTo(890,180+i*28);
+        ctx.stroke();
+    }
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "18px Arial";
+    ctx.fillText("Conductive metal plate", 360, 430);
+}
+
+function drawMagnet(){
+    ctx.fillStyle = "#dc2626";
+    ctx.fillRect(x,130,90,50);
+
+    ctx.fillStyle = "#2563eb";
+    ctx.fillRect(x,180,90,50);
+
+    ctx.fillStyle = "white";
+    ctx.font = "22px Arial";
+
+    ctx.fillText("N",x+32,163);
+    ctx.fillText("S",x+34,213);
+
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x,130,90,100);
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+    ctx.fillText("Moving magnet",x-5,115);
+}
+
+function drawField(){
+    ctx.fillStyle = "#16a34a";
+    ctx.font = "18px Arial";
+
+    for(let i=0;i<5;i++){
+        ctx.fillText("×",x+20+i*12,275);
+        ctx.fillText("×",x+20+i*12,305);
+        ctx.fillText("×",x+20+i*12,335);
+    }
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("Magnetic field B",x-15,360);
+}
+
+function drawEddyCurrents(){
+    const intensity = Math.max(0.2, v/6);
+
+    ctx.strokeStyle = `rgba(249,115,22,${intensity})`;
+    ctx.lineWidth = 4;
+
+    for(let i=0;i<3;i++){
+        let cy = 235 + i*55;
+
+        // left vortex
+        ctx.beginPath();
+        ctx.arc(x-25, cy, 18, 0, 2*Math.PI);
+        ctx.stroke();
+
+        // right vortex
+        ctx.beginPath();
+        ctx.arc(x+115, cy, 18, 0, 2*Math.PI);
+        ctx.stroke();
+
+        // arrows
+        drawArrow(x-25, cy-18, x-5, cy-18, "#f97316","");
+        drawArrow(x+115, cy+18, x+95, cy+18, "#f97316","");
+    }
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+    ctx.fillText("Eddy currents",x-40,390);
+}
+
+function drawBrakingForce(){
+    const forceLength = 50 + v*6;
+
+    drawArrow(
+        x+45,
+        95,
+        x+45-forceLength,
+        95,
+        "#dc2626",
+        "F brake"
+    );
+}
+
+function drawVelocity(){
+    drawArrow(
+        x+45,
+        70,
+        x+45+70,
+        70,
+        "#16a34a",
+        "v"
+    );
+}
+
+function drawHeat(){
+    const amount = Math.max(0.2, v/6);
+
+    ctx.fillStyle = `rgba(239,68,68,${amount})`;
+
+    for(let i=0;i<12;i++){
+        ctx.beginPath();
+        ctx.arc(
+            x + Math.random()*120 - 15,
+            420 + Math.random()*50,
+            4,
+            0,
+            2*Math.PI
+        );
+        ctx.fill();
+    }
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+    ctx.fillText("Joule heat",x+10,485);
+}
+
+function drawGraphs(){
+    ctx.fillStyle = "#111827";
+    ctx.font = "17px Arial";
+
+    ctx.fillText("Braking force ∝ speed", 680, 70);
+
+    // axes
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(680,300);
+    ctx.lineTo(860,300);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(680,300);
+    ctx.lineTo(680,140);
+    ctx.stroke();
+
+    // graph line
+    ctx.strokeStyle = "#2563eb";
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(680,300);
+    ctx.lineTo(850,160);
+    ctx.stroke();
+
+    // moving point
+    let px = 680 + v*25;
+    let py = 300 - v*20;
+
+    ctx.fillStyle = "#dc2626";
+    ctx.beginPath();
+    ctx.arc(px,py,6,0,2*Math.PI);
+    ctx.fill();
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("v", 865,305);
+    ctx.fillText("F", 665,150);
+}
+
+function drawExplanation(){
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+
+    ctx.fillText("Moving magnetic field induces eddy currents in the conductor.", 30,35);
+    ctx.fillText("The induced currents create magnetic fields opposing motion.", 30,60);
+    ctx.fillText("As speed decreases, braking force also becomes smaller.", 30,85);
+}
+
+function drawInfoBox(){
+    ctx.fillStyle = "rgba(255,255,255,0.95)";
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.roundRect(690,360,220,140,12);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "16px Arial";
+
+    ctx.fillText("Current speed:", 710,390);
+    ctx.fillText(v.toFixed(2)+" m/s", 710,415);
+
+    const force = (B*B*v*0.8);
+
+    ctx.fillText("Braking force:",710,450);
+    ctx.fillText(force.toFixed(2)+" N",710,475);
+}
+
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    drawExplanation();
+
+    drawMetalPlate();
+    drawMagnet();
+    drawField();
+
+    if(v > 0.15){
+        drawEddyCurrents();
+        drawBrakingForce();
+        drawVelocity();
+        drawHeat();
+    }
+
+    drawGraphs();
+    drawInfoBox();
+
+    if(running){
+
+        // eddy-current braking
+        v -= damping * B * B * v;
+
+        if(v < 0) v = 0;
+
+        x += v;
+
+        if(x > 760){
+            x = 120;
+            v = 6;
+        }
+
+        animationId = requestAnimationFrame(draw);
+    }
+}
+
+document.getElementById("start").onclick = function(){
+    if(!running){
+        running = true;
+        draw();
+    }
+};
+
+document.getElementById("stop").onclick = function(){
+    running = false;
+    cancelAnimationFrame(animationId);
+};
+
+document.getElementById("reset").onclick = function(){
+    running = false;
+    cancelAnimationFrame(animationId);
+    resetSystem();
+    draw();
+};
+
+draw();
+</script>
+
+</body>
+</html>
