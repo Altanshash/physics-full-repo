@@ -1,7 +1,10 @@
-# Problem 1 — Equivalent Resistance
+# Problem 1
 
-Calculate the equivalent resistance for the circuit shown in the figure.  
-All resistors have resistance:
+## Given
+
+Find the equivalent resistance of the circuit shown in the figure.
+
+All resistors have the same resistance:
 
 \[
 R = 5\ \Omega
@@ -9,109 +12,76 @@ R = 5\ \Omega
 
 ---
 
-# Step 1 — Analyze the Top Branch
+# Solution
 
-The top branch contains **two resistors in series**.
-
-For series connection:
-
-:contentReference[oaicite:0]{index=0}
-
-So,
+The top branch contains two resistors connected in series:
 
 \[
-R_{\text{top}} = 5 + 5
+R_1 = 5 + 5 = 10\ \Omega
 \]
+
+In the bottom branch, there is first one resistor:
 
 \[
-R_{\text{top}} = 10\ \Omega
+R = 5\ \Omega
 \]
 
----
+Then two resistors are connected in parallel:
 
-# Step 2 — Analyze the Bottom Branch
-
-On the bottom branch:
-
-- the first resistor is \(5\ \Omega\)
-- the two resistors on the right are connected in parallel
-
-For parallel connection:
-
-:contentReference[oaicite:1]{index=1}
-
-Substitute the values:
+\[
+R_p = \frac{R \cdot R}{R + R}
+\]
 
 \[
 R_p = \frac{5 \times 5}{5 + 5}
 \]
 
 \[
-R_p = \frac{25}{10}
+R_p = \frac{25}{10} = 2.5\ \Omega
+\]
+
+Now calculate the total resistance of the bottom branch:
+
+\[
+R_2 = 5 + 2.5 = 7.5\ \Omega
+\]
+
+The top and bottom branches are connected in parallel:
+
+\[
+R_{12} = \frac{R_1 \cdot R_2}{R_1 + R_2}
 \]
 
 \[
-R_p = 2.5\ \Omega
-\]
-
-Now add the series resistor:
-
-\[
-R_{\text{bottom}} = 5 + 2.5
+R_{12} = \frac{10 \times 7.5}{10 + 7.5}
 \]
 
 \[
-R_{\text{bottom}} = 7.5\ \Omega
-\]
-
----
-
-# Step 3 — Combine the Two Main Branches
-
-Now the circuit has:
-
-- top branch: \(10\ \Omega\)
-- bottom branch: \(7.5\ \Omega\)
-
-These two branches are connected in parallel.
-
-Using the parallel formula:
-
-\[
-R_{\text{main}} =
-\frac{10 \times 7.5}{10 + 7.5}
+R_{12} = \frac{75}{17.5}
 \]
 
 \[
-R_{\text{main}} =
-\frac{75}{17.5}
+R_{12} = 4.29\ \Omega
+\]
+
+Finally, the last resistor on the right is connected in series:
+
+\[
+R_{\text{eq}} = R_{12} + 5
 \]
 
 \[
-R_{\text{main}} =
-4.2857\ \Omega
+R_{\text{eq}} = 4.29 + 5
+\]
+
+\[
+R_{\text{eq}} = 9.29\ \Omega
 \]
 
 ---
 
-# Step 4 — Add the Final Series Resistor
-
-There is one more resistor of \(5\ \Omega\) in series on the right side.
-
-So,
+# Answer
 
 \[
-R_{\text{eq}} = 4.2857 + 5
-\]
-
-\[
-R_{\text{eq}} = 9.2857\ \Omega
-\]
-
----
-
-# Final Answer
-
-\[
-\boxed{R_{\text{eq}} \approx 9.29\ \Omega}
+\boxed{R_{\text{eq}} = 9.29\ \Omega}
 \]
