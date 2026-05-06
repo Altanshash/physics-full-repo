@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Problem 10 Animation</title>
+
+<style>
+
+body{
+    background:#f5f5f5;
+    font-family:Arial;
+    text-align:center;
+}
+
+h1{
+    margin-top:20px;
+}
+
+button{
+    padding:10px 20px;
+    font-size:18px;
+    margin:10px;
+    cursor:pointer;
+}
+
+svg{
+    background:white;
+    border:2px solid #ccc;
+    margin-top:20px;
+}
+
+.wire{
+    stroke:black;
+    stroke-width:4;
+    fill:none;
+}
+
+.resistor{
+    fill:#eeeeee;
+    stroke:black;
+    stroke-width:3;
+}
+
+.label{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.formula{
+    font-size:22px;
+    font-weight:bold;
+    fill:darkblue;
+}
+
+.dot{
+    fill:red;
+    offset-path:path("M120 500 H220 V150 H620 V500 H820");
+    offset-distance:0%;
+}
+
+.run{
+    animation:move 7s linear infinite;
+}
+
+@keyframes move{
+    to{
+        offset-distance:100%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Problem 10 — Ammeter Current</h1>
+
+<h2>Mixed Source Circuit</h2>
+
+<button onclick="startAnimation()">Start</button>
+<button onclick="stopAnimation()">Stop</button>
+
+<svg width="950" height="720">
+
+<!-- MAIN WIRES -->
+
+<!-- LEFT -->
+<path class="wire"
+d="M120 500 H220"/>
+
+<!-- LEFT SIDE -->
+<path class="wire"
+d="M220 500 V150"/>
+
+<!-- TOP -->
+<path class="wire"
+d="M220 150 H620"/>
+
+<!-- RIGHT -->
+<path class="wire"
+d="M620 150 V500"/>
+
+<!-- BOTTOM -->
+<path class="wire"
+d="M220 500 H620"/>
+
+<!-- OUTPUT -->
+<path class="wire"
+d="M620 500 H820"/>
+
+<!-- INNER RECTANGLE -->
+<path class="wire"
+d="M620 220 H500 V420 H620"/>
+
+<!-- BATTERY E1 -->
+<line x1="300" y1="470" x2="300" y2="530"
+stroke="black"
+stroke-width="8"/>
+
+<line x1="330" y1="480" x2="330" y2="520"
+stroke="black"
+stroke-width="4"/>
+
+<!-- BATTERY E2 -->
+<line x1="560" y1="300" x2="560" y2="360"
+stroke="black"
+stroke-width="4"/>
+
+<line x1="590" y1="290" x2="590" y2="370"
+stroke="black"
+stroke-width="8"/>
+
+<!-- RESISTORS -->
+
+<!-- TOP -->
+<rect class="resistor"
+x="360" y="135"
+width="90" height="30"/>
+
+<!-- INNER -->
+<rect class="resistor"
+x="485" y="300"
+width="30" height="90"/>
+
+<!-- RIGHT INTERNAL -->
+<rect class="resistor"
+x="605" y="220"
+width="30" height="70"/>
+
+<!-- BOTTOM INTERNAL -->
+<rect class="resistor"
+x="390" y="485"
+width="70" height="30"/>
+
+<!-- AMMETER -->
+<circle cx="220" cy="320"
+r="28"
+fill="white"
+stroke="black"
+stroke-width="3"/>
+
+<text x="210" y="330"
+font-size="28"
+font-weight="bold">
+A
+</text>
+
+<!-- LABELS -->
+<text x="385" y="128" class="label">R₁ = 20 Ω</text>
+
+<text x="430" y="360" class="label">R₂ = 10 Ω</text>
+
+<text x="650" y="260" class="label">rw = 1 Ω</text>
+
+<text x="400" y="478" class="label">rw = 1 Ω</text>
+
+<text x="250" y="610" class="label">E₁ = 4.5 V</text>
+
+<text x="640" y="340" class="label">E₂ = 9 V</text>
+
+<!-- CURRENT DOT -->
+<circle id="dot"
+class="dot"
+r="10"/>
+
+<!-- FORMULAS -->
+<text x="40" y="610" class="formula">
+Rright = 10 + 1 = 11 Ω
+</text>
+
+<text x="40" y="645" class="formula">
+Req = 20 + 1 + 11 = 32 Ω
+</text>
+
+<text x="40" y="680" class="formula">
+Eeq = 9 − 4.5 = 4.5 V
+</text>
+
+<text x="500" y="610" class="formula">
+I = Eeq / Req
+</text>
+
+<text x="500" y="645" class="formula">
+I = 4.5 / 32
+</text>
+
+<text x="500" y="680" class="formula">
+I = 0.141 A
+</text>
+
+</svg>
+
+<script>
+
+const dot = document.getElementById("dot");
+
+function startAnimation(){
+    dot.classList.add("run");
+}
+
+function stopAnimation(){
+    dot.classList.remove("run");
+}
+
+</script>
+
+</body>
+</html>
