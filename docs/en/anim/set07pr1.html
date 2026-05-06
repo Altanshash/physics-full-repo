@@ -1,0 +1,81 @@
+# Problem 1 Animation
+
+```html
+<div align="center">
+
+<svg width="900" height="420" viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg">
+
+  <style>
+    .wire { stroke: #111; stroke-width: 4; fill: none; }
+    .resistor { fill: #f2f2f2; stroke: #111; stroke-width: 3; }
+    .text { font: bold 22px Arial; fill: #111; }
+    .small { font: bold 18px Arial; fill: #111; }
+    .current {
+      fill: red;
+      animation: move 4s linear infinite;
+    }
+
+    @keyframes move {
+      0%   { transform: translate(0px, 0px); opacity: 1; }
+      20%  { transform: translate(180px, -80px); opacity: 1; }
+      40%  { transform: translate(390px, -80px); opacity: 1; }
+      60%  { transform: translate(540px, 0px); opacity: 1; }
+      80%  { transform: translate(700px, 0px); opacity: 1; }
+      100% { transform: translate(820px, 0px); opacity: 0; }
+    }
+  </style>
+
+  <text x="280" y="35" class="text">Equivalent Resistance Circuit</text>
+  <text x="360" y="70" class="small">All resistors: R = 5 Ω</text>
+
+  <!-- wires -->
+  <path class="wire" d="M60 210 H120 V110 H280 H430 V210 H520"/>
+  <path class="wire" d="M120 210 V310 H240"/>
+  <path class="wire" d="M340 310 H430 V210"/>
+  <path class="wire" d="M240 310 V360 H340 V310"/>
+  <path class="wire" d="M520 210 H650"/>
+  <path class="wire" d="M750 210 H840"/>
+
+  <!-- connection dots -->
+  <circle cx="120" cy="210" r="7" fill="#111"/>
+  <circle cx="430" cy="210" r="7" fill="#111"/>
+  <circle cx="240" cy="310" r="7" fill="#111"/>
+  <circle cx="340" cy="310" r="7" fill="#111"/>
+
+  <!-- resistors -->
+  <rect class="resistor" x="170" y="95" width="80" height="30"/>
+  <rect class="resistor" x="310" y="95" width="80" height="30"/>
+
+  <rect class="resistor" x="170" y="295" width="80" height="30"/>
+  <rect class="resistor" x="270" y="295" width="80" height="30"/>
+  <rect class="resistor" x="270" y="345" width="80" height="30"/>
+
+  <rect class="resistor" x="650" y="195" width="100" height="30"/>
+
+  <!-- labels -->
+  <text x="185" y="90" class="small">5 Ω</text>
+  <text x="325" y="90" class="small">5 Ω</text>
+  <text x="185" y="290" class="small">5 Ω</text>
+  <text x="285" y="290" class="small">5 Ω</text>
+  <text x="285" y="340" class="small">5 Ω</text>
+  <text x="685" y="190" class="small">5 Ω</text>
+
+  <!-- animated current dot -->
+  <circle class="current" cx="60" cy="210" r="10"/>
+
+  <!-- formulas -->
+  <text x="60" y="395" class="small">
+    R₁ = 5 + 5 = 10 Ω
+  </text>
+
+  <text x="300" y="395" class="small">
+    Rp = (5×5)/(5+5) = 2.5 Ω
+  </text>
+
+  <text x="590" y="395" class="small">
+    Req = 9.29 Ω
+  </text>
+
+</svg>
+
+</div>
