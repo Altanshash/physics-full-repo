@@ -6,62 +6,65 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-  body {
-    margin: 0;
-    height: 100vh;
-    background: #020617;
-    color: white;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  body{
+    margin:0;
+    background:#020617;
+    color:white;
+    font-family:Arial,sans-serif;
+    text-align:center;
   }
 
-  .graph-box {
-    width: 720px;
-    height: 420px;
-    background: #0f172a;
-    border: 2px solid #38bdf8;
-    border-radius: 16px;
-    padding: 20px;
+  .box{
+    width:700px;
+    height:380px;
+    margin:40px auto 20px;
+    background:#0f172a;
+    border:2px solid #38bdf8;
+    border-radius:16px;
+    padding:20px;
   }
 
-  canvas {
-    width: 100% !important;
-    height: 100% !important;
+  canvas{
+    width:100% !important;
+    height:100% !important;
   }
 
-  .buttons {
-    margin-top: 18px;
+  .buttons{
+    margin-top:25px;
   }
 
-  button {
-    padding: 10px 24px;
-    margin: 0 6px;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
+  button{
+    width:130px;
+    height:45px;
+    margin:10px;
+    border:none;
+    border-radius:12px;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
   }
 
-  .start { background: #2563eb; }
-  .stop { background: #dc2626; }
-  .reset { background: #16a34a; }
+  .start{background:#2563eb;}
+  .stop{background:#dc2626;}
+  .reset{background:#16a34a;}
+
+  button:hover{
+    transform:scale(1.05);
+  }
 </style>
 </head>
 
 <body>
 
-<div class="graph-box">
+<div class="box">
   <canvas id="chart"></canvas>
 </div>
 
 <div class="buttons">
-  <button class="start" onclick="startAnimation()">Start</button>
-  <button class="stop" onclick="stopAnimation()">Stop</button>
-  <button class="reset" onclick="resetAnimation()">Reset</button>
+  <button class="start" onclick="startAnimation()">START</button>
+  <button class="stop" onclick="stopAnimation()">STOP</button>
+  <button class="reset" onclick="resetAnimation()">RESET</button>
 </div>
 
 <script>
@@ -81,7 +84,6 @@ const chart = new Chart(document.getElementById("chart"), {
         data: [],
         borderColor: "#22d3ee",
         backgroundColor: "#22d3ee",
-        pointBackgroundColor: "#22d3ee",
         pointRadius: 7,
         borderWidth: 3,
         tension: 0.3
@@ -90,41 +92,40 @@ const chart = new Chart(document.getElementById("chart"), {
         label: "Mean",
         data: Array(8).fill(mean),
         borderColor: "#22c55e",
-        borderDash: [7, 7],
+        borderDash: [7,7],
         borderWidth: 3,
         pointRadius: 0
       }
     ]
   },
   options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    animation: { duration: 400 },
-    plugins: {
-      legend: {
-        labels: { color: "white" }
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{
+        labels:{color:"white"}
       }
     },
-    scales: {
-      x: {
-        ticks: { color: "white" },
-        grid: { color: "#1e293b" }
+    scales:{
+      x:{
+        ticks:{color:"white"},
+        grid:{color:"#1e293b"}
       },
-      y: {
-        min: 12.06,
-        max: 12.14,
-        ticks: { color: "white" },
-        grid: { color: "#1e293b" }
+      y:{
+        min:12.06,
+        max:12.14,
+        ticks:{color:"white"},
+        grid:{color:"#1e293b"}
       }
     }
   }
 });
 
-function startAnimation() {
-  if (timer !== null) return;
+function startAnimation(){
+  if(timer) return;
 
   timer = setInterval(() => {
-    if (index < values.length) {
+    if(index < values.length){
       chart.data.datasets[0].data.push(values[index]);
       chart.update();
       index++;
@@ -134,12 +135,12 @@ function startAnimation() {
   }, 600);
 }
 
-function stopAnimation() {
+function stopAnimation(){
   clearInterval(timer);
   timer = null;
 }
 
-function resetAnimation() {
+function resetAnimation(){
   stopAnimation();
   index = 0;
   chart.data.datasets[0].data = [];
