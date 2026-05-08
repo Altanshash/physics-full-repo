@@ -1,309 +1,414 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Statistics Animation</title>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #111827;
-      color: white;
-    }
+<meta charset="UTF-8">
+<title>Problem 1 Graphical Animation</title>
 
-    .slide {
-      min-height: 100vh;
-      padding: 40px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    h1 {
-      color: #60a5fa;
-      margin-bottom: 10px;
-    }
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+  }
 
-    h2 {
-      color: #93c5fd;
-    }
+  .container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px;
+  }
 
-    .card {
-      background: #1f2937;
-      border: 2px solid #3b82f6;
-      border-radius: 18px;
-      padding: 25px;
-      max-width: 850px;
-      margin: 15px;
-      box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
-      animation: fadeIn 1s ease forwards;
-    }
+  h1 {
+    text-align: center;
+    color: #38bdf8;
+  }
 
-    .formula {
-      font-size: 24px;
-      margin: 25px 0;
-      color: #facc15;
-    }
+  h2 {
+    color: #93c5fd;
+  }
 
-    .step {
-      opacity: 0;
-      transform: translateY(25px);
-      animation: fadeInUp 1s ease forwards;
-    }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+  }
 
-    .step:nth-child(1) { animation-delay: 0.5s; }
-    .step:nth-child(2) { animation-delay: 1.5s; }
-    .step:nth-child(3) { animation-delay: 2.5s; }
-    .step:nth-child(4) { animation-delay: 3.5s; }
-    .step:nth-child(5) { animation-delay: 4.5s; }
+  .card {
+    background: #1e293b;
+    border: 1px solid #38bdf8;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
+  }
 
-    .highlight {
-      color: #22c55e;
-      font-weight: bold;
-    }
+  .formula {
+    font-size: 22px;
+    color: #facc15;
+    text-align: center;
+    margin: 15px 0;
+  }
 
-    .result {
-      font-size: 28px;
-      color: #22c55e;
-      border: 2px solid #22c55e;
-      padding: 15px;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
+  .result {
+    color: #22c55e;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 15px;
+  }
 
-    .dots {
-      display: flex;
-      gap: 18px;
-      margin-top: 25px;
-      justify-content: center;
-    }
+  canvas {
+    background: #020617;
+    border-radius: 14px;
+    padding: 10px;
+  }
 
-    .dot {
-      width: 18px;
-      height: 18px;
-      background: #38bdf8;
-      border-radius: 50%;
-      animation: bounce 1.5s infinite;
-    }
+  button {
+    display: block;
+    margin: 25px auto;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 12px;
+    background: #2563eb;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+  }
 
-    .dot:nth-child(2) { animation-delay: 0.2s; }
-    .dot:nth-child(3) { animation-delay: 0.4s; }
-    .dot:nth-child(4) { animation-delay: 0.6s; }
-    .dot:nth-child(5) { animation-delay: 0.8s; }
+  button:hover {
+    background: #1d4ed8;
+  }
 
-    .bar {
-      width: 80%;
-      height: 12px;
-      background: #374151;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-top: 25px;
-    }
+  .explanation {
+    line-height: 1.7;
+    font-size: 17px;
+  }
 
-    .fill {
-      height: 100%;
-      background: linear-gradient(90deg, #3b82f6, #22c55e);
-      width: 0;
-      animation: fillBar 6s ease forwards;
-    }
-
-    .buttons {
-      position: fixed;
-      bottom: 25px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    button {
-      padding: 12px 24px;
-      margin: 5px;
-      border: none;
-      border-radius: 10px;
-      background: #3b82f6;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #2563eb;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
-    }
-
-    @keyframes fillBar {
-      to { width: 100%; }
-    }
-  </style>
+  .highlight {
+    color: #22c55e;
+    font-weight: bold;
+  }
+</style>
 </head>
+
 <body>
 
-  <section class="slide" id="slide1">
-    <h1>Problem Set 8 – Statistics and Measurements</h1>
-    <h2>Descriptive Statistics of a Measurement Series</h2>
+<div class="container">
 
-    <div class="card">
-      <div class="step">
-        <h2>Given</h2>
-        <p>Measurements of a rod’s length in centimeters:</p>
-        <div class="formula">
-          $$x = [12.10,\ 12.08,\ 12.12,\ 12.11,\ 12.09,\ 12.13,\ 12.07,\ 12.10]$$
-        </div>
-      </div>
+  <h1>Problem 1 – Descriptive Statistics of a Measurement Series</h1>
 
-      <div class="step">
-        <p>Number of measurements:</p>
-        <div class="formula">$$n = 8$$</div>
-      </div>
+  <div class="card">
+    <h2>Given</h2>
 
-      <div class="dots">
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-        <div class="dot"></div><div class="dot"></div>
-      </div>
+    <p>Measurements of a rod’s length in centimeters:</p>
+
+    <div class="formula">
+      $$x = [12.10,\ 12.08,\ 12.12,\ 12.11,\ 12.09,\ 12.13,\ 12.07,\ 12.10]$$
     </div>
-  </section>
 
-  <section class="slide hidden" id="slide2">
-    <h1>1. Arithmetic Mean</h1>
-    <div class="card">
-      <div class="step formula">$$\bar{x} = \frac{\sum x_i}{n}$$</div>
-      <div class="step formula">$$\sum x_i = 96.80$$</div>
-      <div class="step formula">$$\bar{x} = \frac{96.80}{8}$$</div>
-      <div class="step result">$$\bar{x} = 12.10\ \text{cm}$$</div>
+    <div class="formula">
+      $$n = 8$$
     </div>
-  </section>
-
-  <section class="slide hidden" id="slide3">
-    <h1>2. Sample Variance and Standard Deviation</h1>
-    <div class="card">
-      <div class="step formula">$$s^2 = \frac{\sum (x_i - \bar{x})^2}{n - 1}$$</div>
-      <div class="step formula">$$\sum (x_i - \bar{x})^2 = 0.0028$$</div>
-      <div class="step formula">$$s^2 = \frac{0.0028}{7} = 0.0004\ \text{cm}^2$$</div>
-      <div class="step formula">$$s = \sqrt{0.0004}$$</div>
-      <div class="step result">$$s = 0.02\ \text{cm}$$</div>
-    </div>
-  </section>
-
-  <section class="slide hidden" id="slide4">
-    <h1>3. Uncertainty of the Mean</h1>
-    <div class="card">
-      <div class="step formula">$$u(\bar{x}) = \frac{s}{\sqrt{n}}$$</div>
-      <div class="step formula">$$u(\bar{x}) = \frac{0.02}{\sqrt{8}}$$</div>
-      <div class="step result">$$u(\bar{x}) \approx 0.0071\ \text{cm}$$</div>
-    </div>
-  </section>
-
-  <section class="slide hidden" id="slide5">
-    <h1>4. Final Result</h1>
-    <div class="card">
-      <div class="step formula">$$x = \bar{x} \pm u(\bar{x})$$</div>
-      <div class="step formula">$$x = 12.10 \pm 0.0071$$</div>
-      <div class="step result">$$x = (12.10 \pm 0.007)\ \text{cm}$$</div>
-    </div>
-  </section>
-
-  <section class="slide hidden" id="slide6">
-    <h1>5. Confidence Intervals</h1>
-    <div class="card">
-      <div class="step formula">$$\bar{x} \pm s = 12.10 \pm 0.02 = [12.08;\ 12.12]\ \text{cm}$$</div>
-      <div class="step formula">$$\bar{x} \pm 2s = 12.10 \pm 0.04 = [12.06;\ 12.14]\ \text{cm}$$</div>
-      <div class="step formula">$$\bar{x} \pm 3s = 12.10 \pm 0.06 = [12.04;\ 12.16]\ \text{cm}$$</div>
-      <div class="step result">68% – 95% – 99%</div>
-    </div>
-  </section>
-
-  <section class="slide hidden" id="slide7">
-    <h1>Conclusion</h1>
-    <div class="card">
-      <div class="step">
-        <p>The average length of the rod is:</p>
-        <div class="result">$$x = (12.10 \pm 0.007)\ \text{cm}$$</div>
-      </div>
-
-      <div class="step">
-        <p>The standard deviation is:</p>
-        <div class="formula">$$s = 0.02\ \text{cm}$$</div>
-      </div>
-
-      <div class="step">
-        <p>The uncertainty of the mean is:</p>
-        <div class="formula">$$u(\bar{x}) = 0.0071\ \text{cm}$$</div>
-      </div>
-
-      <div class="step">
-        <p class="highlight">The result is reliable and relatively precise.</p>
-      </div>
-
-      <div class="bar">
-        <div class="fill"></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="buttons">
-    <button onclick="prevSlide()">Previous</button>
-    <button onclick="nextSlide()">Next</button>
   </div>
 
-  <script>
-    let currentSlide = 1;
-    const totalSlides = 7;
+  <button onclick="startAnimation()">Start Graphical Animation</button>
 
-    function showSlide(number) {
-      for (let i = 1; i <= totalSlides; i++) {
-        document.getElementById("slide" + i).classList.add("hidden");
+  <div class="grid">
+
+    <div class="card">
+      <h2>1. Measurement Points</h2>
+      <canvas id="scatterChart"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>2. Normal Distribution and Confidence Intervals</h2>
+      <canvas id="normalChart"></canvas>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:25px;">
+    <h2>Calculations</h2>
+
+    <div class="formula">
+      $$\bar{x} = \frac{\sum x_i}{n} = \frac{96.80}{8} = 12.10\ \text{cm}$$
+    </div>
+
+    <div class="formula">
+      $$s^2 = \frac{\sum (x_i-\bar{x})^2}{n-1}
+      = \frac{0.0028}{7} = 0.0004\ \text{cm}^2$$
+    </div>
+
+    <div class="formula">
+      $$s = \sqrt{0.0004} = 0.02\ \text{cm}$$
+    </div>
+
+    <div class="formula">
+      $$u(\bar{x}) = \frac{s}{\sqrt{n}}
+      = \frac{0.02}{\sqrt{8}} \approx 0.0071\ \text{cm}$$
+    </div>
+
+    <div class="result">
+      $$x = (12.10 \pm 0.007)\ \text{cm}$$
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:25px;">
+    <h2>Conclusion</h2>
+
+    <p class="explanation">
+      The average length of the rod is
+      <span class="highlight">12.10 cm</span>.
+      The standard deviation is
+      <span class="highlight">0.02 cm</span>,
+      and the uncertainty of the mean is
+      <span class="highlight">0.0071 cm</span>.
+    </p>
+
+    <p class="explanation">
+      The confidence intervals are:
+    </p>
+
+    <div class="formula">
+      $$\bar{x} \pm s = [12.08;\ 12.12]\ \text{cm} \approx 68\%$$
+    </div>
+
+    <div class="formula">
+      $$\bar{x} \pm 2s = [12.06;\ 12.14]\ \text{cm} \approx 95\%$$
+    </div>
+
+    <div class="formula">
+      $$\bar{x} \pm 3s = [12.04;\ 12.16]\ \text{cm} \approx 99\%$$
+    </div>
+  </div>
+
+</div>
+
+<script>
+const dataValues = [12.10, 12.08, 12.12, 12.11, 12.09, 12.13, 12.07, 12.10];
+
+const mean = 12.10;
+const s = 0.02;
+
+let scatterChart;
+let normalChart;
+
+function createScatterChart(pointsCount = 0) {
+  const points = dataValues.slice(0, pointsCount).map((y, i) => ({
+    x: i + 1,
+    y: y
+  }));
+
+  const meanLine = [
+    { x: 1, y: mean },
+    { x: 8, y: mean }
+  ];
+
+  if (scatterChart) scatterChart.destroy();
+
+  scatterChart = new Chart(document.getElementById("scatterChart"), {
+    type: "scatter",
+    data: {
+      datasets: [
+        {
+          label: "Measurements",
+          data: points,
+          pointRadius: 8,
+          pointBackgroundColor: "#22d3ee"
+        },
+        {
+          label: "Mean line",
+          data: pointsCount >= 8 ? meanLine : [],
+          type: "line",
+          borderColor: "#22c55e",
+          borderWidth: 3,
+          pointRadius: 0
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: {
+        duration: 700
+      },
+      scales: {
+        x: {
+          min: 0,
+          max: 9,
+          title: {
+            display: true,
+            text: "Measurement Number",
+            color: "white"
+          },
+          ticks: { color: "white" },
+          grid: { color: "#334155" }
+        },
+        y: {
+          min: 12.04,
+          max: 12.16,
+          title: {
+            display: true,
+            text: "Length (cm)",
+            color: "white"
+          },
+          ticks: { color: "white" },
+          grid: { color: "#334155" }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: "white" }
+        }
       }
+    }
+  });
+}
 
-      const slide = document.getElementById("slide" + number);
-      slide.classList.remove("hidden");
+function normalPDF(x, mu, sigma) {
+  return Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+}
 
-      // Restart animations
-      slide.querySelectorAll(".step").forEach(el => {
-        el.style.animation = "none";
-        el.offsetHeight;
-        el.style.animation = "";
-      });
+function createNormalChart(stage = 0) {
+  let curve = [];
+  for (let x = 12.02; x <= 12.18; x += 0.002) {
+    curve.push({
+      x: x,
+      y: normalPDF(x, mean, s)
+    });
+  }
 
-      if (window.MathJax) {
-        MathJax.typesetPromise();
+  let datasets = [
+    {
+      label: "Normal Distribution",
+      data: stage >= 1 ? curve : [],
+      type: "line",
+      borderColor: "#60a5fa",
+      borderWidth: 3,
+      pointRadius: 0
+    }
+  ];
+
+  if (stage >= 2) {
+    datasets.push({
+      label: "±s interval",
+      data: [
+        { x: mean - s, y: 0 },
+        { x: mean - s, y: 1 },
+        { x: mean + s, y: 1 },
+        { x: mean + s, y: 0 }
+      ],
+      type: "line",
+      borderColor: "#22c55e",
+      backgroundColor: "rgba(34,197,94,0.25)",
+      fill: true,
+      pointRadius: 0
+    });
+  }
+
+  if (stage >= 3) {
+    datasets.push({
+      label: "±2s interval",
+      data: [
+        { x: mean - 2*s, y: 0 },
+        { x: mean - 2*s, y: 0.5 },
+        { x: mean + 2*s, y: 0.5 },
+        { x: mean + 2*s, y: 0 }
+      ],
+      type: "line",
+      borderColor: "#facc15",
+      backgroundColor: "rgba(250,204,21,0.18)",
+      fill: true,
+      pointRadius: 0
+    });
+  }
+
+  if (stage >= 4) {
+    datasets.push({
+      label: "±3s interval",
+      data: [
+        { x: mean - 3*s, y: 0 },
+        { x: mean - 3*s, y: 0.25 },
+        { x: mean + 3*s, y: 0.25 },
+        { x: mean + 3*s, y: 0 }
+      ],
+      type: "line",
+      borderColor: "#ec4899",
+      backgroundColor: "rgba(236,72,153,0.16)",
+      fill: true,
+      pointRadius: 0
+    });
+  }
+
+  if (normalChart) normalChart.destroy();
+
+  normalChart = new Chart(document.getElementById("normalChart"), {
+    type: "line",
+    data: { datasets },
+    options: {
+      responsive: true,
+      animation: {
+        duration: 900
+      },
+      scales: {
+        x: {
+          type: "linear",
+          min: 12.02,
+          max: 12.18,
+          title: {
+            display: true,
+            text: "Length (cm)",
+            color: "white"
+          },
+          ticks: { color: "white" },
+          grid: { color: "#334155" }
+        },
+        y: {
+          min: 0,
+          max: 1.1,
+          title: {
+            display: true,
+            text: "Probability Density",
+            color: "white"
+          },
+          ticks: { color: "white" },
+          grid: { color: "#334155" }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: { color: "white" }
+        }
       }
     }
+  });
+}
 
-    function nextSlide() {
-      currentSlide++;
-      if (currentSlide > totalSlides) currentSlide = 1;
-      showSlide(currentSlide);
-    }
+function startAnimation() {
+  createScatterChart(0);
+  createNormalChart(0);
 
-    function prevSlide() {
-      currentSlide--;
-      if (currentSlide < 1) currentSlide = totalSlides;
-      showSlide(currentSlide);
+  let i = 1;
+
+  const pointTimer = setInterval(() => {
+    createScatterChart(i);
+    i++;
+
+    if (i > dataValues.length) {
+      clearInterval(pointTimer);
+
+      setTimeout(() => createNormalChart(1), 800);
+      setTimeout(() => createNormalChart(2), 1800);
+      setTimeout(() => createNormalChart(3), 2800);
+      setTimeout(() => createNormalChart(4), 3800);
     }
-  </script>
+  }, 700);
+}
+
+createScatterChart(0);
+createNormalChart(0);
+</script>
 
 </body>
 </html>
