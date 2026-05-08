@@ -1,141 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Graph Animation</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-  body {
-    margin: 0;
-    background: #020617;
-    font-family: Arial, sans-serif;
-    color: white;
-    text-align: center;
-  }
-
-  h2 {
-    color: #38bdf8;
-    margin-top: 25px;
-  }
-
-  .box {
-    width: 650px;
-    height: 390px;
-    margin: 20px auto;
-    background: #0f172a;
-    border: 2px solid #38bdf8;
-    border-radius: 15px;
-    padding: 15px;
-  }
-
-  canvas {
-    width: 100% !important;
-    height: 100% !important;
-  }
-
-  button {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 10px 25px;
-    border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  p {
-    font-size: 17px;
-  }
-
-  span {
-    color: #22c55e;
-    font-weight: bold;
-  }
-</style>
+  <meta charset="UTF-8">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+<body style="margin:0;background:#020617;display:flex;justify-content:center;align-items:center;height:100vh;">
 
-<body>
-
-<h2>Measurement Graph</h2>
-
-<button onclick="startAnimation()">Start</button>
-
-<div class="box">
-  <canvas id="chart"></canvas>
-</div>
-
-<p>Conclusion: The values are close to the mean, so the result is <span>reliable</span>.</p>
+  <canvas id="chart" style="width:700px;height:400px;"></canvas>
 
 <script>
-const values = [12.10, 12.08, 12.12, 12.11, 12.09, 12.13, 12.07, 12.10];
-const mean = 12.10;
+const ctx = document.getElementById("chart");
 
-let chart = new Chart(document.getElementById("chart"), {
+new Chart(ctx, {
   type: "line",
   data: {
     labels: ["1","2","3","4","5","6","7","8"],
     datasets: [
       {
         label: "Measurements",
-        data: [],
-        borderColor: "#22d3ee",
-        backgroundColor: "#22d3ee",
+        data: [12.10, 12.08, 12.12, 12.11, 12.09, 12.13, 12.07, 12.10],
+        borderColor: "cyan",
+        backgroundColor: "cyan",
         pointRadius: 6,
-        pointHoverRadius: 8,
-        tension: 0.25
+        tension: 0.3
       },
       {
         label: "Mean",
         data: [12.10,12.10,12.10,12.10,12.10,12.10,12.10,12.10],
-        borderColor: "#22c55e",
-        borderWidth: 2,
-        borderDash: [6, 6],
+        borderColor: "lime",
+        borderDash: [6,6],
         pointRadius: 0
       }
     ]
   },
   options: {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    plugins: {
-      legend: {
-        labels: { color: "white" }
-      }
-    },
-
+    responsive: false,
     scales: {
-      x: {
-        ticks: { color: "white" },
-        grid: { color: "#1e293b" }
-      },
       y: {
         min: 12.06,
         max: 12.14,
         ticks: { color: "white" },
         grid: { color: "#1e293b" }
+      },
+      x: {
+        ticks: { color: "white" },
+        grid: { color: "#1e293b" }
+      }
+    },
+    plugins: {
+      legend: {
+        labels: { color: "white" }
       }
     }
   }
 });
-
-function startAnimation() {
-  chart.data.datasets[0].data = [];
-
-  let i = 0;
-
-  let timer = setInterval(() => {
-    chart.data.datasets[0].data.push(values[i]);
-    chart.update();
-
-    i++;
-
-    if (i >= values.length) {
-      clearInterval(timer);
-    }
-  }, 500);
-}
 </script>
 
 </body>
