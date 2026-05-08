@@ -2,20 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Problem 1 Graphical Animation</title>
-
+<title>Measurement Animation</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <style>
   body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0f172a;
+    background: #020617;
     color: white;
+    font-family: Arial, sans-serif;
   }
 
   .container {
+    width: 95%;
     max-width: 1200px;
     margin: auto;
     padding: 30px;
@@ -24,10 +23,7 @@
   h1 {
     text-align: center;
     color: #38bdf8;
-  }
-
-  h2 {
-    color: #93c5fd;
+    margin-bottom: 30px;
   }
 
   .grid {
@@ -37,38 +33,27 @@
   }
 
   .card {
-    background: #1e293b;
-    border: 1px solid #38bdf8;
+    background: #0f172a;
+    border: 1px solid #2563eb;
     border-radius: 18px;
-    padding: 22px;
-    box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
+    padding: 20px;
+    box-shadow: 0 0 25px rgba(37, 99, 235, 0.35);
   }
 
-  .formula {
-    font-size: 22px;
-    color: #facc15;
+  h2 {
+    color: #93c5fd;
     text-align: center;
-    margin: 15px 0;
-  }
-
-  .result {
-    color: #22c55e;
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 15px;
   }
 
   canvas {
     background: #020617;
-    border-radius: 14px;
-    padding: 10px;
+    border-radius: 12px;
   }
 
   button {
     display: block;
     margin: 25px auto;
-    padding: 14px 30px;
+    padding: 14px 32px;
     border: none;
     border-radius: 12px;
     background: #2563eb;
@@ -81,14 +66,11 @@
     background: #1d4ed8;
   }
 
-  .explanation {
-    line-height: 1.7;
-    font-size: 17px;
-  }
-
-  .highlight {
-    color: #22c55e;
-    font-weight: bold;
+  .legend {
+    text-align: center;
+    margin-top: 15px;
+    color: #cbd5e1;
+    font-size: 16px;
   }
 </style>
 </head>
@@ -97,114 +79,49 @@
 
 <div class="container">
 
-  <h1>Problem 1 – Descriptive Statistics of a Measurement Series</h1>
+  <h1>Graphical Animation of Measurement Data</h1>
 
-  <div class="card">
-    <h2>Given</h2>
-
-    <p>Measurements of a rod’s length in centimeters:</p>
-
-    <div class="formula">
-      $$x = [12.10,\ 12.08,\ 12.12,\ 12.11,\ 12.09,\ 12.13,\ 12.07,\ 12.10]$$
-    </div>
-
-    <div class="formula">
-      $$n = 8$$
-    </div>
-  </div>
-
-  <button onclick="startAnimation()">Start Graphical Animation</button>
+  <button onclick="startAnimation()">Start Animation</button>
 
   <div class="grid">
 
     <div class="card">
-      <h2>1. Measurement Points</h2>
+      <h2>Measurement Points</h2>
       <canvas id="scatterChart"></canvas>
+      <div class="legend">Points appear one by one, then the mean line is shown.</div>
     </div>
 
     <div class="card">
-      <h2>2. Normal Distribution and Confidence Intervals</h2>
+      <h2>Distribution and Intervals</h2>
       <canvas id="normalChart"></canvas>
+      <div class="legend">Normal curve and confidence intervals appear step by step.</div>
     </div>
 
-  </div>
-
-  <div class="card" style="margin-top:25px;">
-    <h2>Calculations</h2>
-
-    <div class="formula">
-      $$\bar{x} = \frac{\sum x_i}{n} = \frac{96.80}{8} = 12.10\ \text{cm}$$
-    </div>
-
-    <div class="formula">
-      $$s^2 = \frac{\sum (x_i-\bar{x})^2}{n-1}
-      = \frac{0.0028}{7} = 0.0004\ \text{cm}^2$$
-    </div>
-
-    <div class="formula">
-      $$s = \sqrt{0.0004} = 0.02\ \text{cm}$$
-    </div>
-
-    <div class="formula">
-      $$u(\bar{x}) = \frac{s}{\sqrt{n}}
-      = \frac{0.02}{\sqrt{8}} \approx 0.0071\ \text{cm}$$
-    </div>
-
-    <div class="result">
-      $$x = (12.10 \pm 0.007)\ \text{cm}$$
-    </div>
-  </div>
-
-  <div class="card" style="margin-top:25px;">
-    <h2>Conclusion</h2>
-
-    <p class="explanation">
-      The average length of the rod is
-      <span class="highlight">12.10 cm</span>.
-      The standard deviation is
-      <span class="highlight">0.02 cm</span>,
-      and the uncertainty of the mean is
-      <span class="highlight">0.0071 cm</span>.
-    </p>
-
-    <p class="explanation">
-      The confidence intervals are:
-    </p>
-
-    <div class="formula">
-      $$\bar{x} \pm s = [12.08;\ 12.12]\ \text{cm} \approx 68\%$$
-    </div>
-
-    <div class="formula">
-      $$\bar{x} \pm 2s = [12.06;\ 12.14]\ \text{cm} \approx 95\%$$
-    </div>
-
-    <div class="formula">
-      $$\bar{x} \pm 3s = [12.04;\ 12.16]\ \text{cm} \approx 99\%$$
-    </div>
   </div>
 
 </div>
 
 <script>
-const dataValues = [12.10, 12.08, 12.12, 12.11, 12.09, 12.13, 12.07, 12.10];
+const measurements = [12.10, 12.08, 12.12, 12.11, 12.09, 12.13, 12.07, 12.10];
 
 const mean = 12.10;
-const s = 0.02;
+const std = 0.02;
 
 let scatterChart;
 let normalChart;
 
-function createScatterChart(pointsCount = 0) {
-  const points = dataValues.slice(0, pointsCount).map((y, i) => ({
-    x: i + 1,
-    y: y
-  }));
+function createScatterChart(count) {
+  const visiblePoints = measurements.slice(0, count).map((value, index) => {
+    return {
+      x: index + 1,
+      y: value
+    };
+  });
 
-  const meanLine = [
+  const meanLine = count >= measurements.length ? [
     { x: 1, y: mean },
     { x: 8, y: mean }
-  ];
+  ] : [];
 
   if (scatterChart) scatterChart.destroy();
 
@@ -214,24 +131,25 @@ function createScatterChart(pointsCount = 0) {
       datasets: [
         {
           label: "Measurements",
-          data: points,
+          data: visiblePoints,
           pointRadius: 8,
+          pointHoverRadius: 10,
           pointBackgroundColor: "#22d3ee"
         },
         {
-          label: "Mean line",
-          data: pointsCount >= 8 ? meanLine : [],
+          label: "Mean",
+          data: meanLine,
           type: "line",
           borderColor: "#22c55e",
           borderWidth: 3,
+          borderDash: [8, 5],
           pointRadius: 0
         }
       ]
     },
     options: {
-      responsive: true,
       animation: {
-        duration: 700
+        duration: 600
       },
       scales: {
         x: {
@@ -240,10 +158,10 @@ function createScatterChart(pointsCount = 0) {
           title: {
             display: true,
             text: "Measurement Number",
-            color: "white"
+            color: "#e5e7eb"
           },
-          ticks: { color: "white" },
-          grid: { color: "#334155" }
+          ticks: { color: "#e5e7eb" },
+          grid: { color: "#1e293b" }
         },
         y: {
           min: 12.04,
@@ -251,57 +169,69 @@ function createScatterChart(pointsCount = 0) {
           title: {
             display: true,
             text: "Length (cm)",
-            color: "white"
+            color: "#e5e7eb"
           },
-          ticks: { color: "white" },
-          grid: { color: "#334155" }
+          ticks: { color: "#e5e7eb" },
+          grid: { color: "#1e293b" }
         }
       },
       plugins: {
         legend: {
-          labels: { color: "white" }
+          labels: { color: "#e5e7eb" }
         }
       }
     }
   });
 }
 
-function normalPDF(x, mu, sigma) {
-  return Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+function normalFunction(x) {
+  return Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
 }
 
-function createNormalChart(stage = 0) {
-  let curve = [];
+function generateCurve() {
+  const curve = [];
+
   for (let x = 12.02; x <= 12.18; x += 0.002) {
     curve.push({
       x: x,
-      y: normalPDF(x, mean, s)
+      y: normalFunction(x)
     });
   }
 
-  let datasets = [
-    {
-      label: "Normal Distribution",
-      data: stage >= 1 ? curve : [],
+  return curve;
+}
+
+function intervalArea(left, right, height) {
+  return [
+    { x: left, y: 0 },
+    { x: left, y: height },
+    { x: right, y: height },
+    { x: right, y: 0 }
+  ];
+}
+
+function createNormalChart(stage) {
+  const datasets = [];
+
+  if (stage >= 1) {
+    datasets.push({
+      label: "Normal Curve",
+      data: generateCurve(),
       type: "line",
       borderColor: "#60a5fa",
       borderWidth: 3,
-      pointRadius: 0
-    }
-  ];
+      pointRadius: 0,
+      tension: 0.35
+    });
+  }
 
   if (stage >= 2) {
     datasets.push({
-      label: "±s interval",
-      data: [
-        { x: mean - s, y: 0 },
-        { x: mean - s, y: 1 },
-        { x: mean + s, y: 1 },
-        { x: mean + s, y: 0 }
-      ],
+      label: "±1σ",
+      data: intervalArea(mean - std, mean + std, 1),
       type: "line",
       borderColor: "#22c55e",
-      backgroundColor: "rgba(34,197,94,0.25)",
+      backgroundColor: "rgba(34, 197, 94, 0.25)",
       fill: true,
       pointRadius: 0
     });
@@ -309,16 +239,11 @@ function createNormalChart(stage = 0) {
 
   if (stage >= 3) {
     datasets.push({
-      label: "±2s interval",
-      data: [
-        { x: mean - 2*s, y: 0 },
-        { x: mean - 2*s, y: 0.5 },
-        { x: mean + 2*s, y: 0.5 },
-        { x: mean + 2*s, y: 0 }
-      ],
+      label: "±2σ",
+      data: intervalArea(mean - 2 * std, mean + 2 * std, 0.55),
       type: "line",
       borderColor: "#facc15",
-      backgroundColor: "rgba(250,204,21,0.18)",
+      backgroundColor: "rgba(250, 204, 21, 0.18)",
       fill: true,
       pointRadius: 0
     });
@@ -326,16 +251,11 @@ function createNormalChart(stage = 0) {
 
   if (stage >= 4) {
     datasets.push({
-      label: "±3s interval",
-      data: [
-        { x: mean - 3*s, y: 0 },
-        { x: mean - 3*s, y: 0.25 },
-        { x: mean + 3*s, y: 0.25 },
-        { x: mean + 3*s, y: 0 }
-      ],
+      label: "±3σ",
+      data: intervalArea(mean - 3 * std, mean + 3 * std, 0.3),
       type: "line",
       borderColor: "#ec4899",
-      backgroundColor: "rgba(236,72,153,0.16)",
+      backgroundColor: "rgba(236, 72, 153, 0.15)",
       fill: true,
       pointRadius: 0
     });
@@ -347,7 +267,6 @@ function createNormalChart(stage = 0) {
     type: "line",
     data: { datasets },
     options: {
-      responsive: true,
       animation: {
         duration: 900
       },
@@ -359,26 +278,26 @@ function createNormalChart(stage = 0) {
           title: {
             display: true,
             text: "Length (cm)",
-            color: "white"
+            color: "#e5e7eb"
           },
-          ticks: { color: "white" },
-          grid: { color: "#334155" }
+          ticks: { color: "#e5e7eb" },
+          grid: { color: "#1e293b" }
         },
         y: {
           min: 0,
           max: 1.1,
           title: {
             display: true,
-            text: "Probability Density",
-            color: "white"
+            text: "Density",
+            color: "#e5e7eb"
           },
-          ticks: { color: "white" },
-          grid: { color: "#334155" }
+          ticks: { color: "#e5e7eb" },
+          grid: { color: "#1e293b" }
         }
       },
       plugins: {
         legend: {
-          labels: { color: "white" }
+          labels: { color: "#e5e7eb" }
         }
       }
     }
@@ -389,21 +308,21 @@ function startAnimation() {
   createScatterChart(0);
   createNormalChart(0);
 
-  let i = 1;
+  let count = 0;
 
-  const pointTimer = setInterval(() => {
-    createScatterChart(i);
-    i++;
+  const pointAnimation = setInterval(() => {
+    count++;
+    createScatterChart(count);
 
-    if (i > dataValues.length) {
-      clearInterval(pointTimer);
+    if (count === measurements.length) {
+      clearInterval(pointAnimation);
 
       setTimeout(() => createNormalChart(1), 800);
       setTimeout(() => createNormalChart(2), 1800);
       setTimeout(() => createNormalChart(3), 2800);
       setTimeout(() => createNormalChart(4), 3800);
     }
-  }, 700);
+  }, 600);
 }
 
 createScatterChart(0);
