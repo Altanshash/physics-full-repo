@@ -1,59 +1,150 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body style="margin:0;background:#020617;display:flex;justify-content:center;align-items:center;height:100vh;">
+<meta charset="UTF-8">
+<title>Graph Animation</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <canvas id="chart" style="width:700px;height:400px;"></canvas>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: #020617;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .graph-box {
+    width: 720px;
+    height: 420px;
+    background: #0f172a;
+    border: 2px solid #38bdf8;
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .buttons {
+    margin-top: 18px;
+  }
+
+  button {
+    padding: 10px 24px;
+    margin: 0 6px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .start { background: #2563eb; }
+  .stop { background: #dc2626; }
+  .reset { background: #16a34a; }
+</style>
+</head>
+
+<body>
+
+<div class="graph-box">
+  <canvas id="chart"></canvas>
+</div>
+
+<div class="buttons">
+  <button class="start" onclick="startAnimation()">Start</button>
+  <button class="stop" onclick="stopAnimation()">Stop</button>
+  <button class="reset" onclick="resetAnimation()">Reset</button>
+</div>
 
 <script>
-const ctx = document.getElementById("chart");
+const values = [12.10, 12.08, 12.12, 12.11, 12.09, 12.13, 12.07, 12.10];
+const mean = 12.10;
 
-new Chart(ctx, {
+let index = 0;
+let timer = null;
+
+const chart = new Chart(document.getElementById("chart"), {
   type: "line",
   data: {
     labels: ["1","2","3","4","5","6","7","8"],
     datasets: [
       {
         label: "Measurements",
-        data: [12.10, 12.08, 12.12, 12.11, 12.09, 12.13, 12.07, 12.10],
-        borderColor: "cyan",
-        backgroundColor: "cyan",
-        pointRadius: 6,
+        data: [],
+        borderColor: "#22d3ee",
+        backgroundColor: "#22d3ee",
+        pointBackgroundColor: "#22d3ee",
+        pointRadius: 7,
+        borderWidth: 3,
         tension: 0.3
       },
       {
         label: "Mean",
-        data: [12.10,12.10,12.10,12.10,12.10,12.10,12.10,12.10],
-        borderColor: "lime",
-        borderDash: [6,6],
+        data: Array(8).fill(mean),
+        borderColor: "#22c55e",
+        borderDash: [7, 7],
+        borderWidth: 3,
         pointRadius: 0
       }
     ]
   },
   options: {
-    responsive: false,
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 400 },
+    plugins: {
+      legend: {
+        labels: { color: "white" }
+      }
+    },
     scales: {
+      x: {
+        ticks: { color: "white" },
+        grid: { color: "#1e293b" }
+      },
       y: {
         min: 12.06,
         max: 12.14,
         ticks: { color: "white" },
         grid: { color: "#1e293b" }
-      },
-      x: {
-        ticks: { color: "white" },
-        grid: { color: "#1e293b" }
-      }
-    },
-    plugins: {
-      legend: {
-        labels: { color: "white" }
       }
     }
   }
 });
+
+function startAnimation() {
+  if (timer !== null) return;
+
+  timer = setInterval(() => {
+    if (index < values.length) {
+      chart.data.datasets[0].data.push(values[index]);
+      chart.update();
+      index++;
+    } else {
+      stopAnimation();
+    }
+  }, 600);
+}
+
+function stopAnimation() {
+  clearInterval(timer);
+  timer = null;
+}
+
+function resetAnimation() {
+  stopAnimation();
+  index = 0;
+  chart.data.datasets[0].data = [];
+  chart.update();
+}
 </script>
 
 </body>
