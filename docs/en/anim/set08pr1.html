@@ -2,64 +2,53 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Statistics Graph Animation</title>
+<title>Graph Animation</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
   body {
     margin: 0;
     background: #020617;
-    color: white;
     font-family: Arial, sans-serif;
+    color: white;
     text-align: center;
   }
 
-  h1 {
-    color: #38bdf8;
-    margin: 25px 0 15px;
-  }
-
-  button {
-    padding: 12px 28px;
-    border: none;
-    border-radius: 12px;
-    background: #2563eb;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    margin-bottom: 20px;
-  }
-
-  .card {
-    width: 850px;
-    margin: 0 auto;
-    background: #0f172a;
-    border: 1px solid #38bdf8;
-    border-radius: 18px;
-    padding: 20px;
-  }
-
   h2 {
-    color: #93c5fd;
-    margin-top: 0;
+    color: #38bdf8;
+    margin-top: 25px;
+  }
+
+  .box {
+    width: 650px;
+    height: 390px;
+    margin: 20px auto;
+    background: #0f172a;
+    border: 2px solid #38bdf8;
+    border-radius: 15px;
+    padding: 15px;
   }
 
   canvas {
     width: 100% !important;
-    height: 420px !important;
+    height: 100% !important;
   }
 
-  .conclusion {
-    width: 850px;
-    margin: 18px auto;
-    background: #0f172a;
-    border: 1px solid #22c55e;
-    border-radius: 14px;
-    padding: 15px;
+  button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  p {
     font-size: 17px;
   }
 
-  .green {
+  span {
     color: #22c55e;
     font-weight: bold;
   }
@@ -68,46 +57,40 @@
 
 <body>
 
-<h1>Statistics Graph Animation</h1>
+<h2>Measurement Graph</h2>
 
-<button onclick="startAnimation()">Start Animation</button>
+<button onclick="startAnimation()">Start</button>
 
-<div class="card">
-  <h2>Measurement Scatter Plot</h2>
+<div class="box">
   <canvas id="chart"></canvas>
 </div>
 
-<div class="conclusion">
-  Conclusion: The measurement points are close to the mean line.
-  The result is <span class="green">precise and reliable</span>.
-</div>
+<p>Conclusion: The values are close to the mean, so the result is <span>reliable</span>.</p>
 
 <script>
 const values = [12.10, 12.08, 12.12, 12.11, 12.09, 12.13, 12.07, 12.10];
 const mean = 12.10;
 
-const chart = new Chart(document.getElementById("chart"), {
+let chart = new Chart(document.getElementById("chart"), {
   type: "line",
   data: {
-    labels: [1, 2, 3, 4, 5, 6, 7, 8],
+    labels: ["1","2","3","4","5","6","7","8"],
     datasets: [
       {
         label: "Measurements",
         data: [],
         borderColor: "#22d3ee",
         backgroundColor: "#22d3ee",
-        pointBackgroundColor: "#22d3ee",
-        pointBorderColor: "white",
-        pointBorderWidth: 2,
-        pointRadius: 7,
-        tension: 0.3
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        tension: 0.25
       },
       {
         label: "Mean",
-        data: Array(8).fill(mean),
+        data: [12.10,12.10,12.10,12.10,12.10,12.10,12.10,12.10],
         borderColor: "#22c55e",
-        borderDash: [8, 6],
-        borderWidth: 3,
+        borderWidth: 2,
+        borderDash: [6, 6],
         pointRadius: 0
       }
     ]
@@ -115,47 +98,23 @@ const chart = new Chart(document.getElementById("chart"), {
   options: {
     responsive: true,
     maintainAspectRatio: false,
-    animation: {
-      duration: 700
-    },
+
     plugins: {
       legend: {
-        labels: {
-          color: "white",
-          font: {
-            size: 13
-          }
-        }
+        labels: { color: "white" }
       }
     },
+
     scales: {
       x: {
-        title: {
-          display: true,
-          text: "Measurement Number",
-          color: "white"
-        },
-        ticks: {
-          color: "white"
-        },
-        grid: {
-          color: "#1e293b"
-        }
+        ticks: { color: "white" },
+        grid: { color: "#1e293b" }
       },
       y: {
         min: 12.06,
         max: 12.14,
-        title: {
-          display: true,
-          text: "Length (cm)",
-          color: "white"
-        },
-        ticks: {
-          color: "white"
-        },
-        grid: {
-          color: "#1e293b"
-        }
+        ticks: { color: "white" },
+        grid: { color: "#1e293b" }
       }
     }
   }
@@ -163,17 +122,16 @@ const chart = new Chart(document.getElementById("chart"), {
 
 function startAnimation() {
   chart.data.datasets[0].data = [];
-  chart.update();
 
   let i = 0;
 
-  const timer = setInterval(() => {
+  let timer = setInterval(() => {
     chart.data.datasets[0].data.push(values[i]);
     chart.update();
 
     i++;
 
-    if (i === values.length) {
+    if (i >= values.length) {
       clearInterval(timer);
     }
   }, 500);
