@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Statistics Animation</title>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+    }
+
+    .slide {
+      min-height: 100vh;
+      padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    h1 {
+      color: #60a5fa;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      color: #93c5fd;
+    }
+
+    .card {
+      background: #1f2937;
+      border: 2px solid #3b82f6;
+      border-radius: 18px;
+      padding: 25px;
+      max-width: 850px;
+      margin: 15px;
+      box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .formula {
+      font-size: 24px;
+      margin: 25px 0;
+      color: #facc15;
+    }
+
+    .step {
+      opacity: 0;
+      transform: translateY(25px);
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    .step:nth-child(1) { animation-delay: 0.5s; }
+    .step:nth-child(2) { animation-delay: 1.5s; }
+    .step:nth-child(3) { animation-delay: 2.5s; }
+    .step:nth-child(4) { animation-delay: 3.5s; }
+    .step:nth-child(5) { animation-delay: 4.5s; }
+
+    .highlight {
+      color: #22c55e;
+      font-weight: bold;
+    }
+
+    .result {
+      font-size: 28px;
+      color: #22c55e;
+      border: 2px solid #22c55e;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 18px;
+      margin-top: 25px;
+      justify-content: center;
+    }
+
+    .dot {
+      width: 18px;
+      height: 18px;
+      background: #38bdf8;
+      border-radius: 50%;
+      animation: bounce 1.5s infinite;
+    }
+
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    .dot:nth-child(4) { animation-delay: 0.6s; }
+    .dot:nth-child(5) { animation-delay: 0.8s; }
+
+    .bar {
+      width: 80%;
+      height: 12px;
+      background: #374151;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 25px;
+    }
+
+    .fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #22c55e);
+      width: 0;
+      animation: fillBar 6s ease forwards;
+    }
+
+    .buttons {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    button {
+      padding: 12px 24px;
+      margin: 5px;
+      border: none;
+      border-radius: 10px;
+      background: #3b82f6;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    @keyframes fillBar {
+      to { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="slide" id="slide1">
+    <h1>Problem Set 8 – Statistics and Measurements</h1>
+    <h2>Descriptive Statistics of a Measurement Series</h2>
+
+    <div class="card">
+      <div class="step">
+        <h2>Given</h2>
+        <p>Measurements of a rod’s length in centimeters:</p>
+        <div class="formula">
+          $$x = [12.10,\ 12.08,\ 12.12,\ 12.11,\ 12.09,\ 12.13,\ 12.07,\ 12.10]$$
+        </div>
+      </div>
+
+      <div class="step">
+        <p>Number of measurements:</p>
+        <div class="formula">$$n = 8$$</div>
+      </div>
+
+      <div class="dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide hidden" id="slide2">
+    <h1>1. Arithmetic Mean</h1>
+    <div class="card">
+      <div class="step formula">$$\bar{x} = \frac{\sum x_i}{n}$$</div>
+      <div class="step formula">$$\sum x_i = 96.80$$</div>
+      <div class="step formula">$$\bar{x} = \frac{96.80}{8}$$</div>
+      <div class="step result">$$\bar{x} = 12.10\ \text{cm}$$</div>
+    </div>
+  </section>
+
+  <section class="slide hidden" id="slide3">
+    <h1>2. Sample Variance and Standard Deviation</h1>
+    <div class="card">
+      <div class="step formula">$$s^2 = \frac{\sum (x_i - \bar{x})^2}{n - 1}$$</div>
+      <div class="step formula">$$\sum (x_i - \bar{x})^2 = 0.0028$$</div>
+      <div class="step formula">$$s^2 = \frac{0.0028}{7} = 0.0004\ \text{cm}^2$$</div>
+      <div class="step formula">$$s = \sqrt{0.0004}$$</div>
+      <div class="step result">$$s = 0.02\ \text{cm}$$</div>
+    </div>
+  </section>
+
+  <section class="slide hidden" id="slide4">
+    <h1>3. Uncertainty of the Mean</h1>
+    <div class="card">
+      <div class="step formula">$$u(\bar{x}) = \frac{s}{\sqrt{n}}$$</div>
+      <div class="step formula">$$u(\bar{x}) = \frac{0.02}{\sqrt{8}}$$</div>
+      <div class="step result">$$u(\bar{x}) \approx 0.0071\ \text{cm}$$</div>
+    </div>
+  </section>
+
+  <section class="slide hidden" id="slide5">
+    <h1>4. Final Result</h1>
+    <div class="card">
+      <div class="step formula">$$x = \bar{x} \pm u(\bar{x})$$</div>
+      <div class="step formula">$$x = 12.10 \pm 0.0071$$</div>
+      <div class="step result">$$x = (12.10 \pm 0.007)\ \text{cm}$$</div>
+    </div>
+  </section>
+
+  <section class="slide hidden" id="slide6">
+    <h1>5. Confidence Intervals</h1>
+    <div class="card">
+      <div class="step formula">$$\bar{x} \pm s = 12.10 \pm 0.02 = [12.08;\ 12.12]\ \text{cm}$$</div>
+      <div class="step formula">$$\bar{x} \pm 2s = 12.10 \pm 0.04 = [12.06;\ 12.14]\ \text{cm}$$</div>
+      <div class="step formula">$$\bar{x} \pm 3s = 12.10 \pm 0.06 = [12.04;\ 12.16]\ \text{cm}$$</div>
+      <div class="step result">68% – 95% – 99%</div>
+    </div>
+  </section>
+
+  <section class="slide hidden" id="slide7">
+    <h1>Conclusion</h1>
+    <div class="card">
+      <div class="step">
+        <p>The average length of the rod is:</p>
+        <div class="result">$$x = (12.10 \pm 0.007)\ \text{cm}$$</div>
+      </div>
+
+      <div class="step">
+        <p>The standard deviation is:</p>
+        <div class="formula">$$s = 0.02\ \text{cm}$$</div>
+      </div>
+
+      <div class="step">
+        <p>The uncertainty of the mean is:</p>
+        <div class="formula">$$u(\bar{x}) = 0.0071\ \text{cm}$$</div>
+      </div>
+
+      <div class="step">
+        <p class="highlight">The result is reliable and relatively precise.</p>
+      </div>
+
+      <div class="bar">
+        <div class="fill"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="buttons">
+    <button onclick="prevSlide()">Previous</button>
+    <button onclick="nextSlide()">Next</button>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 7;
+
+    function showSlide(number) {
+      for (let i = 1; i <= totalSlides; i++) {
+        document.getElementById("slide" + i).classList.add("hidden");
+      }
+
+      const slide = document.getElementById("slide" + number);
+      slide.classList.remove("hidden");
+
+      // Restart animations
+      slide.querySelectorAll(".step").forEach(el => {
+        el.style.animation = "none";
+        el.offsetHeight;
+        el.style.animation = "";
+      });
+
+      if (window.MathJax) {
+        MathJax.typesetPromise();
+      }
+    }
+
+    function nextSlide() {
+      currentSlide++;
+      if (currentSlide > totalSlides) currentSlide = 1;
+      showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      currentSlide--;
+      if (currentSlide < 1) currentSlide = totalSlides;
+      showSlide(currentSlide);
+    }
+  </script>
+
+</body>
+</html>
