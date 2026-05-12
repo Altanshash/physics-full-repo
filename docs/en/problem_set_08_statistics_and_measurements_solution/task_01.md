@@ -4,13 +4,13 @@
 
 ## Given
 
-Measurements of a rod’s length (in cm):
+The measurements of a rod's length are given in centimeters:
 
 $$
 x = [12.10,\ 12.08,\ 12.12,\ 12.11,\ 12.09,\ 12.13,\ 12.07,\ 12.10]
 $$
 
-Number of measurements:
+The number of measurements is:
 
 $$
 n = 8
@@ -18,23 +18,21 @@ $$
 
 ---
 
-# Solution
+## Solution
 
-## 1. Arithmetic Mean
+### 1. Arithmetic Mean
 
-The arithmetic mean is calculated using:
+The arithmetic mean is calculated by the formula:
 
 $$
 \bar{x} = \frac{\sum x_i}{n}
 $$
 
-Substituting the values:
+Substitute the values:
 
 $$
 \bar{x} =
-\frac{
-12.10 + 12.08 + 12.12 + 12.11 + 12.09 + 12.13 + 12.07 + 12.10
-}{8}
+\frac{12.10 + 12.08 + 12.12 + 12.11 + 12.09 + 12.13 + 12.07 + 12.10}{8}
 $$
 
 $$
@@ -42,17 +40,17 @@ $$
 $$
 
 $$
-\boxed{\bar{x} = 12.10\ \text{cm}}
+\bar{x} = 12.10\ \text{cm}
 $$
 
 ---
 
-## 2. Sample Variance
+### 2. Sample Variance
 
-The sample variance formula:
+The sample variance is calculated by the formula:
 
 $$
-s^2 = \frac{\sum (x_i - \bar{x})^2}{n-1}
+s^2 = \frac{\sum (x_i - \bar{x})^2}{n - 1}
 $$
 
 Calculation:
@@ -62,12 +60,12 @@ s^2 = \frac{0.0028}{7}
 $$
 
 $$
-\boxed{s^2 = 0.0004\ \text{cm}^2}
+s^2 = 0.0004\ \text{cm}^2
 $$
 
 ---
 
-## 3. Standard Deviation
+### 3. Standard Deviation
 
 The standard deviation is:
 
@@ -80,20 +78,20 @@ s = \sqrt{0.0004}
 $$
 
 $$
-\boxed{s = 0.02\ \text{cm}}
+s = 0.02\ \text{cm}
 $$
 
 ---
 
-## 4. Uncertainty of the Mean
+### 4. Uncertainty of the Mean
 
-The uncertainty of the mean is calculated by:
+The uncertainty of the mean is calculated by the formula:
 
 $$
 u(\bar{x}) = \frac{s}{\sqrt{n}}
 $$
 
-Substitute the known values:
+Substitute the values:
 
 $$
 u(\bar{x}) = \frac{0.02}{\sqrt{8}}
@@ -103,19 +101,17 @@ $$
 u(\bar{x}) \approx 0.0071\ \text{cm}
 $$
 
-$$
-\boxed{u(\bar{x}) \approx 0.0071\ \text{cm}}
-$$
-
 ---
 
-# Final Result
+## Final Result
 
-The final result is written as:
+The result is written in the form:
 
 $$
 x = \bar{x} \pm u(\bar{x})
 $$
+
+Therefore:
 
 $$
 x = 12.10 \pm 0.0071\ \text{cm}
@@ -129,12 +125,13 @@ $$
 
 ---
 
-# Difference Between \(s\) and \(u(\bar{x})\)
+## Difference Between Standard Deviation and Uncertainty of the Mean
 
-- The standard deviation \(s\) describes how far individual measurements are spread from the mean value.
-- The uncertainty of the mean \(u(\bar{x})\) describes how accurately the mean value is determined.
+The standard deviation shows how much individual measurements differ from the mean value.
 
-Values obtained:
+The uncertainty of the mean shows how accurately the mean value is determined.
+
+In this problem:
 
 $$
 s = 0.02\ \text{cm}
@@ -144,11 +141,19 @@ $$
 u(\bar{x}) = 0.0071\ \text{cm}
 $$
 
+The uncertainty of the mean is smaller than the standard deviation because it depends on the number of measurements.
+
 ---
 
-# Normal Distribution Intervals
+## Normal Distribution Intervals
 
-## Interval \( \bar{x} \pm s \)
+### Interval 1
+
+For one standard deviation:
+
+$$
+\bar{x} \pm s
+$$
 
 $$
 12.10 \pm 0.02
@@ -158,11 +163,21 @@ $$
 [12.08,\ 12.12]\ \text{cm}
 $$
 
-This interval corresponds approximately to a **68% confidence level**.
+This interval corresponds approximately to a 68% confidence level.
 
 ---
 
-## Interval \( \bar{x} \pm 2s \)
+### Interval 2
+
+For two standard deviations:
+
+$$
+\bar{x} \pm 2s
+$$
+
+$$
+12.10 \pm 2(0.02)
+$$
 
 $$
 12.10 \pm 0.04
@@ -172,11 +187,21 @@ $$
 [12.06,\ 12.14]\ \text{cm}
 $$
 
-This interval corresponds approximately to a **95% confidence level**.
+This interval corresponds approximately to a 95% confidence level.
 
 ---
 
-## Interval \( \bar{x} \pm 3s \)
+### Interval 3
+
+For three standard deviations:
+
+$$
+\bar{x} \pm 3s
+$$
+
+$$
+12.10 \pm 3(0.02)
+$$
 
 $$
 12.10 \pm 0.06
@@ -186,11 +211,11 @@ $$
 [12.04,\ 12.16]\ \text{cm}
 $$
 
-This interval corresponds approximately to a **99% confidence level**.
+This interval corresponds approximately to a 99% confidence level.
 
 ---
 
-# Conclusion
+## Conclusion
 
 The average length of the rod is:
 
@@ -210,4 +235,4 @@ $$
 s = 0.02\ \text{cm}
 $$
 
-The measurements are close to each other, which indicates good measurement consistency and reliability.
+The measurements are close to each other. Therefore, the measurement series is consistent, and the final result is reliable.
