@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Linear Regression Graph Animation</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    color: #1b263b;
+  }
+
+  .container {
+    max-width: 950px;
+    margin: 30px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  }
+
+  h1 {
+    text-align: center;
+    color: #0b3d91;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    border: 1px solid #d8e6ff;
+    border-radius: 16px;
+    background: white;
+  }
+
+  .axis {
+    stroke: #222;
+    stroke-width: 2;
+  }
+
+  .grid {
+    stroke: #d9e2ec;
+    stroke-width: 1;
+  }
+
+  .dot {
+    opacity: 0;
+    transform: scale(0);
+    transform-origin: center;
+    transition: all 0.5s ease;
+  }
+
+  .dot.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .regression {
+    stroke: #e63946;
+    stroke-width: 4;
+    stroke-dasharray: 900;
+    stroke-dashoffset: 900;
+  }
+
+  .regression.draw {
+    animation: drawLine 2.5s linear forwards;
+  }
+
+  @keyframes drawLine {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .label {
+    opacity: 0;
+    transition: opacity 0.7s ease;
+  }
+
+  .label.show {
+    opacity: 1;
+  }
+
+  button {
+    padding: 12px 22px;
+    margin: 12px 8px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  #startBtn { background: #2a9d8f; }
+  #stopBtn { background: #e63946; }
+  #resetBtn { background: #457b9d; }
+
+  .controls {
+    text-align: center;
+  }
+
+  .info {
+    text-align: center;
+    font-size: 19px;
+    margin-top: 15px;
+    color: #003566;
+    min-height: 30px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Linear Regression Graph Animation</h1>
+
+  <svg viewBox="0 0 850 560">
+
+    <!-- Grid -->
+    <g>
+      <line class="grid" x1="100" y1="460" x2="780" y2="460"/>
+      <line class="grid" x1="100" y1="376" x2="780" y2="376"/>
+      <line class="grid" x1="100" y1="292" x2="780" y2="292"/>
+      <line class="grid" x1="100" y1="208" x2="780" y2="208"/>
+      <line class="grid" x1="100" y1="124" x2="780" y2="124"/>
+      <line class="grid" x1="100" y1="40" x2="780" y2="40"/>
+
+      <line class="grid" x1="100" y1="40" x2="100" y2="460"/>
+      <line class="grid" x1="236" y1="40" x2="236" y2="460"/>
+      <line class="grid" x1="372" y1="40" x2="372" y2="460"/>
+      <line class="grid" x1="508" y1="40" x2="508" y2="460"/>
+      <line class="grid" x1="644" y1="40" x2="644" y2="460"/>
+      <line class="grid" x1="780" y1="40" x2="780" y2="460"/>
+    </g>
+
+    <!-- Axes -->
+    <line class="axis" x1="100" y1="460" x2="800" y2="460"/>
+    <line class="axis" x1="100" y1="460" x2="100" y2="25"/>
+
+    <!-- Axis arrows -->
+    <polygon points="800,460 785,452 785,468" fill="#222"/>
+    <polygon points="100,25 92,40 108,40" fill="#222"/>
+
+    <!-- Axis labels -->
+    <text x="430" y="540" text-anchor="middle" font-size="22">t² (s²)</text>
+    <text x="35" y="250" text-anchor="middle" font-size="22" transform="rotate(-90 35 250)">h (m)</text>
+
+    <!-- Y labels -->
+    <text x="75" y="465" text-anchor="end" font-size="15">0.0</text>
+    <text x="75" y="381" text-anchor="end" font-size="15">0.2</text>
+    <text x="75" y="297" text-anchor="end" font-size="15">0.4</text>
+    <text x="75" y="213" text-anchor="end" font-size="15">0.6</text>
+    <text x="75" y="129" text-anchor="end" font-size="15">0.8</text>
+    <text x="75" y="45" text-anchor="end" font-size="15">1.0</text>
+
+    <!-- X labels -->
+    <text x="100" y="490" text-anchor="middle" font-size="15">0.00</text>
+    <text x="236" y="490" text-anchor="middle" font-size="15">0.04</text>
+    <text x="372" y="490" text-anchor="middle" font-size="15">0.08</text>
+    <text x="508" y="490" text-anchor="middle" font-size="15">0.12</text>
+    <text x="644" y="490" text-anchor="middle" font-size="15">0.16</text>
+    <text x="780" y="490" text-anchor="middle" font-size="15">0.20</text>
+
+    <!-- Regression line -->
+    <line id="regLine" class="regression" x1="100" y1="460" x2="795" y2="32"/>
+
+    <!-- Data points -->
+    <circle id="p1" class="dot" cx="238.7" cy="376" r="9" fill="#0b3d91"/>
+    <circle id="p2" class="dot" cx="380" cy="292" r="9" fill="#0b3d91"/>
+    <circle id="p3" class="dot" cx="518.9" cy="208" r="9" fill="#0b3d91"/>
+    <circle id="p4" class="dot" cx="655" cy="124" r="9" fill="#0b3d91"/>
+    <circle id="p5" class="dot" cx="794.6" cy="40" r="9" fill="#0b3d91"/>
+
+    <!-- Point labels -->
+    <g font-size="14" fill="#1b263b">
+      <text id="l1" class="label" x="238.7" y="360" text-anchor="middle">(0.0408, 0.20)</text>
+      <text id="l2" class="label" x="380" y="276" text-anchor="middle">(0.0824, 0.40)</text>
+      <text id="l3" class="label" x="518.9" y="192" text-anchor="middle">(0.1232, 0.60)</text>
+      <text id="l4" class="label" x="655" y="108" text-anchor="middle">(0.1632, 0.80)</text>
+      <text id="l5" class="label" x="700" y="32" text-anchor="middle">(0.2043, 1.00)</text>
+    </g>
+
+    <!-- Equation label -->
+    <text id="eqLabel" class="label" x="570" y="75" font-size="24" fill="#e63946">
+      h = 4.8899t²
+    </text>
+
+    <text id="gLabel" class="label" x="570" y="110" font-size="21" fill="#007f5f">
+      g = 9.78 m/s²
+    </text>
+
+  </svg>
+
+  <div class="info" id="infoText">Click Start to animate the graph.</div>
+
+  <div class="controls">
+    <button id="startBtn" onclick="startAnimation()">Start</button>
+    <button id="stopBtn" onclick="stopAnimation()">Stop</button>
+    <button id="resetBtn" onclick="resetAnimation()">Reset</button>
+  </div>
+</div>
+
+<script>
+  let timers = [];
+
+  const points = ["p1", "p2", "p3", "p4", "p5"];
+  const labels = ["l1", "l2", "l3", "l4", "l5"];
+
+  function startAnimation() {
+    resetAnimation();
+
+    document.getElementById("infoText").innerHTML = "Plotting experimental data points...";
+
+    points.forEach((id, index) => {
+      timers.push(setTimeout(() => {
+        document.getElementById(id).classList.add("show");
+        document.getElementById(labels[index]).classList.add("show");
+      }, index * 600));
+    });
+
+    timers.push(setTimeout(() => {
+      document.getElementById("infoText").innerHTML = "Drawing the linear regression line...";
+      document.getElementById("regLine").classList.add("draw");
+    }, 3600));
+
+    timers.push(setTimeout(() => {
+      document.getElementById("eqLabel").classList.add("show");
+      document.getElementById("gLabel").classList.add("show");
+      document.getElementById("infoText").innerHTML = "Graph completed: linear relation between h and t².";
+    }, 6200));
+  }
+
+  function stopAnimation() {
+    timers.forEach(timer => clearTimeout(timer));
+    timers = [];
+    document.getElementById("infoText").innerHTML = "Animation stopped.";
+  }
+
+  function resetAnimation() {
+    timers.forEach(timer => clearTimeout(timer));
+    timers = [];
+
+    points.forEach(id => {
+      document.getElementById(id).classList.remove("show");
+    });
+
+    labels.forEach(id => {
+      document.getElementById(id).classList.remove("show");
+    });
+
+    document.getElementById("eqLabel").classList.remove("show");
+    document.getElementById("gLabel").classList.remove("show");
+
+    const line = document.getElementById("regLine");
+    line.classList.remove("draw");
+    void line.offsetWidth;
+
+    document.getElementById("infoText").innerHTML = "Click Start to animate the graph.";
+  }
+</script>
+
+</body>
+</html>
