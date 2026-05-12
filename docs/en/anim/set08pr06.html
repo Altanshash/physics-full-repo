@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Central Limit Theorem Animation</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #eef6ff, #ffffff);
+    color: #1b263b;
+  }
+
+  .container {
+    max-width: 1150px;
+    margin: 30px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 22px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+  }
+
+  h1 {
+    text-align: center;
+    color: #0b3d91;
+    margin-bottom: 5px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #555;
+    margin-bottom: 25px;
+    font-size: 18px;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .control-box {
+    background: #f8fbff;
+    border: 1px solid #d8e6ff;
+    border-radius: 15px;
+    padding: 14px;
+  }
+
+  label {
+    font-weight: bold;
+    color: #0b3d91;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  select, input {
+    width: 100%;
+    padding: 9px;
+    border-radius: 10px;
+    border: 1px solid #b8c7dd;
+    font-size: 15px;
+  }
+
+  button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  #startBtn { background: #2a9d8f; }
+  #stopBtn { background: #e63946; }
+  #resetBtn { background: #457b9d; }
+
+  canvas {
+    width: 100%;
+    height: 430px;
+    border: 1px solid #d8e6ff;
+    border-radius: 18px;
+    background: white;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 18px;
+  }
+
+  .stat-card {
+    background: #f8fbff;
+    border: 1px solid #d8e6ff;
+    border-radius: 15px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .stat-card h3 {
+    margin: 0;
+    color: #0b3d91;
+    font-size: 17px;
+  }
+
+  .stat-card p {
+    margin: 8px 0 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #007f5f;
+  }
+
+  .info {
+    margin-top: 18px;
+    padding: 15px;
+    border-radius: 15px;
+    background: #fff7e6;
+    border: 1px solid #ffd166;
+    text-align: center;
+    font-size: 18px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Central Limit Theorem Simulation</h1>
+  <div class="subtitle">Animated distribution of sample means</div>
+
+  <div class="controls">
+    <div class="control-box">
+      <label>Source Distribution</label>
+      <select id="distribution">
+        <option value="uniform">Uniform</option>
+        <option value="exponential">Exponential</option>
+        <option value="twoPoint">Two-point</option>
+        <option value="normal">Normal</option>
+      </select>
+    </div>
+
+    <div class="control-box">
+      <label>Sample Size n</label>
+      <input type="number" id="sampleSize" value="5" min="1" max="200">
+    </div>
+
+    <div class="control-box">
+      <label>Number of Samples N</label>
+      <input type="number" id="sampleCount" value="1000" min="100" max="20000">
+    </div>
+
+    <div class="control-box">
+      <label>Gaussian Curve</label>
+      <select id="gaussian">
+        <option value="on">Show</option>
+        <option value="off">Hide</option>
+      </select>
+    </div>
+
+    <div class="control-box">
+      <button id="startBtn" onclick="startSimulation()">Start</button>
+      <button id="stopBtn" onclick="stopSimulation()">Stop</button>
+      <button id="resetBtn" onclick="resetSimulation()">Reset</button>
+    </div>
+  </div>
+
+  <canvas id="chart" width="1100" height="430"></canvas>
+
+  <div class="stats">
+    <div class="stat-card">
+      <h3>Generated Means</h3>
+      <p id="generated">0</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>Mean of Means</h3>
+      <p id="meanValue">0</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>Empirical Std. Dev.</h3>
+      <p id="empiricalStd">0</p>
+    </div>
+
+    <div class="stat-card">
+      <h3>Theoretical σ / √n</h3>
+      <p id="theoreticalStd">0</p>
+    </div>
+  </div>
+
+  <div class="info" id="infoBox">
+    Press Start. As n increases, the histogram becomes closer to a normal distribution.
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById("chart");
+  const ctx = canvas.getContext("2d");
+
+  let means = [];
+  let timer = null;
+  let generated = 0;
+
+  function randomUniform() {
+    return Math.random();
+  }
+
+  function randomExponential() {
+    return -Math.log(1 - Math.random());
+  }
+
+  function randomTwoPoint() {
+    return Math.random() < 0.5 ? 0 : 1;
+  }
+
+  function randomNormal() {
+    let u = 0, v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+
+  function getRandomValue(type) {
+    if (type === "uniform") return randomUniform();
+    if (type === "exponential") return randomExponential();
+    if (type === "twoPoint") return randomTwoPoint();
+    if (type === "normal") return randomNormal();
+  }
+
+  function theoreticalSigma(type) {
+    if (type === "uniform") return Math.sqrt(1 / 12);
+    if (type === "exponential") return 1;
+    if (type === "twoPoint") return 0.5;
+    if (type === "normal") return 1;
+  }
+
+  function generateOneMean() {
+    const type = document.getElementById("distribution").value;
+    const n = Number(document.getElementById("sampleSize").value);
+
+    let sum = 0;
+
+    for (let i = 0; i < n; i++) {
+      sum += getRandomValue(type);
+    }
+
+    return sum / n;
+  }
+
+  function startSimulation() {
+    stopSimulation();
+    resetSimulation();
+
+    const N = Number(document.getElementById("sampleCount").value);
+
+    timer = setInterval(() => {
+      for (let i = 0; i < 10; i++) {
+        if (generated >= N) {
+          stopSimulation();
+          document.getElementById("infoBox").innerHTML =
+            "Simulation finished. The sample mean distribution is shown.";
+          return;
+        }
+
+        means.push(generateOneMean());
+        generated++;
+      }
+
+      drawChart();
+      updateStats();
+
+    }, 30);
+  }
+
+  function stopSimulation() {
+    if (timer !== null) {
+      clearInterval(timer);
+      timer = null;
+    }
+  }
+
+  function resetSimulation() {
+    means = [];
+    generated = 0;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    document.getElementById("generated").innerHTML = "0";
+    document.getElementById("meanValue").innerHTML = "0";
+    document.getElementById("empiricalStd").innerHTML = "0";
+    document.getElementById("theoreticalStd").innerHTML = "0";
+
+    drawEmptyChart();
+
+    document.getElementById("infoBox").innerHTML =
+      "Press Start. As n increases, the histogram becomes closer to a normal distribution.";
+  }
+
+  function mean(arr) {
+    return arr.reduce((a, b) => a + b, 0) / arr.length;
+  }
+
+  function std(arr) {
+    const m = mean(arr);
+    const variance = arr.reduce((s, x) => s + Math.pow(x - m, 2), 0) / (arr.length - 1);
+    return Math.sqrt(variance);
+  }
+
+  function updateStats() {
+    const type = document.getElementById("distribution").value;
+    const n = Number(document.getElementById("sampleSize").value);
+
+    const m = mean(means);
+    const empirical = means.length > 1 ? std(means) : 0;
+    const theoretical = theoreticalSigma(type) / Math.sqrt(n);
+
+    document.getElementById("generated").innerHTML = generated;
+    document.getElementById("meanValue").innerHTML = m.toFixed(4);
+    document.getElementById("empiricalStd").innerHTML = empirical.toFixed(4);
+    document.getElementById("theoreticalStd").innerHTML = theoretical.toFixed(4);
+  }
+
+  function drawEmptyChart() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = "#222";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(70, 370);
+    ctx.lineTo(1050, 370);
+    ctx.moveTo(70, 370);
+    ctx.lineTo(70, 40);
+    ctx.stroke();
+
+    ctx.fillStyle = "#1b263b";
+    ctx.font = "18px Arial";
+    ctx.fillText("Sample mean x̄", 500, 410);
+
+    ctx.save();
+    ctx.translate(25, 230);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText("Frequency", 0, 0);
+    ctx.restore();
+
+    ctx.fillStyle = "#0b3d91";
+    ctx.font = "24px Arial";
+    ctx.fillText("Histogram of sample means", 385, 30);
+  }
+
+  function drawChart() {
+    drawEmptyChart();
+
+    if (means.length < 2) return;
+
+    const bins = 35;
+    const min = Math.min(...means);
+    const max = Math.max(...means);
+    const range = max - min || 1;
+    const counts = Array(bins).fill(0);
+
+    means.forEach(value => {
+      let index = Math.floor((value - min) / range * bins);
+      if (index >= bins) index = bins - 1;
+      counts[index]++;
+    });
+
+    const maxCount = Math.max(...counts);
+    const plotX = 70;
+    const plotY = 370;
+    const plotW = 980;
+    const plotH = 320;
+    const barW = plotW / bins;
+
+    for (let i = 0; i < bins; i++) {
+      const barH = counts[i] / maxCount * plotH;
+      const x = plotX + i * barW;
+      const y = plotY - barH;
+
+      ctx.fillStyle = "#457b9d";
+      ctx.fillRect(x + 2, y, barW - 4, barH);
+
+      ctx.strokeStyle = "#ffffff";
+      ctx.strokeRect(x + 2, y, barW - 4, barH);
+    }
+
+    drawGaussian(min, max, maxCount, bins);
+
+    ctx.fillStyle = "#1b263b";
+    ctx.font = "15px Arial";
+    ctx.fillText(min.toFixed(2), 70, 390);
+    ctx.fillText(max.toFixed(2), 1015, 390);
+  }
+
+  function drawGaussian(min, max, maxCount, bins) {
+    const show = document.getElementById("gaussian").value;
+
+    if (show !== "on") return;
+    if (means.length < 10) return;
+
+    const m = mean(means);
+    const s = std(means);
+
+    const plotX = 70;
+    const plotY = 370;
+    const plotW = 980;
+    const plotH = 320;
+    const range = max - min || 1;
+    const binWidth = range / bins;
+
+    ctx.beginPath();
+
+    for (let i = 0; i <= 250; i++) {
+      const value = min + (range * i / 250);
+      const density = (1 / (s * Math.sqrt(2 * Math.PI))) *
+        Math.exp(-0.5 * Math.pow((value - m) / s, 2));
+
+      const expectedCount = density * means.length * binWidth;
+      const x = plotX + ((value - min) / range) * plotW;
+      const y = plotY - (expectedCount / maxCount) * plotH;
+
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+
+    ctx.strokeStyle = "#e63946";
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    ctx.fillStyle = "#e63946";
+    ctx.font = "18px Arial";
+    ctx.fillText("Gaussian curve", 820, 60);
+  }
+
+  drawEmptyChart();
+</script>
+
+</body>
+</html>
