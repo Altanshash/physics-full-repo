@@ -26,13 +26,9 @@ $$
 
 ### 1. Resistance
 
-Using Ohm's law:
-
 $$
 R = \frac{U}{I}
 $$
-
-Substitute the values:
 
 $$
 R = \frac{5.23}{0.482}
@@ -46,13 +42,35 @@ $$
 
 ### 2. Relative Uncertainty Formula
 
-The resistance is:
+For the resistance:
 
 $$
 R = \frac{U}{I}
 $$
 
 Using the total differential method:
+
+$$
+dR = \frac{\partial R}{\partial U}dU + \frac{\partial R}{\partial I}dI
+$$
+
+The partial derivatives are:
+
+$$
+\frac{\partial R}{\partial U} = \frac{1}{I}
+$$
+
+$$
+\frac{\partial R}{\partial I} = -\frac{U}{I^2}
+$$
+
+For maximum uncertainty:
+
+$$
+u(R) = \left|\frac{\partial R}{\partial U}\right|u(U) + \left|\frac{\partial R}{\partial I}\right|u(I)
+$$
+
+After dividing by \(R\), the relative uncertainty becomes:
 
 $$
 \frac{u(R)}{R} = \frac{u(U)}{U} + \frac{u(I)}{I}
@@ -62,7 +80,7 @@ $$
 
 ### 3. Relative Uncertainty Calculation
 
-For voltage:
+Voltage relative uncertainty:
 
 $$
 \frac{u(U)}{U} = \frac{0.04}{5.23}
@@ -72,7 +90,7 @@ $$
 \frac{u(U)}{U} = 0.00765
 $$
 
-For current:
+Current relative uncertainty:
 
 $$
 \frac{u(I)}{I} = \frac{0.006}{0.482}
@@ -129,13 +147,13 @@ $$
 The resistance calculated from Ohm's law is:
 
 $$
-\boxed{R = 10.85 \pm 0.22\ \Omega}
+R = 10.85 \pm 0.22\ \Omega
 $$
 
 The relative uncertainty is:
 
 $$
-\boxed{\frac{u(R)}{R} = 2.01\%}
+\frac{u(R)}{R} = 2.01\%
 $$
 
 The current measurement dominates the uncertainty because:
