@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Systematic vs Statistical Errors Animation</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #eef6ff, #ffffff);
+    color: #1b263b;
+  }
+
+  .container {
+    max-width: 1150px;
+    margin: 30px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 22px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+  }
+
+  h1 {
+    text-align: center;
+    color: #0b3d91;
+    margin-bottom: 5px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #555;
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    border: 1px solid #d8e6ff;
+    border-radius: 18px;
+    background: #ffffff;
+  }
+
+  .axis {
+    stroke: #222;
+    stroke-width: 2;
+  }
+
+  .grid {
+    stroke: #e3eaf5;
+    stroke-width: 1;
+  }
+
+  .true-line {
+    stroke: #2a9d8f;
+    stroke-width: 4;
+    stroke-dasharray: 8;
+  }
+
+  .point {
+    opacity: 0;
+    transform: scale(0);
+    transform-origin: center;
+    transition: all 0.5s ease;
+  }
+
+  .point.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .mean-line {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .mean-line.show {
+    opacity: 1;
+  }
+
+  .box {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.7s ease;
+  }
+
+  .box.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .pulse {
+    animation: pulse 1.3s infinite;
+  }
+
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.45; }
+    100% { opacity: 1; }
+  }
+
+  .controls {
+    text-align: center;
+    margin-top: 18px;
+  }
+
+  button {
+    padding: 12px 22px;
+    margin: 8px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  #startBtn { background: #2a9d8f; }
+  #stopBtn { background: #e63946; }
+  #resetBtn { background: #457b9d; }
+  #nextBtn { background: #7209b7; }
+
+  .info {
+    margin-top: 15px;
+    padding: 14px;
+    background: #f8fbff;
+    border: 1px solid #d8e6ff;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 19px;
+    color: #003566;
+    min-height: 28px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Problem 5 – Systematic vs Statistical Errors</h1>
+  <div class="subtitle">Comparison of three measurement groups with the true value</div>
+
+  <svg viewBox="0 0 1050 640">
+
+    <!-- Title inside graph -->
+    <text x="525" y="35" text-anchor="middle" font-size="24" fill="#0b3d91">
+      Measurements of the Same Rod
+    </text>
+
+    <!-- Plot area -->
+    <rect x="90" y="70" width="820" height="380" fill="#ffffff" stroke="#ccd6e6"/>
+
+    <!-- Horizontal grid -->
+    <line class="grid" x1="90" y1="450" x2="910" y2="450"/>
+    <line class="grid" x1="90" y1="374" x2="910" y2="374"/>
+    <line class="grid" x1="90" y1="298" x2="910" y2="298"/>
+    <line class="grid" x1="90" y1="222" x2="910" y2="222"/>
+    <line class="grid" x1="90" y1="146" x2="910" y2="146"/>
+    <line class="grid" x1="90" y1="70" x2="910" y2="70"/>
+
+    <!-- Axes -->
+    <line class="axis" x1="90" y1="450" x2="930" y2="450"/>
+    <line class="axis" x1="90" y1="450" x2="90" y2="55"/>
+
+    <!-- Axis labels -->
+    <text x="500" y="500" text-anchor="middle" font-size="20">Groups</text>
+    <text x="35" y="255" text-anchor="middle" font-size="20" transform="rotate(-90 35 255)">
+      Length measurement
+    </text>
+
+    <!-- Y labels -->
+    <text x="75" y="455" text-anchor="end" font-size="14">9.6</text>
+    <text x="75" y="379" text-anchor="end" font-size="14">9.8</text>
+    <text x="75" y="303" text-anchor="end" font-size="14">10.0</text>
+    <text x="75" y="227" text-anchor="end" font-size="14">10.2</text>
+    <text x="75" y="151" text-anchor="end" font-size="14">10.4</text>
+    <text x="75" y="75" text-anchor="end" font-size="14">10.6</text>
+
+    <!-- True value line y=298 -->
+    <line class="true-line" x1="90" y1="298" x2="910" y2="298"/>
+    <text x="925" y="303" font-size="18" fill="#2a9d8f">true value = 10.00</text>
+
+    <!-- Group labels -->
+    <text x="230" y="475" text-anchor="middle" font-size="20" fill="#0b3d91">Group A</text>
+    <text x="500" y="475" text-anchor="middle" font-size="20" fill="#e63946">Group B</text>
+    <text x="770" y="475" text-anchor="middle" font-size="20" fill="#7209b7">Group C</text>
+
+    <!-- Group A points: 10.01, 9.99, 10.02, 9.98, 10.00 -->
+    <circle id="a1" class="point" cx="190" cy="294" r="8" fill="#0b3d91"/>
+    <circle id="a2" class="point" cx="210" cy="302" r="8" fill="#0b3d91"/>
+    <circle id="a3" class="point" cx="230" cy="290" r="8" fill="#0b3d91"/>
+    <circle id="a4" class="point" cx="250" cy="306" r="8" fill="#0b3d91"/>
+    <circle id="a5" class="point" cx="270" cy="298" r="8" fill="#0b3d91"/>
+
+    <!-- Group B points: 10.42, 10.40, 10.41, 10.43, 10.39 -->
+    <circle id="b1" class="point" cx="460" cy="138" r="8" fill="#e63946"/>
+    <circle id="b2" class="point" cx="480" cy="146" r="8" fill="#e63946"/>
+    <circle id="b3" class="point" cx="500" cy="142" r="8" fill="#e63946"/>
+    <circle id="b4" class="point" cx="520" cy="134" r="8" fill="#e63946"/>
+    <circle id="b5" class="point" cx="540" cy="150" r="8" fill="#e63946"/>
+
+    <!-- Group C points: 9.6, 10.5, 10.2, 9.8, 10.4 -->
+    <circle id="c1" class="point" cx="730" cy="450" r="8" fill="#7209b7"/>
+    <circle id="c2" class="point" cx="750" cy="108" r="8" fill="#7209b7"/>
+    <circle id="c3" class="point" cx="770" cy="222" r="8" fill="#7209b7"/>
+    <circle id="c4" class="point" cx="790" cy="374" r="8" fill="#7209b7"/>
+    <circle id="c5" class="point" cx="810" cy="146" r="8" fill="#7209b7"/>
+
+    <!-- Mean lines -->
+    <line id="meanA" class="mean-line" x1="175" y1="298" x2="285" y2="298" stroke="#0b3d91" stroke-width="4"/>
+    <line id="meanB" class="mean-line" x1="445" y1="142" x2="555" y2="142" stroke="#e63946" stroke-width="4"/>
+    <line id="meanC" class="mean-line" x1="715" y1="260" x2="825" y2="260" stroke="#7209b7" stroke-width="4"/>
+
+    <!-- Info cards -->
+    <g id="cardA" class="box">
+      <rect x="105" y="520" width="230" height="90" rx="14" fill="#eef6ff" stroke="#0b3d91"/>
+      <text x="220" y="548" text-anchor="middle" font-size="18" fill="#0b3d91">Group A</text>
+      <text x="220" y="574" text-anchor="middle" font-size="16">mean = 10.00</text>
+      <text x="220" y="596" text-anchor="middle" font-size="16">accurate and precise</text>
+    </g>
+
+    <g id="cardB" class="box">
+      <rect x="385" y="520" width="230" height="90" rx="14" fill="#fff1f1" stroke="#e63946"/>
+      <text x="500" y="548" text-anchor="middle" font-size="18" fill="#e63946">Group B</text>
+      <text x="500" y="574" text-anchor="middle" font-size="16">mean = 10.41</text>
+      <text x="500" y="596" text-anchor="middle" font-size="16">systematic error</text>
+    </g>
+
+    <g id="cardC" class="box">
+      <rect x="665" y="520" width="230" height="90" rx="14" fill="#f7f0ff" stroke="#7209b7"/>
+      <text x="780" y="548" text-anchor="middle" font-size="18" fill="#7209b7">Group C</text>
+      <text x="780" y="574" text-anchor="middle" font-size="16">mean = 10.10</text>
+      <text x="780" y="596" text-anchor="middle" font-size="16">statistical error</text>
+    </g>
+
+  </svg>
+
+  <div class="info" id="infoText">Click Start to begin the animation.</div>
+
+  <div class="controls">
+    <button id="startBtn" onclick="startAnimation()">Start</button>
+    <button id="stopBtn" onclick="stopAnimation()">Stop</button>
+    <button id="resetBtn" onclick="resetAnimation()">Reset</button>
+    <button id="nextBtn" onclick="nextStep()">Next Step</button>
+  </div>
+</div>
+
+<script>
+  let timers = [];
+  let currentStep = 0;
+
+  const steps = [
+    {
+      text: "Group A appears: points are close to the true value.",
+      elements: ["a1", "a2", "a3", "a4", "a5"]
+    },
+    {
+      text: "Group A mean is exactly near the true value: accurate and precise.",
+      elements: ["meanA", "cardA"]
+    },
+    {
+      text: "Group B appears: measurements are close to each other but far from the true value.",
+      elements: ["b1", "b2", "b3", "b4", "b5"]
+    },
+    {
+      text: "Group B has a systematic error: the whole group is shifted upward.",
+      elements: ["meanB", "cardB"]
+    },
+    {
+      text: "Group C appears: measurements are widely scattered.",
+      elements: ["c1", "c2", "c3", "c4", "c5"]
+    },
+    {
+      text: "Group C has large statistical error because the scatter is large.",
+      elements: ["meanC", "cardC"]
+    },
+    {
+      text: "Conclusion: small uncertainty is not enough. A good result must also be close to the true value.",
+      elements: []
+    }
+  ];
+
+  function showElements(elements) {
+    elements.forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.add("show");
+    });
+  }
+
+  function updateStep(index) {
+    document.getElementById("infoText").innerHTML = steps[index].text;
+    showElements(steps[index].elements);
+
+    if (index === 3) {
+      document.getElementById("meanB").classList.add("pulse");
+    }
+  }
+
+  function startAnimation() {
+    resetAnimation();
+
+    steps.forEach((step, index) => {
+      const timer = setTimeout(() => {
+        currentStep = index;
+        updateStep(index);
+      }, index * 2200);
+
+      timers.push(timer);
+    });
+  }
+
+  function stopAnimation() {
+    timers.forEach(timer => clearTimeout(timer));
+    timers = [];
+    document.getElementById("infoText").innerHTML = "Animation stopped.";
+  }
+
+  function resetAnimation() {
+    timers.forEach(timer => clearTimeout(timer));
+    timers = [];
+    currentStep = 0;
+
+    const allIds = [
+      "a1","a2","a3","a4","a5",
+      "b1","b2","b3","b4","b5",
+      "c1","c2","c3","c4","c5",
+      "meanA","meanB","meanC",
+      "cardA","cardB","cardC"
+    ];
+
+    allIds.forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.remove("show");
+      el.classList.remove("pulse");
+    });
+
+    document.getElementById("infoText").innerHTML =
+      "Click Start to begin the animation.";
+  }
+
+  function nextStep() {
+    if (currentStep < steps.length) {
+      updateStep(currentStep);
+      currentStep++;
+    }
+  }
+</script>
+
+</body>
+</html>
