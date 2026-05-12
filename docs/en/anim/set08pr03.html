@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Problem 3 Animation</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #eef6ff, #ffffff);
+    color: #1b263b;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 22px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+  }
+
+  h1 {
+    text-align: center;
+    color: #0b3d91;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #555;
+    margin-bottom: 25px;
+  }
+
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 25px;
+  }
+
+  .card {
+    background: #f8fbff;
+    border: 1px solid #d8e6ff;
+    border-radius: 18px;
+    padding: 20px;
+    min-height: 310px;
+  }
+
+  .step-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0b3d91;
+    margin-bottom: 15px;
+  }
+
+  .text {
+    font-size: 19px;
+    line-height: 1.6;
+  }
+
+  .formula {
+    margin-top: 18px;
+    padding: 14px;
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #cfdfff;
+    font-size: 25px;
+    text-align: center;
+    color: #003566;
+  }
+
+  .result {
+    margin-top: 18px;
+    padding: 14px;
+    background: #e8f8ef;
+    border: 1px solid #95d5b2;
+    border-radius: 14px;
+    font-size: 23px;
+    font-weight: bold;
+    color: #007f5f;
+    text-align: center;
+  }
+
+  svg {
+    width: 100%;
+    background: white;
+    border: 1px solid #d8e6ff;
+    border-radius: 18px;
+  }
+
+  .fade {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.7s ease;
+  }
+
+  .fade.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .cuboid {
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  .cuboid.show {
+    opacity: 1;
+  }
+
+  .arrow {
+    opacity: 0;
+    transition: opacity 0.7s ease;
+  }
+
+  .arrow.show {
+    opacity: 1;
+  }
+
+  .bar {
+    transform-origin: bottom;
+    transform: scaleY(0);
+    transition: transform 0.8s ease;
+  }
+
+  .bar.show {
+    transform: scaleY(1);
+  }
+
+  .pulse {
+    animation: pulse 1.3s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+
+  button {
+    padding: 12px 22px;
+    margin: 8px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  #startBtn { background: #2a9d8f; }
+  #stopBtn { background: #e63946; }
+  #resetBtn { background: #457b9d; }
+  #nextBtn { background: #7209b7; }
+
+  .controls {
+    text-align: center;
+    margin-top: 25px;
+  }
+
+  .footer {
+    margin-top: 22px;
+    background: #fff7e6;
+    border: 1px solid #ffd166;
+    border-radius: 15px;
+    padding: 15px;
+    font-size: 19px;
+    text-align: center;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Problem 3 – Propagation of Uncertainty</h1>
+  <div class="subtitle">Density of a Rectangular Cuboid</div>
+
+  <div class="main">
+    <div class="card">
+      <div class="step-title" id="stepTitle">Ready</div>
+      <div class="text" id="stepText">Click Start to begin the animation.</div>
+      <div class="formula" id="formulaBox">ρ = m / abc</div>
+      <div class="result" id="resultBox">Waiting...</div>
+    </div>
+
+    <svg viewBox="0 0 650 470">
+      <!-- Cuboid -->
+      <g id="cuboidGroup" class="cuboid">
+        <polygon points="180,210 390,210 470,155 260,155" fill="#bde0fe" stroke="#0b3d91" stroke-width="3"/>
+        <polygon points="390,210 470,155 470,300 390,355" fill="#90dbf4" stroke="#0b3d91" stroke-width="3"/>
+        <polygon points="180,210 390,210 390,355 180,355" fill="#caf0f8" stroke="#0b3d91" stroke-width="3"/>
+        <text x="300" y="285" text-anchor="middle" font-size="28" fill="#0b3d91">Cuboid</text>
+      </g>
+
+      <!-- Dimension arrows -->
+      <g id="dimA" class="arrow">
+        <line x1="180" y1="385" x2="390" y2="385" stroke="#e63946" stroke-width="4"/>
+        <polygon points="180,385 195,377 195,393" fill="#e63946"/>
+        <polygon points="390,385 375,377 375,393" fill="#e63946"/>
+        <text x="285" y="415" text-anchor="middle" font-size="22" fill="#e63946">a = 5.20 ± 0.02 cm</text>
+      </g>
+
+      <g id="dimB" class="arrow">
+        <line x1="410" y1="365" x2="490" y2="310" stroke="#fb8500" stroke-width="4"/>
+        <polygon points="410,365 425,363 417,350" fill="#fb8500"/>
+        <polygon points="490,310 475,312 483,325" fill="#fb8500"/>
+        <text x="515" y="350" font-size="22" fill="#fb8500">b = 2.10 ± 0.02 cm</text>
+      </g>
+
+      <g id="dimC" class="arrow">
+        <line x1="500" y1="155" x2="500" y2="300" stroke="#2a9d8f" stroke-width="4"/>
+        <polygon points="500,155 492,170 508,170" fill="#2a9d8f"/>
+        <polygon points="500,300 492,285 508,285" fill="#2a9d8f"/>
+        <text x="515" y="230" font-size="22" fill="#2a9d8f">c = 1.50 ± 0.01 cm</text>
+      </g>
+
+      <g id="massLabel" class="fade">
+        <text x="180" y="90" font-size="24" fill="#0b3d91">m = 128.4 ± 0.2 g</text>
+        <circle cx="150" cy="82" r="18" fill="#0b3d91"/>
+        <text x="150" y="90" text-anchor="middle" font-size="24" fill="white">m</text>
+      </g>
+
+      <text id="densityLabel" class="fade" x="325" y="55" text-anchor="middle" font-size="28" fill="#007f5f">
+        ρ = 7.84 g/cm³
+      </text>
+
+      <!-- Bar chart -->
+      <g transform="translate(65,430)">
+        <text id="chartTitle" class="fade" x="260" y="-175" text-anchor="middle" font-size="22" fill="#1b263b">
+          Relative Uncertainty Contributions
+        </text>
+
+        <line x1="0" y1="0" x2="520" y2="0" stroke="#333" stroke-width="2"/>
+        <line x1="0" y1="0" x2="0" y2="-155" stroke="#333" stroke-width="2"/>
+
+        <rect id="barM" class="bar" x="55" y="-25" width="65" height="25" fill="#4361ee"/>
+        <rect id="barA" class="bar" x="165" y="-60" width="65" height="60" fill="#e63946"/>
+        <rect id="barB" class="bar" x="275" y="-145" width="65" height="145" fill="#fb8500"/>
+        <rect id="barC" class="bar" x="385" y="-102" width="65" height="102" fill="#2a9d8f"/>
+
+        <text id="labM" class="fade" x="87" y="-35" text-anchor="middle" font-size="16">0.00156</text>
+        <text id="labA" class="fade" x="197" y="-70" text-anchor="middle" font-size="16">0.00385</text>
+        <text id="labB" class="fade" x="307" y="-155" text-anchor="middle" font-size="16">0.00952</text>
+        <text id="labC" class="fade" x="417" y="-112" text-anchor="middle" font-size="16">0.00667</text>
+
+        <text id="txtM" class="fade" x="87" y="25" text-anchor="middle" font-size="17">u(m)/m</text>
+        <text id="txtA" class="fade" x="197" y="25" text-anchor="middle" font-size="17">u(a)/a</text>
+        <text id="txtB" class="fade" x="307" y="25" text-anchor="middle" font-size="17">u(b)/b</text>
+        <text id="txtC" class="fade" x="417" y="25" text-anchor="middle" font-size="17">u(c)/c</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="footer" id="footerBox">
+    Final result will appear here.
+  </div>
+
+  <div class="controls">
+    <button id="startBtn" onclick="startAnimation()">Start</button>
+    <button id="stopBtn" onclick="stopAnimation()">Stop</button>
+    <button id="resetBtn" onclick="resetAnimation()">Reset</button>
+    <button id="nextBtn" onclick="nextStep()">Next Step</button>
+  </div>
+</div>
+
+<script>
+  let timers = [];
+  let currentStep = 0;
+
+  const steps = [
+    {
+      title: "Step 1: Given Data",
+      text: "A rectangular cuboid has measured mass and dimensions with uncertainties.",
+      formula: "m = 128.4 ± 0.2 g<br>a = 5.20 ± 0.02 cm<br>b = 2.10 ± 0.02 cm<br>c = 1.50 ± 0.01 cm",
+      result: "Find the density and its uncertainty.",
+      action: function() {
+        document.getElementById("cuboidGroup").classList.add("show");
+        document.getElementById("massLabel").classList.add("show");
+      }
+    },
+    {
+      title: "Step 2: Density Formula",
+      text: "Density is mass divided by volume.",
+      formula: "ρ = m / abc",
+      result: "First calculate the volume.",
+      action: function() {
+        document.getElementById("dimA").classList.add("show");
+        document.getElementById("dimB").classList.add("show");
+        document.getElementById("dimC").classList.add("show");
+      }
+    },
+    {
+      title: "Step 3: Volume",
+      text: "The volume of the cuboid is calculated from its three dimensions.",
+      formula: "V = abc = 5.20 · 2.10 · 1.50",
+      result: "V = 16.38 cm³",
+      action: function() {}
+    },
+    {
+      title: "Step 4: Density Value",
+      text: "Now calculate the density.",
+      formula: "ρ = 128.4 / 16.38",
+      result: "ρ = 7.84 g/cm³",
+      action: function() {
+        document.getElementById("densityLabel").classList.add("show");
+        document.getElementById("densityLabel").classList.add("pulse");
+      }
+    },
+    {
+      title: "Step 5: Relative Uncertainty Formula",
+      text: "For multiplication and division, relative uncertainties are added.",
+      formula: "u(ρ)/ρ = u(m)/m + u(a)/a + u(b)/b + u(c)/c",
+      result: "Now compare each contribution.",
+      action: function() {}
+    },
+    {
+      title: "Step 6: Mass Contribution",
+      text: "Relative uncertainty from mass.",
+      formula: "u(m)/m = 0.2 / 128.4",
+      result: "u(m)/m = 0.00156",
+      action: function() {
+        showChart();
+        showBar("M");
+      }
+    },
+    {
+      title: "Step 7: Dimension a Contribution",
+      text: "Relative uncertainty from dimension a.",
+      formula: "u(a)/a = 0.02 / 5.20",
+      result: "u(a)/a = 0.00385",
+      action: function() {
+        showChart();
+        showBar("M");
+        showBar("A");
+      }
+    },
+    {
+      title: "Step 8: Dimension b Contribution",
+      text: "Relative uncertainty from dimension b.",
+      formula: "u(b)/b = 0.02 / 2.10",
+      result: "u(b)/b = 0.00952",
+      action: function() {
+        showChart();
+        showBar("M");
+        showBar("A");
+        showBar("B");
+      }
+    },
+    {
+      title: "Step 9: Dimension c Contribution",
+      text: "Relative uncertainty from dimension c.",
+      formula: "u(c)/c = 0.01 / 1.50",
+      result: "u(c)/c = 0.00667",
+      action: function() {
+        showChart();
+        showBar("M");
+        showBar("A");
+        showBar("B");
+        showBar("C");
+      }
+    },
+    {
+      title: "Step 10: Total Relative Uncertainty",
+      text: "Add all relative uncertainty contributions.",
+      formula: "u(ρ)/ρ = 0.00156 + 0.00385 + 0.00952 + 0.00667",
+      result: "u(ρ)/ρ = 0.02160 = 2.16%",
+      action: function() {
+        showChart();
+        showBar("M");
+        showBar("A");
+        showBar("B");
+        showBar("C");
+      }
+    },
+    {
+      title: "Step 11: Absolute Uncertainty",
+      text: "Multiply density by the relative uncertainty.",
+      formula: "u(ρ) = 7.84 · 0.02160",
+      result: "u(ρ) = 0.17 g/cm³",
+      action: function() {}
+    },
+    {
+      title: "Conclusion",
+      text: "The largest uncertainty contribution comes from dimension b.",
+      formula: "u(b)/b = 0.00952",
+      result: "ρ = 7.84 ± 0.17 g/cm³",
+      action: function() {
+        document.getElementById("footerBox").innerHTML =
+          "Conclusion: The density is <b>ρ = 7.84 ± 0.17 g/cm³</b>. The largest contribution comes from <b>dimension b</b>.";
+      }
+    }
+  ];
+
+  function showChart() {
+    document.getElementById("chartTitle").classList.add("show");
+  }
+
+  function showBar(letter) {
+    document.getElementById("bar" + letter).classList.add("show");
+    document.getElementById("lab" + letter).classList.add("show");
+    document.getElementById("txt" + letter).classList.add("show");
+  }
+
+  function updateStep(index) {
+    const step = steps[index];
+
+    document.getElementById("stepTitle").innerHTML = step.title;
+    document.getElementById("stepText").innerHTML = step.text;
+    document.getElementById("formulaBox").innerHTML = step.formula;
+    document.getElementById("resultBox").innerHTML = step.result;
+
+    step.action();
+  }
+
+  function startAnimation() {
+    resetAnimation();
+
+    steps.forEach((step, index) => {
+      const timer = setTimeout(() => {
+        currentStep = index;
+        updateStep(index);
+      }, index * 2500);
+
+      timers.push(timer);
+    });
+  }
+
+  function stopAnimation() {
+    timers.forEach(timer => clearTimeout(timer));
+    timers = [];
+    document.getElementById("stepText").innerHTML = "Animation stopped.";
+  }
+
+  function nextStep() {
+    if (currentStep < steps.length) {
+      updateStep(currentStep);
+      currentStep++;
+    }
+  }
+
+  function resetAnimation() {
+    timers.forEach(timer => clearTimeout(timer));
+    timers = [];
+    currentStep = 0;
+
+    document.getElementById("stepTitle").innerHTML = "Ready";
+    document.getElementById("stepText").innerHTML = "Click Start to begin the animation.";
+    document.getElementById("formulaBox").innerHTML = "ρ = m / abc";
+    document.getElementById("resultBox").innerHTML = "Waiting...";
+    document.getElementById("footerBox").innerHTML = "Final result will appear here.";
+
+    document.querySelectorAll(".show").forEach(el => el.classList.remove("show"));
+    document.querySelectorAll(".pulse").forEach(el => el.classList.remove("pulse"));
+  }
+</script>
+
+</body>
+</html>
