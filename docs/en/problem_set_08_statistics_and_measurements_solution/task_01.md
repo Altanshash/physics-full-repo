@@ -1,165 +1,213 @@
 # Problem Set 8 – Statistics and Measurements
 
-## Problem 1 – Descriptive statistics of a measurement series
+## Problem 1 – Descriptive Statistics of a Measurement Series
 
-### Given
+## Given
 
-Rod length measurements in cm:
+Measurements of a rod’s length (in cm):
 
-\[
+$$
 x = [12.10,\ 12.08,\ 12.12,\ 12.11,\ 12.09,\ 12.13,\ 12.07,\ 12.10]
-\]
+$$
 
 Number of measurements:
 
-\[
+$$
 n = 8
-\]
+$$
 
 ---
 
-## Solution
+# Solution
 
-### 1. Arithmetic mean
+## 1. Arithmetic Mean
 
-\[
+The arithmetic mean is calculated using:
+
+$$
 \bar{x} = \frac{\sum x_i}{n}
-\]
+$$
 
-\[
-\bar{x} = \frac{96.80}{8} = 12.10\ \text{cm}
-\]
+Substituting the values:
+
+$$
+\bar{x} =
+\frac{
+12.10 + 12.08 + 12.12 + 12.11 + 12.09 + 12.13 + 12.07 + 12.10
+}{8}
+$$
+
+$$
+\bar{x} = \frac{96.80}{8}
+$$
+
+$$
+\boxed{\bar{x} = 12.10\ \text{cm}}
+$$
 
 ---
 
-### 2. Sample variance and standard deviation
+## 2. Sample Variance
 
-Sample variance:
+The sample variance formula:
 
-\[
+$$
 s^2 = \frac{\sum (x_i - \bar{x})^2}{n-1}
-\]
+$$
 
-\[
-s^2 = 0.0004\ \text{cm}^2
-\]
+Calculation:
 
-Standard deviation:
+$$
+s^2 = \frac{0.0028}{7}
+$$
 
-\[
+$$
+\boxed{s^2 = 0.0004\ \text{cm}^2}
+$$
+
+---
+
+## 3. Standard Deviation
+
+The standard deviation is:
+
+$$
 s = \sqrt{s^2}
-\]
+$$
 
-\[
-s = 0.02\ \text{cm}
-\]
+$$
+s = \sqrt{0.0004}
+$$
+
+$$
+\boxed{s = 0.02\ \text{cm}}
+$$
 
 ---
 
-### 3. Uncertainty of the mean
+## 4. Uncertainty of the Mean
 
-\[
+The uncertainty of the mean is calculated by:
+
+$$
 u(\bar{x}) = \frac{s}{\sqrt{n}}
-\]
+$$
 
-\[
+Substitute the known values:
+
+$$
 u(\bar{x}) = \frac{0.02}{\sqrt{8}}
-\]
+$$
 
-\[
+$$
 u(\bar{x}) \approx 0.0071\ \text{cm}
-\]
+$$
+
+$$
+\boxed{u(\bar{x}) \approx 0.0071\ \text{cm}}
+$$
 
 ---
 
-### 4. Final result
+# Final Result
 
-\[
+The final result is written as:
+
+$$
 x = \bar{x} \pm u(\bar{x})
-\]
+$$
 
-\[
+$$
 x = 12.10 \pm 0.0071\ \text{cm}
-\]
+$$
+
+Rounded result:
+
+$$
+\boxed{x = 12.10 \pm 0.01\ \text{cm}}
+$$
 
 ---
 
-### 5. Difference between standard deviation and uncertainty of the mean
+# Difference Between \(s\) and \(u(\bar{x})\)
 
-The standard deviation `s` shows how much individual measurements differ from the mean value.
+- The standard deviation \(s\) describes how far individual measurements are spread from the mean value.
+- The uncertainty of the mean \(u(\bar{x})\) describes how accurately the mean value is determined.
 
-The uncertainty of the mean `u(x̄)` shows how accurately the mean value is determined.
+Values obtained:
 
-So:
-
-\[
+$$
 s = 0.02\ \text{cm}
-\]
+$$
 
-\[
+$$
 u(\bar{x}) = 0.0071\ \text{cm}
-\]
-
-The uncertainty of the mean is smaller because it depends on the number of measurements.
+$$
 
 ---
 
-### 6. Normal distribution intervals
+# Normal Distribution Intervals
 
-#### Interval \(\bar{x} \pm s\)
+## Interval \( \bar{x} \pm s \)
 
-\[
+$$
 12.10 \pm 0.02
-\]
+$$
 
-\[
+$$
 [12.08,\ 12.12]\ \text{cm}
-\]
+$$
 
-This interval corresponds approximately to 68% confidence level.
+This interval corresponds approximately to a **68% confidence level**.
 
 ---
 
-#### Interval \(\bar{x} \pm 2s\)
+## Interval \( \bar{x} \pm 2s \)
 
-\[
+$$
 12.10 \pm 0.04
-\]
+$$
 
-\[
+$$
 [12.06,\ 12.14]\ \text{cm}
-\]
+$$
 
-This interval corresponds approximately to 95% confidence level.
+This interval corresponds approximately to a **95% confidence level**.
 
 ---
 
-#### Interval \(\bar{x} \pm 3s\)
+## Interval \( \bar{x} \pm 3s \)
 
-\[
+$$
 12.10 \pm 0.06
-\]
+$$
 
-\[
+$$
 [12.04,\ 12.16]\ \text{cm}
-\]
+$$
 
-This interval corresponds approximately to 99% confidence level.
+This interval corresponds approximately to a **99% confidence level**.
 
 ---
 
-## Conclusion
+# Conclusion
 
 The average length of the rod is:
 
-\[
-\boxed{x = 12.10 \pm 0.0071\ \text{cm}}
-\]
+$$
+\boxed{x = 12.10 \pm 0.01\ \text{cm}}
+$$
 
-The sample standard deviation is:
+The sample variance is:
 
-\[
+$$
+s^2 = 0.0004\ \text{cm}^2
+$$
+
+The standard deviation is:
+
+$$
 s = 0.02\ \text{cm}
-\]
+$$
 
-The measurements are close to each other, so the result is reliable. According to the normal distribution rule, most measurements should lie within the intervals \(\bar{x} \pm s\), \(\bar{x} \pm 2s\), and \(\bar{x} \pm 3s\).
+The measurements are close to each other, which indicates good measurement consistency and reliability.
