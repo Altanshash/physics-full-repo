@@ -115,7 +115,7 @@
 <div class="container">
   <h1>Linear Regression Graph Animation</h1>
 
-  <svg viewBox="0 0 850 560">
+  <svg viewBox="0 0 850 580">
 
     <!-- Grid -->
     <g>
@@ -143,7 +143,7 @@
     <polygon points="100,25 92,40 108,40" fill="#222"/>
 
     <!-- Axis labels -->
-    <text x="430" y="540" text-anchor="middle" font-size="22">t² (s²)</text>
+    <text x="430" y="545" text-anchor="middle" font-size="22">t² (s²)</text>
     <text x="35" y="250" text-anchor="middle" font-size="22" transform="rotate(-90 35 250)">h (m)</text>
 
     <!-- Y labels -->
@@ -178,15 +178,18 @@
       <text id="l2" class="label" x="380" y="276" text-anchor="middle">(0.0824, 0.40)</text>
       <text id="l3" class="label" x="518.9" y="192" text-anchor="middle">(0.1232, 0.60)</text>
       <text id="l4" class="label" x="655" y="108" text-anchor="middle">(0.1632, 0.80)</text>
-      <text id="l5" class="label" x="700" y="32" text-anchor="middle">(0.2043, 1.00)</text>
+      <text id="l5" class="label" x="705" y="28" text-anchor="middle">(0.2043, 1.00)</text>
     </g>
 
-    <!-- Equation label -->
-    <text id="eqLabel" class="label" x="570" y="75" font-size="24" fill="#e63946">
+    <!-- Separate result box -->
+    <rect id="resultBoxSvg" class="label" x="120" y="60" width="245" height="92" rx="14"
+          fill="#ffffff" stroke="#e63946" stroke-width="2"/>
+
+    <text id="eqLabel" class="label" x="140" y="98" font-size="23" fill="#e63946">
       h = 4.8899t²
     </text>
 
-    <text id="gLabel" class="label" x="570" y="110" font-size="21" fill="#007f5f">
+    <text id="gLabel" class="label" x="140" y="132" font-size="21" fill="#007f5f">
       g = 9.78 m/s²
     </text>
 
@@ -210,7 +213,8 @@
   function startAnimation() {
     resetAnimation();
 
-    document.getElementById("infoText").innerHTML = "Plotting experimental data points...";
+    document.getElementById("infoText").innerHTML =
+      "Plotting experimental data points...";
 
     points.forEach((id, index) => {
       timers.push(setTimeout(() => {
@@ -220,14 +224,17 @@
     });
 
     timers.push(setTimeout(() => {
-      document.getElementById("infoText").innerHTML = "Drawing the linear regression line...";
+      document.getElementById("infoText").innerHTML =
+        "Drawing the linear regression line...";
       document.getElementById("regLine").classList.add("draw");
     }, 3600));
 
     timers.push(setTimeout(() => {
+      document.getElementById("resultBoxSvg").classList.add("show");
       document.getElementById("eqLabel").classList.add("show");
       document.getElementById("gLabel").classList.add("show");
-      document.getElementById("infoText").innerHTML = "Graph completed: linear relation between h and t².";
+      document.getElementById("infoText").innerHTML =
+        "Graph completed: linear relation between h and t².";
     }, 6200));
   }
 
@@ -249,6 +256,7 @@
       document.getElementById(id).classList.remove("show");
     });
 
+    document.getElementById("resultBoxSvg").classList.remove("show");
     document.getElementById("eqLabel").classList.remove("show");
     document.getElementById("gLabel").classList.remove("show");
 
@@ -256,7 +264,8 @@
     line.classList.remove("draw");
     void line.offsetWidth;
 
-    document.getElementById("infoText").innerHTML = "Click Start to animate the graph.";
+    document.getElementById("infoText").innerHTML =
+      "Click Start to animate the graph.";
   }
 </script>
 
