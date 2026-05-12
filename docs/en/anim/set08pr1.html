@@ -1,151 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Graph Animation</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8" />
+<title>Measurement Statistics Animation</title>
 
 <style>
-  body{
-    margin:0;
-    background:#020617;
-    color:white;
-    font-family:Arial,sans-serif;
-    text-align:center;
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+    padding: 30px;
+    text-align: center;
   }
 
-  .box{
-    width:700px;
-    height:380px;
-    margin:40px auto 20px;
-    background:#0f172a;
-    border:2px solid #38bdf8;
-    border-radius:16px;
-    padding:20px;
+  h1 {
+    color: #1d3557;
   }
 
-  canvas{
-    width:100% !important;
-    height:100% !important;
+  .container {
+    max-width: 950px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.12);
   }
 
-  .buttons{
-    margin-top:25px;
+  .formula {
+    font-size: 24px;
+    margin: 20px;
+    color: #003566;
+    min-height: 35px;
   }
 
-  button{
-    width:130px;
-    height:45px;
-    margin:10px;
-    border:none;
-    border-radius:12px;
-    color:white;
-    font-size:18px;
-    font-weight:bold;
-    cursor:pointer;
+  .result {
+    font-size: 22px;
+    font-weight: bold;
+    color: #007f5f;
+    margin-top: 15px;
   }
 
-  .start{background:#2563eb;}
-  .stop{background:#dc2626;}
-  .reset{background:#16a34a;}
+  svg {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    margin-top: 20px;
+  }
 
-  button:hover{
-    transform:scale(1.05);
+  .point {
+    opacity: 0;
+    transform: scale(0);
+    transform-origin: center;
+    transition: opacity 0.5s, transform 0.5s;
+  }
+
+  .point.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .mean-line {
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+
+  .mean-line.show {
+    opacity: 1;
+  }
+
+  .interval {
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+
+  .interval.show {
+    opacity: 0.35;
+  }
+
+  button {
+    font-size: 16px;
+    padding: 10px 18px;
+    margin: 15px 8px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+  }
+
+  #startBtn {
+    background: #2a9d8f;
+  }
+
+  #stopBtn {
+    background: #e63946;
+  }
+
+  #resetBtn {
+    background: #457b9d;
+  }
+
+  .step-box {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #222;
+    min-height: 55px;
   }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-  <canvas id="chart"></canvas>
-</div>
+<div class="container">
+  <h1>Descriptive Statistics Animation</h1>
 
-<div class="buttons">
-  <button class="start" onclick="startAnimation()">START</button>
-  <button class="stop" onclick="stopAnimation()">STOP</button>
-  <button class="reset" onclick="resetAnimation()">RESET</button>
+  <div class="step-box" id="stepText">
+    Click Start to begin the animation.
+  </div>
+
+  <div class="formula" id="formulaText"></div>
+  <div class="result" id="resultText"></div>
+
+  <svg width="850" height="360" viewBox="0 0 850 360">
+
+    <!-- Number line -->
+    <line x1="80" y1="180" x2="780" y2="180" stroke="black" stroke-width="2"/>
+
+    <!-- Tick marks and numbers -->
+    <g font-size="14" text-anchor="middle">
+      <line x1="80" y1="172" x2="80" y2="188" stroke="black"/>
+      <text x="80" y="210">12.04</text>
+
+      <line x1="196.7" y1="172" x2="196.7" y2="188" stroke="black"/>
+      <text x="196.7" y="210">12.06</text>
+
+      <line x1="313.3" y1="172" x2="313.3" y2="188" stroke="black"/>
+      <text x="313.3" y="210">12.08</text>
+
+      <line x1="430" y1="172" x2="430" y2="188" stroke="black"/>
+      <text x="430" y="210">12.10</text>
+
+      <line x1="546.7" y1="172" x2="546.7" y2="188" stroke="black"/>
+      <text x="546.7" y="210">12.12</text>
+
+      <line x1="663.3" y1="172" x2="663.3" y2="188" stroke="black"/>
+      <text x="663.3" y="210">12.14</text>
+
+      <line x1="780" y1="172" x2="780" y2="188" stroke="black"/>
+      <text x="780" y="210">12.16</text>
+    </g>
+
+    <!-- Intervals -->
+    <rect id="int1" class="interval" x="313.3" y="120" width="233.4" height="60" fill="#2a9d8f"/>
+    <rect id="int2" class="interval" x="196.7" y="95" width="466.6" height="25" fill="#457b9d"/>
+    <rect id="int3" class="interval" x="80" y="70" width="700" height="25" fill="#f4a261"/>
+
+    <!-- Mean line -->
+    <line id="meanLine" class="mean-line" x1="430" y1="50" x2="430" y2="240" stroke="#003566" stroke-width="3" stroke-dasharray="8"/>
+
+    <text id="meanLabel" class="mean-line" x="430" y="265" text-anchor="middle" font-size="18" fill="#003566">
+      mean = 12.10 cm
+    </text>
+
+    <!-- Measurement points -->
+    <circle class="point" id="p1" cx="430" cy="155" r="8" fill="#e63946"/>
+    <circle class="point" id="p2" cx="313.3" cy="155" r="8" fill="#4361ee"/>
+    <circle class="point" id="p3" cx="546.7" cy="155" r="8" fill="#2a9d8f"/>
+    <circle class="point" id="p4" cx="488.3" cy="155" r="8" fill="#ffb703"/>
+    <circle class="point" id="p5" cx="371.7" cy="155" r="8" fill="#7209b7"/>
+    <circle class="point" id="p6" cx="605" cy="155" r="8" fill="#fb8500"/>
+    <circle class="point" id="p7" cx="255" cy="155" r="8" fill="#6c757d"/>
+    <circle class="point" id="p8" cx="430" cy="135" r="8" fill="#e63946"/>
+
+    <!-- Point labels -->
+    <g font-size="14" text-anchor="middle">
+      <text x="430" y="125">12.10</text>
+      <text x="313.3" y="125">12.08</text>
+      <text x="546.7" y="125">12.12</text>
+      <text x="488.3" y="125">12.11</text>
+      <text x="371.7" y="125">12.09</text>
+      <text x="605" y="125">12.13</text>
+      <text x="255" y="125">12.07</text>
+      <text x="430" y="105">12.10</text>
+    </g>
+
+    <!-- Interval labels -->
+    <text id="label1" class="interval" x="430" y="110" text-anchor="middle" font-size="16">
+      x̄ ± s = [12.08, 12.12] cm ≈ 68%
+    </text>
+
+    <text id="label2" class="interval" x="430" y="90" text-anchor="middle" font-size="16">
+      x̄ ± 2s = [12.06, 12.14] cm ≈ 95%
+    </text>
+
+    <text id="label3" class="interval" x="430" y="65" text-anchor="middle" font-size="16">
+      x̄ ± 3s = [12.04, 12.16] cm ≈ 99%
+    </text>
+
+  </svg>
+
+  <div>
+    <button id="startBtn" onclick="startAnimation()">Start</button>
+    <button id="stopBtn" onclick="stopAnimation()">Stop</button>
+    <button id="resetBtn" onclick="resetAnimation()">Reset</button>
+  </div>
 </div>
 
 <script>
-const values = [12.10, 12.08, 12.12, 12.11, 12.09, 12.13, 12.07, 12.10];
-const mean = 12.10;
+  const points = ["p1","p2","p3","p4","p5","p6","p7","p8"];
+  let timers = [];
 
-let index = 0;
-let timer = null;
-
-const chart = new Chart(document.getElementById("chart"), {
-  type: "line",
-  data: {
-    labels: ["1","2","3","4","5","6","7","8"],
-    datasets: [
-      {
-        label: "Measurements",
-        data: [],
-        borderColor: "#22d3ee",
-        backgroundColor: "#22d3ee",
-        pointRadius: 7,
-        borderWidth: 3,
-        tension: 0.3
-      },
-      {
-        label: "Mean",
-        data: Array(8).fill(mean),
-        borderColor: "#22c55e",
-        borderDash: [7,7],
-        borderWidth: 3,
-        pointRadius: 0
-      }
-    ]
-  },
-  options: {
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{
-      legend:{
-        labels:{color:"white"}
-      }
-    },
-    scales:{
-      x:{
-        ticks:{color:"white"},
-        grid:{color:"#1e293b"}
-      },
-      y:{
-        min:12.06,
-        max:12.14,
-        ticks:{color:"white"},
-        grid:{color:"#1e293b"}
-      }
-    }
+  function clearTimers() {
+    timers.forEach(timer => clearTimeout(timer));
+    timers = [];
   }
-});
 
-function startAnimation(){
-  if(timer) return;
+  function startAnimation() {
+    resetAnimation();
 
-  timer = setInterval(() => {
-    if(index < values.length){
-      chart.data.datasets[0].data.push(values[index]);
-      chart.update();
-      index++;
-    } else {
-      stopAnimation();
-    }
-  }, 600);
-}
+    const steps = [
+      {
+        time: 500,
+        action: () => {
+          document.getElementById("stepText").innerHTML =
+            "Step 1: Given measurement values are shown on the number line.";
+          document.getElementById("formulaText").innerHTML =
+            "x = [12.10, 12.08, 12.12, 12.11, 12.09, 12.13, 12.07, 12.10]";
+          points.forEach((id, index) => {
+            timers.push(setTimeout(() => {
+              document.getElementById(id).classList.add("show");
+            }, index * 300));
+          });
+        }
+      },
+      {
+        time: 3500,
+        action: () => {
+          document.getElementById("stepText").innerHTML =
+            "Step 2: Calculate the arithmetic mean.";
+          document.getElementById("formulaText").innerHTML =
+            "x̄ = 96.80 / 8";
+          document.getElementById("resultText").innerHTML =
+            "x̄ = 12.10 cm";
+          document.getElementById("meanLine").classList.add("show");
+          document.getElementById("meanLabel").classList.add("show");
+        }
+      },
+      {
+        time: 6000,
+        action: () => {
+          document.getElementById("stepText").innerHTML =
+            "Step 3: Calculate sample variance and standard deviation.";
+          document.getElementById("formulaText").innerHTML =
+            "s² = 0.0028 / 7 = 0.0004 cm²";
+          document.getElementById("resultText").innerHTML =
+            "s = √0.0004 = 0.02 cm";
+        }
+      },
+      {
+        time: 8500,
+        action: () => {
+          document.getElementById("stepText").innerHTML =
+            "Step 4: Calculate uncertainty of the mean.";
+          document.getElementById("formulaText").innerHTML =
+            "u(x̄) = s / √n = 0.02 / √8";
+          document.getElementById("resultText").innerHTML =
+            "u(x̄) ≈ 0.0071 cm";
+        }
+      },
+      {
+        time: 11000,
+        action: () => {
+          document.getElementById("stepText").innerHTML =
+            "Step 5: Show normal distribution intervals.";
+          document.getElementById("formulaText").innerHTML =
+            "x̄ ± s,  x̄ ± 2s,  x̄ ± 3s";
+          document.getElementById("resultText").innerHTML =
+            "68% – 95% – 99% confidence intervals";
+          document.getElementById("int1").classList.add("show");
+          document.getElementById("label1").classList.add("show");
+        }
+      },
+      {
+        time: 13000,
+        action: () => {
+          document.getElementById("int2").classList.add("show");
+          document.getElementById("label2").classList.add("show");
+        }
+      },
+      {
+        time: 15000,
+        action: () => {
+          document.getElementById("int3").classList.add("show");
+          document.getElementById("label3").classList.add("show");
+        }
+      },
+      {
+        time: 17500,
+        action: () => {
+          document.getElementById("stepText").innerHTML =
+            "Conclusion: The measurements are consistent and reliable.";
+          document.getElementById("formulaText").innerHTML =
+            "x = x̄ ± u(x̄)";
+          document.getElementById("resultText").innerHTML =
+            "Final result: x = 12.10 ± 0.01 cm";
+        }
+      }
+    ];
 
-function stopAnimation(){
-  clearInterval(timer);
-  timer = null;
-}
+    steps.forEach(step => {
+      timers.push(setTimeout(step.action, step.time));
+    });
+  }
 
-function resetAnimation(){
-  stopAnimation();
-  index = 0;
-  chart.data.datasets[0].data = [];
-  chart.update();
-}
+  function stopAnimation() {
+    clearTimers();
+    document.getElementById("stepText").innerHTML =
+      "Animation stopped.";
+  }
+
+  function resetAnimation() {
+    clearTimers();
+
+    points.forEach(id => {
+      document.getElementById(id).classList.remove("show");
+    });
+
+    document.getElementById("meanLine").classList.remove("show");
+    document.getElementById("meanLabel").classList.remove("show");
+
+    ["int1","int2","int3","label1","label2","label3"].forEach(id => {
+      document.getElementById(id).classList.remove("show");
+    });
+
+    document.getElementById("stepText").innerHTML =
+      "Click Start to begin the animation.";
+    document.getElementById("formulaText").innerHTML = "";
+    document.getElementById("resultText").innerHTML = "";
+  }
 </script>
 
 </body>
