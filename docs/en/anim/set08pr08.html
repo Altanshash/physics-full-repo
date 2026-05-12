@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mass-Spring Oscillator Animation</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #eef6ff, #ffffff);
+    color: #1b263b;
+  }
+
+  .container {
+    max-width: 1120px;
+    margin: 30px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 22px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+  }
+
+  h1 {
+    text-align: center;
+    color: #0b3d91;
+    margin-bottom: 5px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #555;
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 22px;
+  }
+
+  .panel {
+    background: #f8fbff;
+    border: 1px solid #d8e6ff;
+    border-radius: 18px;
+    padding: 18px;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #d8e6ff;
+  }
+
+  label {
+    font-weight: bold;
+    color: #0b3d91;
+    display: block;
+    margin-top: 10px;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 10px;
+    border: 1px solid #b8c7dd;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+
+  button {
+    padding: 12px 18px;
+    margin: 8px 4px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  #startBtn { background: #2a9d8f; }
+  #recordBtn { background: #7209b7; }
+  #stopBtn { background: #e63946; }
+  #resetBtn { background: #457b9d; }
+
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid #d8e6ff;
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .card h3 {
+    margin: 0;
+    font-size: 15px;
+    color: #0b3d91;
+  }
+
+  .card p {
+    margin: 8px 0 0;
+    font-size: 19px;
+    font-weight: bold;
+    color: #007f5f;
+  }
+
+  .result {
+    margin-top: 14px;
+    padding: 14px;
+    background: #e8f8ef;
+    border: 1px solid #95d5b2;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 19px;
+    font-weight: bold;
+    color: #007f5f;
+  }
+
+  .info {
+    margin-top: 16px;
+    padding: 14px;
+    background: #fff7e6;
+    border: 1px solid #ffd166;
+    border-radius: 15px;
+    font-size: 17px;
+    text-align: center;
+  }
+
+  .small {
+    font-size: 14px;
+    color: #555;
+  }
+
+  .flash {
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .flash.show {
+    opacity: 1;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Mass-Spring Oscillator – Measurement of k</h1>
+  <div class="subtitle">Press Start, then press Record Passage or Space when the mass passes the equilibrium position</div>
+
+  <div class="layout">
+    <div class="panel">
+      <svg viewBox="0 0 520 560">
+        <!-- ceiling -->
+        <line x1="130" y1="60" x2="390" y2="60" stroke="#1b263b" stroke-width="8" stroke-linecap="round"/>
+        <text x="260" y="35" text-anchor="middle" font-size="22" fill="#0b3d91">Mass-spring system</text>
+
+        <!-- equilibrium dashed line -->
+        <line x1="100" y1="340" x2="420" y2="340" stroke="#adb5bd" stroke-width="2" stroke-dasharray="8"/>
+        <text x="430" y="346" font-size="15" fill="#555">equilibrium</text>
+
+        <!-- spring -->
+        <polyline id="spring" points="" fill="none" stroke="#0b3d91" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- mass -->
+        <rect id="massBlock" x="205" y="320" width="110" height="85" rx="14" fill="#2a9d8f" stroke="#007f5f" stroke-width="4"/>
+        <text id="massText" x="260" y="370" text-anchor="middle" font-size="26" fill="white">m</text>
+
+        <!-- center flash -->
+        <circle id="flash" class="flash" cx="260" cy="362" r="58" fill="none" stroke="#ffb703" stroke-width="7"/>
+
+        <!-- formula box -->
+        <rect x="60" y="485" width="400" height="45" rx="12" fill="#f8fbff" stroke="#d8e6ff"/>
+        <text x="260" y="515" text-anchor="middle" font-size="22" fill="#003566">
+          k = 4π²m / T²
+        </text>
+      </svg>
+    </div>
+
+    <div class="panel">
+      <label>Mass m (kg)</label>
+      <input id="massInput" type="number" value="0.500" step="0.001">
+
+      <label>Uncertainty u(m) (kg)</label>
+      <input id="uMassInput" type="number" value="0.005" step="0.001">
+
+      <div style="margin-top:14px;">
+        <button id="startBtn" onclick="startMotion()">Start</button>
+        <button id="recordBtn" onclick="recordPassage()">Record Passage</button>
+        <button id="stopBtn" onclick="stopMotion()">Stop</button>
+        <button id="resetBtn" onclick="resetAll()">Reset</button>
+      </div>
+
+      <div class="small">Keyboard: Space = start or record passage</div>
+
+      <div class="stats">
+        <div class="card">
+          <h3>Time</h3>
+          <p id="timeValue">0.00 s</p>
+        </div>
+
+        <div class="card">
+          <h3>Passages</h3>
+          <p id="passagesValue">0</p>
+        </div>
+
+        <div class="card">
+          <h3>Mean Period</h3>
+          <p id="meanPeriod">0</p>
+        </div>
+
+        <div class="card">
+          <h3>u(T)</h3>
+          <p id="uTValue">0</p>
+        </div>
+
+        <div class="card">
+          <h3>Frequency</h3>
+          <p id="freqValue">0</p>
+        </div>
+
+        <div class="card">
+          <h3>u(f)</h3>
+          <p id="uFreqValue">0</p>
+        </div>
+      </div>
+
+      <div class="result" id="resultBox">
+        Result will appear after at least 10 periods.
+      </div>
+
+      <div class="info" id="infoBox">
+        Record at least 10 periods to calculate the spring constant and its uncertainty.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let running = false;
+  let startTime = null;
+  let animationId = null;
+  let passageTimes = [];
+  let periods = [];
+
+  const spring = document.getElementById("spring");
+  const massBlock = document.getElementById("massBlock");
+  const massText = document.getElementById("massText");
+  const flash = document.getElementById("flash");
+
+  function currentTime() {
+    return performance.now() / 1000;
+  }
+
+  function springPath(topY, bottomY) {
+    const x = 260;
+    const amp = 38;
+    const coils = 9;
+    const startY = topY;
+    const endY = bottomY;
+    const step = (endY - startY) / (coils * 2);
+
+    let points = x + "," + startY + " ";
+
+    for (let i = 1; i < coils * 2; i++) {
+      const px = x + (i % 2 === 0 ? -amp : amp);
+      const py = startY + i * step;
+      points += px + "," + py + " ";
+    }
+
+    points += x + "," + endY;
+    return points;
+  }
+
+  function startMotion() {
+    if (running) return;
+
+    running = true;
+    startTime = currentTime();
+    animate();
+
+    document.getElementById("infoBox").innerHTML =
+      "Motion started. Press Space or Record Passage at each equilibrium crossing.";
+  }
+
+  function animate() {
+    if (!running) return;
+
+    const t = currentTime() - startTime;
+    const displacement = 65 * Math.sin(2 * Math.PI * t / 1.4);
+
+    const massY = 300 + displacement;
+    const springBottom = massY;
+
+    spring.setAttribute("points", springPath(65, springBottom));
+    massBlock.setAttribute("y", massY);
+    massText.setAttribute("y", massY + 50);
+    flash.setAttribute("cy", massY + 42);
+
+    document.getElementById("timeValue").innerHTML = t.toFixed(2) + " s";
+
+    animationId = requestAnimationFrame(animate);
+  }
+
+  function recordPassage() {
+    if (!running) {
+      startMotion();
+      return;
+    }
+
+    const t = currentTime() - startTime;
+    passageTimes.push(t);
+
+    if (passageTimes.length >= 2) {
+      const last = passageTimes.length - 1;
+      const period = passageTimes[last] - passageTimes[last - 1];
+      periods.push(period);
+    }
+
+    flash.classList.add("show");
+    setTimeout(() => flash.classList.remove("show"), 250);
+
+    updateValues();
+
+    document.getElementById("infoBox").innerHTML =
+      "Passage recorded. Periods are calculated from consecutive passages.";
+  }
+
+  function stopMotion() {
+    running = false;
+    if (animationId) cancelAnimationFrame(animationId);
+    document.getElementById("infoBox").innerHTML = "Animation stopped.";
+  }
+
+  function mean(arr) {
+    if (arr.length === 0) return 0;
+    return arr.reduce((a, b) => a + b, 0) / arr.length;
+  }
+
+  function std(arr) {
+    if (arr.length < 2) return 0;
+    const m = mean(arr);
+    const v = arr.reduce((s, x) => s + Math.pow(x - m, 2), 0) / (arr.length - 1);
+    return Math.sqrt(v);
+  }
+
+  function updateValues() {
+    document.getElementById("passagesValue").innerHTML = passageTimes.length;
+
+    const Tbar = mean(periods);
+    const sT = std(periods);
+    const n = periods.length;
+    const uT = n > 1 ? sT / Math.sqrt(n) : 0;
+
+    document.getElementById("meanPeriod").innerHTML =
+      n > 0 ? Tbar.toFixed(4) + " s" : "0";
+
+    document.getElementById("uTValue").innerHTML =
+      n > 1 ? uT.toFixed(4) + " s" : "0";
+
+    if (Tbar > 0) {
+      const f = 1 / Tbar;
+      const uF = uT / (Tbar * Tbar);
+
+      document.getElementById("freqValue").innerHTML = f.toFixed(4) + " Hz";
+      document.getElementById("uFreqValue").innerHTML =
+        n > 1 ? uF.toFixed(4) + " Hz" : "0";
+    }
+
+    if (n >= 10) {
+      calculateK(Tbar, uT);
+    } else {
+      document.getElementById("resultBox").innerHTML =
+        "Result will appear after at least 10 periods.";
+    }
+  }
+
+  function calculateK(T, uT) {
+    const m = Number(document.getElementById("massInput").value);
+    const uM = Number(document.getElementById("uMassInput").value);
+
+    const k = 4 * Math.PI * Math.PI * m / (T * T);
+
+    const dk_dm = 4 * Math.PI * Math.PI / (T * T);
+    const dk_dT = -8 * Math.PI * Math.PI * m / (T * T * T);
+
+    const partM = Math.pow(dk_dm * uM, 2);
+    const partT = Math.pow(dk_dT * uT, 2);
+
+    const uk = Math.sqrt(partM + partT);
+
+    const total = partM + partT;
+    const contribM = total > 0 ? partM / total * 100 : 0;
+    const contribT = total > 0 ? partT / total * 100 : 0;
+
+    document.getElementById("resultBox").innerHTML =
+      "k = " + k.toFixed(3) + " ± " + uk.toFixed(3) + " N/m<br>" +
+      "Contribution from m: " + contribM.toFixed(1) + "%, " +
+      "from T: " + contribT.toFixed(1) + "%";
+  }
+
+  function resetAll() {
+    stopMotion();
+
+    passageTimes = [];
+    periods = [];
+    startTime = null;
+
+    spring.setAttribute("points", springPath(65, 300));
+    massBlock.setAttribute("y", 300);
+    massText.setAttribute("y", 350);
+    flash.setAttribute("cy", 342);
+
+    document.getElementById("timeValue").innerHTML = "0.00 s";
+    document.getElementById("passagesValue").innerHTML = "0";
+    document.getElementById("meanPeriod").innerHTML = "0";
+    document.getElementById("uTValue").innerHTML = "0";
+    document.getElementById("freqValue").innerHTML = "0";
+    document.getElementById("uFreqValue").innerHTML = "0";
+
+    document.getElementById("resultBox").innerHTML =
+      "Result will appear after at least 10 periods.";
+
+    document.getElementById("infoBox").innerHTML =
+      "Record at least 10 periods to calculate the spring constant and its uncertainty.";
+  }
+
+  document.addEventListener("keydown", function(event) {
+    if (event.code === "Space") {
+      event.preventDefault();
+
+      if (!running) {
+        startMotion();
+      } else {
+        recordPassage();
+      }
+    }
+  });
+
+  resetAll();
+</script>
+
+</body>
+</html>
