@@ -1,41 +1,41 @@
 # Problem Set 9 – Model Cosmology: From Epicycles to Gravity
 
-## Problem 1 – Ptolemy's Model
+# Problem 1 – Ptolemy’s Model
 
 ## Given
 
 The motion of a planet is represented as the sum of two circular motions:
 
-1. Motion along the deferent, or main circle.
-2. Motion along the epicycle.
+1. Motion along the deferent (main circle)
+2. Motion along the epicycle
 
 The parametric equations are:
 
-\[
+$$
 x(t)=R\cos(\omega t)+r\cos(\Omega t)
-\]
+$$
 
-\[
+$$
 y(t)=R\sin(\omega t)+r\sin(\Omega t)
-\]
+$$
 
-where:
+Where:
 
-- \(R\) is the radius of the deferent,
-- \(r\) is the radius of the epicycle,
-- \(\omega\) is the angular velocity of the deferent,
-- \(\Omega\) is the angular velocity of the epicycle,
-- \(t\) is time.
+- \(R\) — radius of the deferent
+- \(r\) — radius of the epicycle
+- \(\omega\) — angular velocity of the deferent
+- \(\Omega\) — angular velocity of the epicycle
+- \(t\) — time
 
 ---
 
-## Solution
+# Solution
 
-### 1. Parametric Equations of the Trajectory
+## 1. Parametric Equations of the Trajectory
 
-The position of the planet is the sum of the deferent motion and epicycle motion:
+The position vector of the planet is the sum of the deferent motion and epicycle motion:
 
-\[
+$$
 \vec{r}(t)=
 \begin{pmatrix}
 R\cos(\omega t) \\
@@ -46,157 +46,168 @@ R\sin(\omega t)
 r\cos(\Omega t) \\
 r\sin(\Omega t)
 \end{pmatrix}
-\]
+$$
 
-Therefore,
+Therefore:
 
-\[
+$$
 x(t)=R\cos(\omega t)+r\cos(\Omega t)
-\]
+$$
 
-\[
+$$
 y(t)=R\sin(\omega t)+r\sin(\Omega t)
-\]
+$$
 
-These equations describe the full trajectory of the planet.
+These equations describe the complete trajectory of the planet.
 
 ---
 
-### 2. Angular Projection
+## 2. Angular Projection
 
-The ecliptic longitude is the angle of the planet measured from the origin:
+The ecliptic longitude of the planet is:
 
-\[
-\varphi(t)=\tan^{-1}\left(\frac{y(t)}{x(t)}\right)
-\]
-
-More accurately, it should be written using the two-argument arctangent:
-
-\[
+$$
 \varphi(t)=\operatorname{atan2}(y(t),x(t))
-\]
+$$
 
-Substituting \(x(t)\) and \(y(t)\):
+Substituting the parametric equations:
 
-\[
+$$
 \varphi(t)=
 \operatorname{atan2}
 \left(
 R\sin(\omega t)+r\sin(\Omega t),
 R\cos(\omega t)+r\cos(\Omega t)
 \right)
-\]
+$$
 
 ---
 
-### 3. Condition for Retrograde Motion
+## 3. Condition for Retrograde Motion
 
-Retrograde motion occurs when the apparent angular motion changes direction.
+Retrograde motion occurs when the angular velocity changes direction:
 
-This means:
-
-\[
+$$
 \frac{d\varphi}{dt}<0
-\]
+$$
 
-For a parametric curve, the angular velocity is:
+For a parametric curve:
 
-\[
+$$
 \frac{d\varphi}{dt}
 =
 \frac{x\dot{y}-y\dot{x}}{x^2+y^2}
-\]
+$$
 
-First, find the derivatives:
+First, compute the derivatives:
 
-\[
+$$
 \dot{x}(t)
 =
 -R\omega\sin(\omega t)-r\Omega\sin(\Omega t)
-\]
+$$
 
-\[
+$$
 \dot{y}(t)
 =
 R\omega\cos(\omega t)+r\Omega\cos(\Omega t)
-\]
+$$
 
-Thus, retrograde motion occurs when:
+Retrograde motion occurs when:
 
-\[
+$$
 x\dot{y}-y\dot{x}<0
-\]
+$$
 
 After simplification:
 
-\[
-R^2\omega+r^2\Omega+Rr(\omega+\Omega)\cos((\omega-\Omega)t)<0
-\]
+$$
+R^2\omega+r^2\Omega
++
+Rr(\omega+\Omega)\cos((\omega-\Omega)t)
+<0
+$$
 
-So the condition for retrograde motion is:
+Thus, the condition for retrograde motion is:
 
-\[
-R^2\omega+r^2\Omega+Rr(\omega+\Omega)\cos((\omega-\Omega)t)<0
-\]
+$$
+R^2\omega+r^2\Omega
++
+Rr(\omega+\Omega)\cos((\omega-\Omega)t)
+<0
+$$
 
 ---
 
-### 4. Moments of Change in Direction
+## 4. Moments of Direction Change
 
-The direction of angular motion changes when:
+The direction changes when:
 
-\[
+$$
 \frac{d\varphi}{dt}=0
-\]
+$$
 
-Since \(x^2+y^2>0\), this happens when:
+Since \(x^2+y^2>0\), we solve:
 
-\[
+$$
 x\dot{y}-y\dot{x}=0
-\]
+$$
 
 Therefore:
 
-\[
-R^2\omega+r^2\Omega+Rr(\omega+\Omega)\cos((\omega-\Omega)t)=0
-\]
+$$
+R^2\omega+r^2\Omega
++
+Rr(\omega+\Omega)\cos((\omega-\Omega)t)
+=0
+$$
 
 Solving for time:
 
-\[
+$$
 \cos((\omega-\Omega)t)
 =
--\frac{R^2\omega+r^2\Omega}{Rr(\omega+\Omega)}
-\]
+-\frac{R^2\omega+r^2\Omega}
+{Rr(\omega+\Omega)}
+$$
 
-The moments of change in direction are:
+Hence:
 
-\[
+$$
 t_n=
 \frac{
-\pm \arccos\left(
--\frac{R^2\omega+r^2\Omega}{Rr(\omega+\Omega)}
-\right)+2\pi n
+\pm
+\arccos
+\left(
+-\frac{R^2\omega+r^2\Omega}
+{Rr(\omega+\Omega)}
+\right)
++2\pi n
 }
 {\omega-\Omega}
-\]
+$$
 
-where \(n\in\mathbb{Z}\).
+Where:
 
-These moments exist only if:
+$$
+n\in\mathbb{Z}
+$$
 
-\[
+Solutions exist only if:
+
+$$
 \left|
-\frac{R^2\omega+r^2\Omega}{Rr(\omega+\Omega)}
+\frac{R^2\omega+r^2\Omega}
+{Rr(\omega+\Omega)}
 \right|
-\leq 1
-\]
+\leq1
+$$
 
 ---
 
-## HTML Requirements
+# HTML Requirements
 
-The interactive model should include:
+The interactive visualization must include:
 
 - Sliders for:
   - \(R\)
@@ -204,30 +215,30 @@ The interactive model should include:
   - \(\omega\)
   - \(\Omega\)
 
-- A trajectory trace of the planet.
+- Planet trajectory trace
 
-- A graph of the ecliptic longitude:
+- Graph of ecliptic longitude:
 
-\[
+$$
 \varphi(t)=\operatorname{atan2}(y(t),x(t))
-\]
+$$
 
 ---
 
-## Conclusion
+# Conclusion
 
-Ptolemy's model describes planetary motion as a combination of two circular motions: motion along the deferent and motion along the epicycle. The resulting trajectory can explain loops and apparent retrograde motion.
+Ptolemy’s model explains planetary motion using two circular motions: the deferent and the epicycle. Combining these motions produces complex trajectories that can reproduce apparent retrograde motion.
 
-Retrograde motion occurs when the angular velocity of the planet becomes negative:
+Retrograde motion occurs when:
 
-\[
+$$
 \frac{d\varphi}{dt}<0
-\]
+$$
 
-The moments when the planet changes its apparent direction are found by setting:
+The moments when the apparent direction changes are obtained from:
 
-\[
+$$
 \frac{d\varphi}{dt}=0
-\]
+$$
 
-This shows that retrograde motion is not random, but depends on the radii \(R\), \(r\), and angular velocities \(\omega\), \(\Omega\).
+The behavior depends on the radii \(R\), \(r\) and angular velocities \(\omega\), \(\Omega\).
