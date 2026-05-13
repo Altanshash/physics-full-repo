@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kepler's First and Second Laws</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .panel {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    canvas {
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #374151;
+    }
+
+    .controls {
+      max-width: 850px;
+      margin: 10px auto 30px;
+      padding: 20px;
+      background: #1f2937;
+      border-radius: 12px;
+    }
+
+    .control {
+      text-align: left;
+      margin: 14px 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .value {
+      color: #93c5fd;
+      font-weight: bold;
+    }
+
+    button {
+      margin: 8px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Problem 4 - Kepler's First and Second Laws</h1>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Elliptical Orbit and Equal Areas</h2>
+      <canvas id="orbitCanvas" width="620" height="560"></canvas>
+    </div>
+
+    <div class="panel">
+      <h2>Area Comparison</h2>
+      <canvas id="areaCanvas" width="620" height="560"></canvas>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control">
+      <label>Semi-major axis a: <span id="aValue" class="value"></span></label>
+      <input type="range" id="a" min="100" max="220" value="170">
+    </div>
+
+    <div class="control">
+      <label>Eccentricity e: <span id="eValue" class="value"></span></label>
+      <input type="range" id="e" min="0" max="0.8" step="0.01" value="0.55">
+    </div>
+
+    <div class="control">
+      <label>Animation speed: <span id="speedValue" class="value"></span></label>
+      <input type="range" id="speed" min="0.005" max="0.05" step="0.001" value="0.018">
+    </div>
+
+    <button onclick="toggleAnimation()">Pause / Play</button>
+    <button onclick="resetAnimation()">Reset</button>
+    <button onclick="clearSectors()">Clear Areas</button>
+  </div>
+
+  <script>
+    const orbitCanvas = document.getElementById("orbitCanvas");
+    const orbitCtx = orbitCanvas.getContext("2d");
+
+    const areaCanvas = document.getElementById("areaCanvas");
+    const areaCtx = areaCanvas.getContext("2d");
+
+    const aSlider = document.getElementById("a");
+    const eSlider = document.getElementById("e");
+    const speedSlider = document.getElementById("speed");
+
+    const aValue = document.getElementById("aValue");
+    const eValue = document.getElementById("eValue");
+    const speedValue = document.getElementById("speedValue");
+
+    let M = 0;
+    let running = true;
+
+    let lastSectorM = 0;
+    let previousPosition = null;
+
+    let orbitTrace = [];
+    let sectorPoints = [];
+    let areaValues = [];
+
+    const sectorInterval = 0.45;
+
+    function values() {
+      return {
+        a: Number(aSlider.value),
+        e: Number(eSlider.value),
+        speed: Number(speedSlider.value)
+      };
+    }
+
+    function updateLabels() {
+      const v = values();
+      aValue.textContent = v.a;
+      eValue.textContent = v.e.toFixed(2);
+      speedValue.textContent = v.speed.toFixed(3);
+    }
+
+    function solveEccentricAnomaly(meanAnomaly, e) {
+      let E = meanAnomaly;
+
+      for (let i = 0; i < 10; i++) {
+        E = E - (E - e * Math.sin(E) - meanAnomaly) / (1 - e * Math.cos(E));
+      }
+
+      return E;
+    }
+
+    function planetPosition(meanAnomaly) {
+      const v = values();
+      const a = v.a;
+      const e = v.e;
+
+      const E = solveEccentricAnomaly(meanAnomaly, e);
+
+      const x = a * (Math.cos(E) - e);
+      const y = a * Math.sqrt(1 - e * e) * Math.sin(E);
+
+      const r = Math.sqrt(x * x + y * y);
+      const theta = Math.atan2(y, x);
+
+      return { x, y, r, theta };
+    }
+
+    function drawAxes(ctx, w, h, cx, cy) {
+      ctx.strokeStyle = "#e5e7eb";
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.moveTo(0, cy);
+      ctx.lineTo(w, cy);
+      ctx.moveTo(cx, 0);
+      ctx.lineTo(cx, h);
+      ctx.stroke();
+    }
+
+    function drawOrbit() {
+      const w = orbitCanvas.width;
+      const h = orbitCanvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      const v = values();
+      const a = v.a;
+      const e = v.e;
+      const b = a * Math.sqrt(1 - e * e);
+      const focusX = -a * e;
+
+      const pos = planetPosition(M);
+
+      orbitCtx.clearRect(0, 0, w, h);
+      drawAxes(orbitCtx, w, h, cx, cy);
+
+      orbitCtx.fillStyle = "#111827";
+      orbitCtx.font = "14px Arial";
+      orbitCtx.fillText("Sun is at one focus", 18, 25);
+      orbitCtx.fillText("Equal time intervals sweep equal areas", 18, 45);
+
+      for (let s = 0; s < sectorPoints.length; s++) {
+        const sec = sectorPoints[s];
+
+        orbitCtx.fillStyle = "rgba(124, 58, 237, 0.18)";
+        orbitCtx.strokeStyle = "#7c3aed";
+        orbitCtx.lineWidth = 1;
+
+        orbitCtx.beginPath();
+        orbitCtx.moveTo(cx + focusX, cy);
+
+        for (let i = 0; i < sec.points.length; i++) {
+          orbitCtx.lineTo(cx + sec.points[i].x, cy - sec.points[i].y);
+        }
+
+        orbitCtx.closePath();
+        orbitCtx.fill();
+        orbitCtx.stroke();
+      }
+
+      orbitCtx.strokeStyle = "#111827";
+      orbitCtx.lineWidth = 2;
+      orbitCtx.beginPath();
+
+      for (let i = 0; i <= 720; i++) {
+        const E = (i / 720) * Math.PI * 2;
+        const x = a * (Math.cos(E) - e);
+        const y = b * Math.sin(E);
+
+        if (i === 0) {
+          orbitCtx.moveTo(cx + x, cy - y);
+        } else {
+          orbitCtx.lineTo(cx + x, cy - y);
+        }
+      }
+
+      orbitCtx.stroke();
+
+      if (orbitTrace.length > 1) {
+        orbitCtx.strokeStyle = "#2563eb";
+        orbitCtx.lineWidth = 2;
+        orbitCtx.beginPath();
+
+        for (let i = 0; i < orbitTrace.length; i++) {
+          const p = orbitTrace[i];
+
+          if (i === 0) orbitCtx.moveTo(cx + p.x, cy - p.y);
+          else orbitCtx.lineTo(cx + p.x, cy - p.y);
+        }
+
+        orbitCtx.stroke();
+      }
+
+      orbitCtx.strokeStyle = "#dc2626";
+      orbitCtx.lineWidth = 2;
+      orbitCtx.beginPath();
+      orbitCtx.moveTo(cx + focusX, cy);
+      orbitCtx.lineTo(cx + pos.x, cy - pos.y);
+      orbitCtx.stroke();
+
+      orbitCtx.fillStyle = "#f59e0b";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx + focusX, cy, 9, 0, Math.PI * 2);
+      orbitCtx.fill();
+
+      orbitCtx.fillStyle = "#111827";
+      orbitCtx.font = "14px Arial";
+      orbitCtx.fillText("Sun", cx + focusX + 12, cy - 10);
+
+      orbitCtx.fillStyle = "#2563eb";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx + pos.x, cy - pos.y, 8, 0, Math.PI * 2);
+      orbitCtx.fill();
+
+      orbitCtx.fillStyle = "#111827";
+      orbitCtx.fillText("Planet", cx + pos.x + 10, cy - pos.y);
+    }
+
+    function polygonArea(points, focusX) {
+      if (points.length < 2) return 0;
+
+      let poly = [{ x: focusX, y: 0 }, ...points];
+
+      let area = 0;
+
+      for (let i = 0; i < poly.length; i++) {
+        const p1 = poly[i];
+        const p2 = poly[(i + 1) % poly.length];
+
+        area += p1.x * p2.y - p2.x * p1.y;
+      }
+
+      return Math.abs(area / 2);
+    }
+
+    function drawAreaGraph() {
+      const w = areaCanvas.width;
+      const h = areaCanvas.height;
+      const margin = 60;
+
+      areaCtx.clearRect(0, 0, w, h);
+
+      areaCtx.strokeStyle = "#e5e7eb";
+      areaCtx.lineWidth = 1;
+
+      areaCtx.beginPath();
+      areaCtx.moveTo(margin, h - margin);
+      areaCtx.lineTo(w - margin, h - margin);
+      areaCtx.moveTo(margin, margin);
+      areaCtx.lineTo(margin, h - margin);
+      areaCtx.stroke();
+
+      areaCtx.fillStyle = "#111827";
+      areaCtx.font = "14px Arial";
+      areaCtx.fillText("sector number", w - 140, h - margin + 35);
+      areaCtx.fillText("area", margin - 35, margin - 20);
+
+      if (areaValues.length > 0) {
+        const maxArea = Math.max(...areaValues, 1);
+        const barWidth = (w - 2 * margin) / Math.max(areaValues.length, 1);
+
+        for (let i = 0; i < areaValues.length; i++) {
+          const barHeight = (areaValues[i] / maxArea) * (h - 2 * margin - 30);
+          const x = margin + i * barWidth;
+          const y = h - margin - barHeight;
+
+          areaCtx.fillStyle = "#7c3aed";
+          areaCtx.fillRect(x + 4, y, Math.max(barWidth - 8, 4), barHeight);
+
+          areaCtx.fillStyle = "#111827";
+          areaCtx.font = "12px Arial";
+          areaCtx.fillText((i + 1).toString(), x + barWidth / 2 - 4, h - margin + 18);
+        }
+
+        const avg = areaValues.reduce((a, b) => a + b, 0) / areaValues.length;
+        const min = Math.min(...areaValues);
+        const max = Math.max(...areaValues);
+
+        areaCtx.fillStyle = "#111827";
+        areaCtx.font = "14px Arial";
+        areaCtx.fillText("Average area: " + avg.toFixed(2), 20, 30);
+        areaCtx.fillText("Min area: " + min.toFixed(2), 20, 52);
+        areaCtx.fillText("Max area: " + max.toFixed(2), 20, 74);
+        areaCtx.fillText("Areas are nearly equal.", 20, 96);
+      } else {
+        areaCtx.fillStyle = "#111827";
+        areaCtx.font = "15px Arial";
+        areaCtx.fillText("Area sectors will appear during animation.", 20, 30);
+      }
+    }
+
+    function collectSector() {
+      const v = values();
+      const a = v.a;
+      const e = v.e;
+      const focusX = -a * e;
+
+      const points = [];
+
+      const steps = 40;
+      for (let i = 0; i <= steps; i++) {
+        const m = lastSectorM + (i / steps) * sectorInterval;
+        points.push(planetPosition(m));
+      }
+
+      const area = polygonArea(points, focusX);
+
+      sectorPoints.push({ points });
+      areaValues.push(area);
+
+      if (sectorPoints.length > 8) sectorPoints.shift();
+      if (areaValues.length > 8) areaValues.shift();
+
+      lastSectorM += sectorInterval;
+    }
+
+    function animate() {
+      updateLabels();
+
+      if (running) {
+        const v = values();
+
+        M += v.speed;
+
+        if (M > Math.PI * 2) {
+          M -= Math.PI * 2;
+          lastSectorM = 0;
+          orbitTrace = [];
+          sectorPoints = [];
+          areaValues = [];
+        }
+
+        const pos = planetPosition(M);
+        orbitTrace.push(pos);
+
+        if (orbitTrace.length > 1500) orbitTrace.shift();
+
+        if (M - lastSectorM >= sectorInterval) {
+          collectSector();
+        }
+      }
+
+      drawOrbit();
+      drawAreaGraph();
+
+      requestAnimationFrame(animate);
+    }
+
+    function toggleAnimation() {
+      running = !running;
+    }
+
+    function resetAnimation() {
+      M = 0;
+      lastSectorM = 0;
+      orbitTrace = [];
+      sectorPoints = [];
+      areaValues = [];
+    }
+
+    function clearSectors() {
+      sectorPoints = [];
+      areaValues = [];
+      lastSectorM = M;
+    }
+
+    aSlider.addEventListener("input", resetAnimation);
+    eSlider.addEventListener("input", resetAnimation);
+    speedSlider.addEventListener("input", updateLabels);
+
+    animate();
+  </script>
+</body>
+</html>
