@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Relativistic Energy and Momentum</title>
+
+<style>
+body{
+    margin:0;
+    background:#0f172a;
+    color:white;
+    font-family:Arial, sans-serif;
+}
+
+h1{
+    text-align:center;
+    color:#7dd3fc;
+    margin-top:20px;
+}
+
+.container{
+    width:92%;
+    max-width:1150px;
+    margin:30px auto;
+    background:#111827;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(125,211,252,0.3);
+}
+
+.scene{
+    position:relative;
+    height:160px;
+    background:#020617;
+    border:2px solid #334155;
+    border-radius:14px;
+    overflow:hidden;
+    margin-bottom:25px;
+}
+
+.track{
+    position:absolute;
+    left:40px;
+    right:40px;
+    top:78px;
+    height:4px;
+    background:#475569;
+}
+
+.electron{
+    position:absolute;
+    top:58px;
+    left:40px;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#38bdf8;
+    box-shadow:0 0 25px #38bdf8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#020617;
+    font-weight:bold;
+}
+
+.energy-wave{
+    position:absolute;
+    top:35px;
+    left:40px;
+    height:90px;
+    width:0;
+    background:linear-gradient(90deg, rgba(56,189,248,0.45), transparent);
+    border-radius:50px;
+}
+
+.controls{
+    text-align:center;
+    font-size:22px;
+    margin:20px 0;
+}
+
+input{
+    width:360px;
+}
+
+.dashboard{
+    display:flex;
+    justify-content:space-around;
+    flex-wrap:wrap;
+    gap:20px;
+    margin-top:25px;
+}
+
+.card{
+    width:240px;
+    background:#1e293b;
+    padding:18px;
+    border-radius:12px;
+    border:1px solid #475569;
+    text-align:center;
+}
+
+.card h2{
+    color:#facc15;
+    margin-bottom:12px;
+    font-size:20px;
+}
+
+.value{
+    color:#38bdf8;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.graph-box{
+    margin-top:30px;
+    background:#020617;
+    border:2px solid #334155;
+    border-radius:14px;
+    padding:15px;
+}
+
+canvas{
+    display:block;
+    margin:auto;
+    background:#020617;
+}
+
+.legend{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    flex-wrap:wrap;
+    margin-top:15px;
+    font-size:18px;
+}
+
+.legend span{
+    display:inline-block;
+    width:18px;
+    height:18px;
+    border-radius:4px;
+    margin-right:6px;
+    vertical-align:middle;
+}
+
+.total{ background:#38bdf8; }
+.rel{ background:#22c55e; }
+.classical{ background:#f97316; }
+.point{ background:#facc15; }
+
+.explanation{
+    margin-top:25px;
+    background:#1e293b;
+    padding:20px;
+    border-radius:12px;
+    border:1px solid #475569;
+    font-size:21px;
+    line-height:1.7;
+    text-align:center;
+}
+
+.highlight{
+    color:#86efac;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Problem 7 — Relativistic Energy and Momentum</h1>
+
+<div class="container">
+
+    <div class="scene">
+        <div class="track"></div>
+        <div class="energy-wave" id="energyWave"></div>
+        <div class="electron" id="electron">e⁻</div>
+    </div>
+
+    <div class="controls">
+        Electron velocity:
+        <span id="velocityText">0.95c</span>
+        <br><br>
+        <input
+            type="range"
+            id="velocitySlider"
+            min="0.01"
+            max="0.99"
+            step="0.01"
+            value="0.95"
+        >
+    </div>
+
+    <div class="dashboard">
+
+        <div class="card">
+            <h2>Lorentz Factor</h2>
+            <div class="value" id="gammaText">3.20</div>
+        </div>
+
+        <div class="card">
+            <h2>Total Energy</h2>
+            <div class="value" id="totalEnergyText">1.64 MeV</div>
+        </div>
+
+        <div class="card">
+            <h2>Relativistic Kinetic Energy</h2>
+            <div class="value" id="relKineticText">1.12 MeV</div>
+        </div>
+
+        <div class="card">
+            <h2>Classical Kinetic Energy</h2>
+            <div class="value" id="classicalKineticText">0.231 MeV</div>
+        </div>
+
+    </div>
+
+    <div class="graph-box">
+        <canvas id="graph" width="950" height="520"></canvas>
+
+        <div class="legend">
+            <div><span class="total"></span>Total energy</div>
+            <div><span class="rel"></span>Relativistic kinetic energy</div>
+            <div><span class="classical"></span>Classical kinetic energy</div>
+            <div><span class="point"></span>Selected velocity</div>
+        </div>
+    </div>
+
+    <div class="explanation" id="explanation">
+        At <span class="highlight">0.95c</span>, relativistic kinetic energy is much larger than the classical prediction.
+        Classical mechanics strongly underestimates the electron energy.
+    </div>
+
+</div>
+
+<script>
+const slider = document.getElementById("velocitySlider");
+
+const velocityText = document.getElementById("velocityText");
+const gammaText = document.getElementById("gammaText");
+const totalEnergyText = document.getElementById("totalEnergyText");
+const relKineticText = document.getElementById("relKineticText");
+const classicalKineticText = document.getElementById("classicalKineticText");
+
+const electron = document.getElementById("electron");
+const energyWave = document.getElementById("energyWave");
+const explanation = document.getElementById("explanation");
+
+const canvas = document.getElementById("graph");
+const ctx = canvas.getContext("2d");
+
+const restEnergy = 0.511;
+
+function gamma(beta){
+    return 1 / Math.sqrt(1 - beta * beta);
+}
+
+function totalEnergy(beta){
+    return gamma(beta) * restEnergy;
+}
+
+function relKinetic(beta){
+    return (gamma(beta) - 1) * restEnergy;
+}
+
+function classicalKinetic(beta){
+    return 0.5 * beta * beta * restEnergy;
+}
+
+function drawGraph(selectedBeta){
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    const left = 70;
+    const right = 900;
+    const top = 40;
+    const bottom = 450;
+
+    const maxY = 4.0;
+
+    ctx.strokeStyle = "#475569";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(left, top);
+    ctx.lineTo(left, bottom);
+    ctx.lineTo(right, bottom);
+    ctx.stroke();
+
+    ctx.fillStyle = "white";
+    ctx.font = "18px Arial";
+
+    ctx.fillText("Energy (MeV)", 20, 28);
+    ctx.fillText("v / c", right - 20, bottom + 45);
+
+    for(let i = 0; i <= 4; i++){
+        const y = bottom - (i / maxY) * (bottom - top);
+
+        ctx.strokeStyle = "#1e293b";
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+        ctx.moveTo(left, y);
+        ctx.lineTo(right, y);
+        ctx.stroke();
+
+        ctx.fillStyle = "#cbd5e1";
+        ctx.fillText(i.toFixed(0), 35, y + 5);
+    }
+
+    for(let i = 0; i <= 10; i++){
+        const beta = i / 10;
+        const x = left + beta * (right - left);
+
+        ctx.strokeStyle = "#1e293b";
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+        ctx.moveTo(x, top);
+        ctx.lineTo(x, bottom);
+        ctx.stroke();
+
+        ctx.fillStyle = "#cbd5e1";
+        ctx.fillText(beta.toFixed(1), x - 12, bottom + 25);
+    }
+
+    function mapX(beta){
+        return left + beta * (right - left);
+    }
+
+    function mapY(value){
+        return bottom - (value / maxY) * (bottom - top);
+    }
+
+    function plotCurve(fn, color){
+        ctx.beginPath();
+
+        for(let i = 1; i <= 99; i++){
+            const beta = i / 100;
+            const x = mapX(beta);
+            const y = mapY(Math.min(fn(beta), maxY));
+
+            if(i === 1){
+                ctx.moveTo(x,y);
+            }else{
+                ctx.lineTo(x,y);
+            }
+        }
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+    }
+
+    plotCurve(totalEnergy, "#38bdf8");
+    plotCurve(relKinetic, "#22c55e");
+    plotCurve(classicalKinetic, "#f97316");
+
+    const sx = mapX(selectedBeta);
+
+    ctx.strokeStyle = "#facc15";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8,8]);
+
+    ctx.beginPath();
+    ctx.moveTo(sx, top);
+    ctx.lineTo(sx, bottom);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    const energies = [
+        totalEnergy(selectedBeta),
+        relKinetic(selectedBeta),
+        classicalKinetic(selectedBeta)
+    ];
+
+    const colors = ["#38bdf8", "#22c55e", "#f97316"];
+
+    for(let i = 0; i < energies.length; i++){
+        ctx.beginPath();
+        ctx.arc(
+            sx,
+            mapY(Math.min(energies[i], maxY)),
+            7,
+            0,
+            Math.PI * 2
+        );
+        ctx.fillStyle = colors[i];
+        ctx.fill();
+    }
+
+    ctx.fillStyle = "#facc15";
+    ctx.font = "18px Arial";
+    ctx.fillText("selected v", sx - 40, top + 25);
+}
+
+function update(){
+
+    const beta = parseFloat(slider.value);
+
+    const g = gamma(beta);
+    const E = totalEnergy(beta);
+    const Kr = relKinetic(beta);
+    const Kc = classicalKinetic(beta);
+
+    velocityText.textContent = beta.toFixed(2) + "c";
+    gammaText.textContent = g.toFixed(2);
+    totalEnergyText.textContent = E.toFixed(2) + " MeV";
+    relKineticText.textContent = Kr.toFixed(2) + " MeV";
+    classicalKineticText.textContent = Kc.toFixed(3) + " MeV";
+
+    const trackWidth = document.querySelector(".scene").clientWidth - 90;
+    electron.style.left = 40 + beta * trackWidth + "px";
+    energyWave.style.width = beta * trackWidth + "px";
+
+    if(beta < 0.3){
+        explanation.innerHTML =
+            "At <span class='highlight'>" + beta.toFixed(2) + "c</span>, classical and relativistic kinetic energies are still close.";
+    }
+    else if(beta < 0.8){
+        explanation.innerHTML =
+            "At <span class='highlight'>" + beta.toFixed(2) + "c</span>, relativistic effects become visible and the energy curves start separating.";
+    }
+    else{
+        explanation.innerHTML =
+            "At <span class='highlight'>" + beta.toFixed(2) + "c</span>, relativistic kinetic energy becomes much larger than the classical prediction.";
+    }
+
+    drawGraph(beta);
+}
+
+slider.addEventListener("input", update);
+
+update();
+</script>
+
+</body>
+</html>
