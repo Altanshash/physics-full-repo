@@ -6,6 +6,10 @@
   <title>Special Relativity Animation</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -16,21 +20,21 @@
 
     h1 {
       color: #38bdf8;
-      margin: 14px 0 5px;
+      margin: 16px 0 5px;
     }
 
     .subtitle {
       color: #cbd5e1;
       font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .controls {
       margin-bottom: 12px;
     }
 
+    .controls {
+      margin-bottom: 14px;
+    }
+
     button {
-      padding: 10px 26px;
+      padding: 10px 28px;
       margin: 0 8px;
       font-size: 16px;
       font-weight: bold;
@@ -46,7 +50,8 @@
 
     .scene {
       width: 94%;
-      height: 720px;
+      max-width: 1250px;
+      height: 680px;
       margin: auto;
       position: relative;
       border: 2px solid #334155;
@@ -55,43 +60,49 @@
       overflow: hidden;
     }
 
-    .formula-box,
-    .result-box {
+    .box {
       position: absolute;
-      top: 25px;
-      width: 330px;
       padding: 18px;
       text-align: left;
       background: rgba(15, 23, 42, 0.96);
       border: 1px solid #475569;
       border-radius: 16px;
       font-size: 18px;
-      line-height: 1.65;
+      line-height: 1.6;
       z-index: 20;
     }
 
-    .formula-box { left: 25px; }
-    .result-box { right: 25px; }
+    .formula-box {
+      left: 25px;
+      top: 25px;
+      width: 320px;
+    }
+
+    .result-box {
+      right: 25px;
+      top: 25px;
+      width: 320px;
+    }
 
     .space-area {
       position: absolute;
-      left: 390px;
+      left: 50%;
       top: 70px;
-      width: 500px;
-      height: 260px;
+      transform: translateX(-50%);
+      width: 470px;
+      height: 250px;
       border: 1px solid #475569;
       border-radius: 18px;
       background: rgba(15, 23, 42, 0.35);
       overflow: hidden;
-      z-index: 5;
     }
 
     .earth {
       position: absolute;
       left: 25px;
       bottom: 35px;
-      width: 80px;
-      height: 80px;
+      width: 78px;
+      height: 78px;
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #22c55e, #1d4ed8);
       box-shadow: 0 0 25px #38bdf8;
@@ -99,12 +110,11 @@
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      z-index: 5;
     }
 
     .rocket {
       position: absolute;
-      left: 120px;
+      left: 115px;
       top: 95px;
       width: 130px;
       height: 55px;
@@ -112,7 +122,7 @@
       border-radius: 50px 20px 20px 50px;
       box-shadow: 0 0 20px #38bdf8;
       animation: rocketMove 4s linear infinite;
-      z-index: 7;
+      z-index: 5;
     }
 
     .rocket::before {
@@ -137,40 +147,40 @@
       animation: flamePulse 0.35s infinite;
     }
 
+    @keyframes rocketMove {
+      0% { transform: translateX(0) scaleX(1); }
+      45% { transform: translateX(160px) scaleX(0.72); }
+      55% { transform: translateX(160px) scaleX(0.72); }
+      100% { transform: translateX(0) scaleX(1); }
+    }
+
     @keyframes flamePulse {
       0%, 100% { opacity: 0.5; transform: scaleX(0.8); }
       50% { opacity: 1; transform: scaleX(1.15); }
     }
 
-    @keyframes rocketMove {
-      0% { transform: translateX(0) scaleX(1); }
-      45% { transform: translateX(185px) scaleX(0.72); }
-      55% { transform: translateX(185px) scaleX(0.72); }
-      100% { transform: translateX(0) scaleX(1); }
-    }
-
-    .light-beam {
+    .light {
       position: absolute;
-      left: 105px;
+      left: 110px;
       top: 125px;
-      width: 15px;
-      height: 5px;
+      width: 18px;
+      height: 6px;
       background: #facc15;
       border-radius: 10px;
       box-shadow: 0 0 18px #facc15;
       animation: lightMove 2s linear infinite;
-      z-index: 6;
     }
 
     @keyframes lightMove {
       0% { transform: translateX(0); opacity: 1; }
-      100% { transform: translateX(360px); opacity: 0; }
+      100% { transform: translateX(330px); opacity: 0; }
     }
 
     .gamma-bar {
       position: absolute;
-      left: 390px;
+      left: 50%;
       top: 360px;
+      transform: translateX(-50%);
       width: 500px;
       padding: 16px;
       background: rgba(15, 23, 42, 0.96);
@@ -179,7 +189,6 @@
       text-align: left;
       font-size: 17px;
       z-index: 15;
-      box-sizing: border-box;
     }
 
     .bar {
@@ -205,10 +214,10 @@
 
     .clock-panel {
       position: absolute;
-      left: 390px;
-      top: 490px;
+      left: 50%;
+      top: 470px;
+      transform: translateX(-50%);
       width: 500px;
-      height: 170px;
       display: flex;
       gap: 18px;
       z-index: 10;
@@ -219,36 +228,40 @@
       background: rgba(15, 23, 42, 0.96);
       border: 1px solid #475569;
       border-radius: 16px;
-      padding: 16px;
+      padding: 18px;
       text-align: left;
       font-size: 18px;
       line-height: 1.5;
-      box-sizing: border-box;
+      min-height: 160px;
     }
 
     .clock {
-      width: 65px;
-      height: 65px;
+      width: 68px;
+      height: 68px;
       border: 3px solid #94a3b8;
       border-radius: 50%;
       position: relative;
       margin-top: 16px;
-      display: inline-block;
     }
 
     .hand {
       position: absolute;
-      left: 30px;
-      bottom: 30px;
+      left: 31px;
+      bottom: 31px;
       width: 4px;
-      height: 25px;
+      height: 26px;
       background: #38bdf8;
       border-radius: 4px;
       transform-origin: bottom center;
     }
 
-    .earth-hand { animation: rotateFast 1.2s linear infinite; }
-    .rocket-hand { animation: rotateSlow 2.0s linear infinite; }
+    .earth-hand {
+      animation: rotateFast 1.2s linear infinite;
+    }
+
+    .rocket-hand {
+      animation: rotateSlow 2s linear infinite;
+    }
 
     @keyframes rotateFast {
       from { transform: rotate(0deg); }
@@ -262,6 +275,7 @@
 
     .info-box {
       width: 90%;
+      max-width: 1250px;
       margin: 16px auto;
       padding: 18px;
       border: 2px solid #334155;
@@ -279,7 +293,7 @@
 
     .paused .rocket,
     .paused .rocket::after,
-    .paused .light-beam,
+    .paused .light,
     .paused .earth-hand,
     .paused .rocket-hand,
     .paused .bar-fill {
@@ -290,10 +304,7 @@
 
 <body>
   <h1>Special Relativity</h1>
-
-  <div class="subtitle">
-    Time dilation, length contraction, and constant speed of light
-  </div>
+  <div class="subtitle">Time dilation, length contraction, and constant speed of light</div>
 
   <div class="controls">
     <button class="start" onclick="startAnimation()">START</button>
@@ -302,8 +313,7 @@
   </div>
 
   <div class="scene" id="scene">
-
-    <div class="formula-box">
+    <div class="box formula-box">
       <span class="yellow">Speed of light:</span><br>
       c = 3.0 × 10⁸ m/s<br><br>
 
@@ -317,7 +327,7 @@
       L = L₀ / γ
     </div>
 
-    <div class="result-box">
+    <div class="box result-box">
       Example:<br>
       <span class="blue">v = 0.8c</span><br><br>
 
@@ -331,7 +341,7 @@
     <div class="space-area">
       <div class="earth">Earth</div>
       <div class="rocket"></div>
-      <div class="light-beam"></div>
+      <div class="light"></div>
     </div>
 
     <div class="gamma-bar">
@@ -346,7 +356,6 @@
       <div class="clock-box">
         <span class="yellow">Earth clock</span><br>
         normal time
-        <br>
         <div class="clock">
           <div class="hand earth-hand"></div>
         </div>
@@ -355,13 +364,11 @@
       <div class="clock-box">
         <span class="blue">Rocket clock</span><br>
         slower time
-        <br>
         <div class="clock">
           <div class="hand rocket-hand"></div>
         </div>
       </div>
     </div>
-
   </div>
 
   <div class="info-box">
