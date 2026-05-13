@@ -2,58 +2,82 @@
 
 ## Given
 
-We consider two bodies with masses `m1` and `m2`.
+We consider two bodies with masses $m_1$ and $m_2$.
 
 Their position vectors are:
 
-- `r1` for body 1
-- `r2` for body 2
+- $\vec{r}_1$ for body 1
+- $\vec{r}_2$ for body 2
 
 The barycenter, or center of mass, is:
 
-```text
-R = (m1*r1 + m2*r2) / (m1 + m2)
-```
+$$
+R = \frac{m_1 r_1 + m_2 r_2}{m_1 + m_2}
+$$
 
 For an isolated system:
 
-```text
-m1*r1 + m2*r2 = constant
-```
+$$
+m_1 r_1 + m_2 r_2 = \text{constant}
+$$
 
 The equations of motion are:
 
-```text
-m1*r1'' = -G*m1*m2*(r1 - r2) / |r1 - r2|^3
-```
+$$
+m_1 \ddot{r}_1
+=
+-\frac{G m_1 m_2 (r_1-r_2)}
+{|r_1-r_2|^3}
+$$
 
-```text
-m2*r2'' = -G*m1*m2*(r2 - r1) / |r2 - r1|^3
-```
+$$
+m_2 \ddot{r}_2
+=
+-\frac{G m_1 m_2 (r_2-r_1)}
+{|r_2-r_1|^3}
+$$
 
 ---
 
-## Solution
+# Solution
 
-### 1. Center of Mass
+## 1. Center of Mass
 
 The barycenter is defined as:
 
-```text
-R = (m1*r1 + m2*r2) / (m1 + m2)
-```
+$$
+R = \frac{m_1 r_1 + m_2 r_2}{m_1 + m_2}
+$$
 
 This point is the mass-weighted average position of the system.
 
-If `m1 = m2`, the barycenter is exactly between the two bodies.
+If:
 
-If `m1 > m2`, the barycenter is closer to body 1.
+$$
+m_1 = m_2
+$$
 
-If `m1 < m2`, the barycenter is closer to body 2.
+the barycenter lies exactly between the two bodies.
+
+If:
+
+$$
+m_1 > m_2
+$$
+
+the barycenter is closer to body 1.
+
+If:
+
+$$
+m_1 < m_2
+$$
+
+the barycenter is closer to body 2.
 
 ---
 
-### 2. Isolated System
+## 2. Isolated System
 
 For an isolated system, there is no external force.
 
@@ -61,67 +85,87 @@ Therefore, the barycenter remains fixed or moves with constant velocity.
 
 If the barycenter is chosen as the origin:
 
-```text
+$$
 R = 0
-```
+$$
 
-Then:
+then:
 
-```text
-m1*r1 + m2*r2 = 0
-```
+$$
+m_1 r_1 + m_2 r_2 = 0
+$$
 
 This means both bodies move around their common barycenter.
 
 ---
 
-### 3. Equations of Motion
+## 3. Equations of Motion
 
-The gravitational force between the two bodies is equal in magnitude and opposite in direction.
+The gravitational force acting on body 1 is:
 
-For body 1:
+$$
+m_1 \ddot{r}_1
+=
+-\frac{G m_1 m_2 (r_1-r_2)}
+{|r_1-r_2|^3}
+$$
 
-```text
-m1*r1'' = -G*m1*m2*(r1 - r2) / |r1 - r2|^3
-```
+The gravitational force acting on body 2 is:
 
-For body 2:
+$$
+m_2 \ddot{r}_2
+=
+-\frac{G m_1 m_2 (r_2-r_1)}
+{|r_2-r_1|^3}
+$$
 
-```text
-m2*r2'' = -G*m1*m2*(r2 - r1) / |r2 - r1|^3
-```
-
-The total internal force is:
-
-```text
-F1 + F2 = 0
-```
-
-Therefore, the barycenter stays fixed in an isolated system.
-
----
-
-### 4. Dependence on Mass Ratio
-
-The distance of each body from the barycenter depends on the mass ratio.
-
-```text
-m1*r1 = m2*r2
-```
+The forces are equal in magnitude and opposite in direction.
 
 Therefore:
 
-```text
-r1 / r2 = m2 / m1
-```
+$$
+F_1 + F_2 = 0
+$$
 
-If `m1` is much larger than `m2`, body 1 moves in a small orbit and body 2 moves in a large orbit.
-
-If `m1 = m2`, both bodies move in equal-size orbits around the barycenter.
+which keeps the barycenter fixed.
 
 ---
 
-## HTML Requirements
+## 4. Dependence on Mass Ratio
+
+The distances from the barycenter satisfy:
+
+$$
+m_1 r_1 = m_2 r_2
+$$
+
+Therefore:
+
+$$
+\frac{r_1}{r_2}
+=
+\frac{m_2}{m_1}
+$$
+
+If:
+
+$$
+m_1 \gg m_2
+$$
+
+body 1 moves in a very small orbit, while body 2 moves in a much larger orbit.
+
+If:
+
+$$
+m_1 = m_2
+$$
+
+both bodies move in equal-size orbits.
+
+---
+
+# HTML Requirements
 
 The HTML visualization should include:
 
@@ -131,22 +175,28 @@ The HTML visualization should include:
 
 ---
 
-## Conclusion
+# Conclusion
 
 In a two-body gravitational system, both bodies orbit around their common center of mass.
 
 The barycenter is:
 
-```text
-R = (m1*r1 + m2*r2) / (m1 + m2)
-```
+$$
+R = \frac{m_1 r_1 + m_2 r_2}{m_1 + m_2}
+$$
 
-For an isolated system, the barycenter remains fixed or moves uniformly.
+For an isolated system:
+
+$$
+m_1 r_1 + m_2 r_2 = \text{constant}
+$$
 
 The orbit sizes depend on the mass ratio:
 
-```text
-r1 / r2 = m2 / m1
-```
+$$
+\frac{r_1}{r_2}
+=
+\frac{m_2}{m_1}
+$$
 
-Thus, when one mass is much larger, the larger body moves only slightly, while the smaller body moves in a much larger orbit.
+Thus, if one body is much heavier, it moves only slightly, while the lighter body moves in a much larger orbit around the barycenter.
