@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Radioactive Decay Simulation</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      color: #38bdf8;
+      margin: 14px 0 5px;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .controls {
+      margin-bottom: 12px;
+    }
+
+    button {
+      padding: 10px 24px;
+      margin: 0 8px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .start { background: #22c55e; }
+    .stop { background: #ef4444; }
+    .reset { background: #38bdf8; }
+
+    .scene {
+      width: 94%;
+      height: 570px;
+      margin: auto;
+      position: relative;
+      border: 2px solid #334155;
+      border-radius: 20px;
+      background: linear-gradient(to bottom, #020617, #1e293b);
+      overflow: hidden;
+    }
+
+    .formula-box {
+      position: absolute;
+      left: 25px;
+      top: 25px;
+      width: 320px;
+      padding: 18px;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #475569;
+      border-radius: 16px;
+      font-size: 18px;
+      line-height: 1.65;
+      z-index: 20;
+    }
+
+    .result-box {
+      position: absolute;
+      right: 25px;
+      top: 25px;
+      width: 320px;
+      padding: 18px;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #475569;
+      border-radius: 16px;
+      font-size: 18px;
+      line-height: 1.65;
+      z-index: 20;
+    }
+
+    .nuclei-area {
+      position: absolute;
+      left: 370px;
+      top: 55px;
+      width: 530px;
+      height: 210px;
+      border: 1px solid #475569;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.35);
+    }
+
+    .nucleus {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .decayed {
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+      opacity: 0.45;
+    }
+
+    .graph-area {
+      position: absolute;
+      left: 370px;
+      bottom: 55px;
+      width: 530px;
+      height: 240px;
+      border-left: 3px solid #94a3b8;
+      border-bottom: 3px solid #94a3b8;
+      background: rgba(15, 23, 42, 0.25);
+    }
+
+    canvas {
+      width: 530px;
+      height: 240px;
+    }
+
+    .x-label {
+      position: absolute;
+      right: 10px;
+      bottom: -35px;
+      color: #cbd5e1;
+      font-size: 17px;
+    }
+
+    .y-label {
+      position: absolute;
+      left: -35px;
+      top: -25px;
+      color: #cbd5e1;
+      font-size: 17px;
+    }
+
+    .info-box {
+      width: 90%;
+      margin: 16px auto;
+      padding: 18px;
+      border: 2px solid #334155;
+      border-radius: 18px;
+      background: #020617;
+      text-align: left;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .yellow { color: #facc15; font-weight: bold; }
+    .green { color: #22c55e; font-weight: bold; }
+    .blue { color: #38bdf8; font-weight: bold; }
+    .red { color: #ef4444; font-weight: bold; }
+  </style>
+</head>
+
+<body>
+  <h1>Radioactive Decay</h1>
+
+  <div class="subtitle">
+    Monte Carlo simulation compared with analytical exponential decay
+  </div>
+
+  <div class="controls">
+    <button class="start" onclick="startAnimation()">START</button>
+    <button class="stop" onclick="stopAnimation()">STOP</button>
+    <button class="reset" onclick="resetSimulation()">RESET</button>
+  </div>
+
+  <div class="scene">
+    <div class="formula-box">
+      <span class="yellow">Analytical solution:</span><br>
+      N(t) = N₀e<sup>−λt</sup><br><br>
+
+      <span class="green">Decay time sampling:</span><br>
+      tᵢ = −ln(1 − r) / λ<br><br>
+
+      <span class="blue">Half-life:</span><br>
+      t<sub>1/2</sub> = ln2 / λ
+    </div>
+
+    <div class="result-box">
+      <span class="green">Green dots:</span> undecayed nuclei<br>
+      <span class="red">Red dots:</span> decayed nuclei<br><br>
+
+      Time:
+      <span class="blue" id="timeText">0.00</span><br>
+
+      Undecayed:
+      <span class="green" id="nText">100</span><br><br>
+
+      Half-life:
+      <span class="yellow" id="halfLifeText">2.31</span>
+    </div>
+
+    <div class="nuclei-area" id="nucleiArea"></div>
+
+    <div class="graph-area">
+      <div class="y-label">N(t)</div>
+      <canvas id="graphCanvas" width="530" height="240"></canvas>
+      <div class="x-label">time</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    Each nucleus decays at a random time sampled from an exponential distribution.
+    The green curve is the analytical solution <span class="green">N(t)=N₀e<sup>−λt</sup></span>.
+    The blue points show the Monte Carlo simulation. For a small number of nuclei,
+    random fluctuations are clearly visible.
+  </div>
+
+  <script>
+    const nucleiArea = document.getElementById("nucleiArea");
+    const canvas = document.getElementById("graphCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const timeText = document.getElementById("timeText");
+    const nText = document.getElementById("nText");
+    const halfLifeText = document.getElementById("halfLifeText");
+
+    const N0 = 100;
+    const lambda = 0.30;
+    const tMax = 10;
+    const halfLife = Math.log(2) / lambda;
+
+    let nuclei = [];
+    let time = 0;
+    let running = true;
+
+    halfLifeText.textContent = halfLife.toFixed(2);
+
+    function randomDecayTime() {
+      const r = Math.random();
+      return -Math.log(1 - r) / lambda;
+    }
+
+    function createNuclei() {
+      nucleiArea.innerHTML = "";
+      nuclei = [];
+
+      for (let i = 0; i < N0; i++) {
+        const dot = document.createElement("div");
+        dot.className = "nucleus";
+
+        const x = 15 + Math.random() * 500;
+        const y = 15 + Math.random() * 175;
+
+        dot.style.left = x + "px";
+        dot.style.top = y + "px";
+
+        const decayTime = randomDecayTime();
+
+        nuclei.push({
+          element: dot,
+          decayTime: decayTime,
+          decayed: false
+        });
+
+        nucleiArea.appendChild(dot);
+      }
+    }
+
+    function countUndecayed() {
+      let count = 0;
+
+      nuclei.forEach(nucleus => {
+        if (nucleus.decayTime > time) {
+          count++;
+          nucleus.element.classList.remove("decayed");
+        } else {
+          nucleus.element.classList.add("decayed");
+        }
+      });
+
+      return count;
+    }
+
+    function drawGraph(currentN) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const W = canvas.width;
+      const H = canvas.height;
+
+      ctx.beginPath();
+      ctx.strokeStyle = "#334155";
+      ctx.lineWidth = 1;
+
+      for (let i = 0; i <= 10; i++) {
+        const x = (W / 10) * i;
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, H);
+      }
+
+      for (let i = 0; i <= 5; i++) {
+        const y = (H / 5) * i;
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+      }
+
+      ctx.stroke();
+
+      ctx.beginPath();
+
+      for (let i = 0; i <= W; i++) {
+        const t = (i / W) * tMax;
+        const analyticalN = N0 * Math.exp(-lambda * t);
+        const y = H - (analyticalN / N0) * (H - 20);
+
+        if (i === 0) ctx.moveTo(i, y);
+        else ctx.lineTo(i, y);
+      }
+
+      ctx.strokeStyle = "#22c55e";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      const xPoint = (time / tMax) * W;
+      const yPoint = H - (currentN / N0) * (H - 20);
+
+      ctx.beginPath();
+      ctx.arc(xPoint, yPoint, 6, 0, Math.PI * 2);
+      ctx.fillStyle = "#38bdf8";
+      ctx.shadowColor = "#38bdf8";
+      ctx.shadowBlur = 15;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      const halfX = (halfLife / tMax) * W;
+      ctx.beginPath();
+      ctx.setLineDash([6, 6]);
+      ctx.moveTo(halfX, 0);
+      ctx.lineTo(halfX, H);
+      ctx.strokeStyle = "#facc15";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    function update() {
+      if (running) {
+        time += 0.025;
+
+        if (time > tMax) {
+          time = 0;
+          createNuclei();
+        }
+      }
+
+      const currentN = countUndecayed();
+
+      timeText.textContent = time.toFixed(2);
+      nText.textContent = currentN;
+      drawGraph(currentN);
+
+      requestAnimationFrame(update);
+    }
+
+    function startAnimation() {
+      running = true;
+    }
+
+    function stopAnimation() {
+      running = false;
+    }
+
+    function resetSimulation() {
+      time = 0;
+      createNuclei();
+    }
+
+    createNuclei();
+    update();
+  </script>
+</body>
+</html>
