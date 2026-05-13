@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Three-Body System</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .panel {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    canvas {
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #374151;
+    }
+
+    .controls {
+      max-width: 950px;
+      margin: 10px auto 30px;
+      background: #1f2937;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .control {
+      text-align: left;
+      margin: 14px 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .value {
+      color: #93c5fd;
+      font-weight: bold;
+    }
+
+    button {
+      margin: 8px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Problem 9 — Three-Body System</h1>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Three-Body Motion</h2>
+      <canvas id="canvas" width="720" height="620"></canvas>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control">
+      <label>Mass m₁:
+        <span id="m1Value" class="value"></span>
+      </label>
+      <input type="range" id="m1" min="1" max="30" value="12">
+    </div>
+
+    <div class="control">
+      <label>Mass m₂:
+        <span id="m2Value" class="value"></span>
+      </label>
+      <input type="range" id="m2" min="1" max="30" value="12">
+    </div>
+
+    <div class="control">
+      <label>Mass m₃:
+        <span id="m3Value" class="value"></span>
+      </label>
+      <input type="range" id="m3" min="1" max="30" value="12">
+    </div>
+
+    <div class="control">
+      <label>Initial velocity scale:
+        <span id="velocityValue" class="value"></span>
+      </label>
+      <input type="range" id="velocity" min="0.2" max="2.0" step="0.01" value="1.0">
+    </div>
+
+    <div class="control">
+      <label>Simulation speed:
+        <span id="speedValue" class="value"></span>
+      </label>
+      <input type="range" id="speed" min="1" max="10" value="4">
+    </div>
+
+    <button onclick="toggleAnimation()">Pause / Play</button>
+    <button onclick="resetSimulation()">Reset</button>
+    <button onclick="clearTrace()">Clear Trace</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const m1Slider = document.getElementById("m1");
+    const m2Slider = document.getElementById("m2");
+    const m3Slider = document.getElementById("m3");
+    const velocitySlider = document.getElementById("velocity");
+    const speedSlider = document.getElementById("speed");
+
+    const m1Value = document.getElementById("m1Value");
+    const m2Value = document.getElementById("m2Value");
+    const m3Value = document.getElementById("m3Value");
+    const velocityValue = document.getElementById("velocityValue");
+    const speedValue = document.getElementById("speedValue");
+
+    let bodies = [];
+    let running = true;
+
+    const G = 80;
+    const dt = 0.01;
+    const softening = 25;
+
+    function values() {
+      return {
+        m1: Number(m1Slider.value),
+        m2: Number(m2Slider.value),
+        m3: Number(m3Slider.value),
+        velocityScale: Number(velocitySlider.value),
+        speed: Number(speedSlider.value)
+      };
+    }
+
+    function updateLabels() {
+      const v = values();
+
+      m1Value.textContent = v.m1;
+      m2Value.textContent = v.m2;
+      m3Value.textContent = v.m3;
+      velocityValue.textContent = v.velocityScale.toFixed(2);
+      speedValue.textContent = v.speed;
+    }
+
+    function resetSimulation() {
+      const v = values();
+
+      bodies = [
+        {
+          name: "m₁",
+          m: v.m1,
+          x: -120,
+          y: 0,
+          vx: 0,
+          vy: 1.15 * v.velocityScale,
+          color: "#2563eb",
+          trace: []
+        },
+        {
+          name: "m₂",
+          m: v.m2,
+          x: 120,
+          y: 0,
+          vx: 0,
+          vy: -1.15 * v.velocityScale,
+          color: "#dc2626",
+          trace: []
+        },
+        {
+          name: "m₃",
+          m: v.m3,
+          x: 0,
+          y: 150,
+          vx: -1.25 * v.velocityScale,
+          vy: 0,
+          color: "#16a34a",
+          trace: []
+        }
+      ];
+
+      removeCenterOfMassMotion();
+    }
+
+    function removeCenterOfMassMotion() {
+      let totalMass = 0;
+      let px = 0;
+      let py = 0;
+
+      for (const b of bodies) {
+        totalMass += b.m;
+        px += b.m * b.vx;
+        py += b.m * b.vy;
+      }
+
+      const vxCM = px / totalMass;
+      const vyCM = py / totalMass;
+
+      for (const b of bodies) {
+        b.vx -= vxCM;
+        b.vy -= vyCM;
+      }
+    }
+
+    function accelerations(state) {
+      const acc = state.map(() => ({ ax: 0, ay: 0 }));
+
+      for (let i = 0; i < state.length; i++) {
+        for (let j = 0; j < state.length; j++) {
+          if (i === j) continue;
+
+          const dx = state[j].x - state[i].x;
+          const dy = state[j].y - state[i].y;
+
+          const r2 = dx * dx + dy * dy + softening;
+          const r = Math.sqrt(r2);
+          const factor = G * state[j].m / (r2 * r);
+
+          acc[i].ax += factor * dx;
+          acc[i].ay += factor * dy;
+        }
+      }
+
+      return acc;
+    }
+
+    function cloneState() {
+      return bodies.map(b => ({
+        m: b.m,
+        x: b.x,
+        y: b.y,
+        vx: b.vx,
+        vy: b.vy
+      }));
+    }
+
+    function derivative(state) {
+      const acc = accelerations(state);
+
+      return state.map((b, i) => ({
+        dx: b.vx,
+        dy: b.vy,
+        dvx: acc[i].ax,
+        dvy: acc[i].ay
+      }));
+    }
+
+    function addState(state, k, scale) {
+      return state.map((b, i) => ({
+        m: b.m,
+        x: b.x + k[i].dx * scale,
+        y: b.y + k[i].dy * scale,
+        vx: b.vx + k[i].dvx * scale,
+        vy: b.vy + k[i].dvy * scale
+      }));
+    }
+
+    function rk4Step() {
+      const s0 = cloneState();
+
+      const k1 = derivative(s0);
+      const k2 = derivative(addState(s0, k1, dt / 2));
+      const k3 = derivative(addState(s0, k2, dt / 2));
+      const k4 = derivative(addState(s0, k3, dt));
+
+      for (let i = 0; i < bodies.length; i++) {
+        bodies[i].x += dt / 6 * (k1[i].dx + 2 * k2[i].dx + 2 * k3[i].dx + k4[i].dx);
+        bodies[i].y += dt / 6 * (k1[i].dy + 2 * k2[i].dy + 2 * k3[i].dy + k4[i].dy);
+
+        bodies[i].vx += dt / 6 * (k1[i].dvx + 2 * k2[i].dvx + 2 * k3[i].dvx + k4[i].dvx);
+        bodies[i].vy += dt / 6 * (k1[i].dvy + 2 * k2[i].dvy + 2 * k3[i].dvy + k4[i].dvy);
+
+        bodies[i].trace.push({ x: bodies[i].x, y: bodies[i].y });
+
+        if (bodies[i].trace.length > 1200) {
+          bodies[i].trace.shift();
+        }
+      }
+    }
+
+    function centerOfMass() {
+      let totalMass = 0;
+      let x = 0;
+      let y = 0;
+
+      for (const b of bodies) {
+        totalMass += b.m;
+        x += b.m * b.x;
+        y += b.m * b.y;
+      }
+
+      return {
+        x: x / totalMass,
+        y: y / totalMass
+      };
+    }
+
+    function totalEnergy() {
+      let kinetic = 0;
+      let potential = 0;
+
+      for (let i = 0; i < bodies.length; i++) {
+        const b = bodies[i];
+        kinetic += 0.5 * b.m * (b.vx * b.vx + b.vy * b.vy);
+
+        for (let j = i + 1; j < bodies.length; j++) {
+          const c = bodies[j];
+          const dx = c.x - b.x;
+          const dy = c.y - b.y;
+          const r = Math.sqrt(dx * dx + dy * dy + softening);
+          potential += -G * b.m * c.m / r;
+        }
+      }
+
+      return kinetic + potential;
+    }
+
+    function drawAxes(cx, cy) {
+      ctx.strokeStyle = "#e5e7eb";
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.moveTo(0, cy);
+      ctx.lineTo(canvas.width, cy);
+      ctx.moveTo(cx, 0);
+      ctx.lineTo(cx, canvas.height);
+      ctx.stroke();
+    }
+
+    function draw() {
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      ctx.clearRect(0, 0, w, h);
+
+      drawAxes(cx, cy);
+
+      const cm = centerOfMass();
+      const energy = totalEnergy();
+
+      ctx.fillStyle = "#111827";
+      ctx.font = "15px Arial";
+      ctx.fillText("Three-body motion with RK4 integration", 20, 30);
+      ctx.fillText("Small changes in initial conditions can strongly change the motion.", 20, 55);
+      ctx.fillText("Total energy: " + energy.toFixed(2), 20, 80);
+
+      ctx.fillStyle = "#f59e0b";
+      ctx.beginPath();
+      ctx.arc(cx + cm.x, cy - cm.y, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#111827";
+      ctx.fillText("Center of mass", cx + cm.x + 10, cy - cm.y - 8);
+
+      for (const b of bodies) {
+        if (b.trace.length > 1) {
+          ctx.strokeStyle = b.color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+
+          for (let i = 0; i < b.trace.length; i++) {
+            const p = b.trace[i];
+
+            if (i === 0) {
+              ctx.moveTo(cx + p.x, cy - p.y);
+            } else {
+              ctx.lineTo(cx + p.x, cy - p.y);
+            }
+          }
+
+          ctx.stroke();
+        }
+
+        const radius = 5 + Math.sqrt(b.m);
+
+        ctx.fillStyle = b.color;
+        ctx.beginPath();
+        ctx.arc(cx + b.x, cy - b.y, radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#111827";
+        ctx.font = "14px Arial";
+        ctx.fillText(b.name, cx + b.x + radius + 4, cy - b.y);
+      }
+    }
+
+    function animate() {
+      updateLabels();
+
+      if (running) {
+        const v = values();
+
+        for (let i = 0; i < v.speed; i++) {
+          rk4Step();
+        }
+      }
+
+      draw();
+      requestAnimationFrame(animate);
+    }
+
+    function toggleAnimation() {
+      running = !running;
+    }
+
+    function clearTrace() {
+      for (const b of bodies) {
+        b.trace = [];
+      }
+    }
+
+    m1Slider.addEventListener("input", resetSimulation);
+    m2Slider.addEventListener("input", resetSimulation);
+    m3Slider.addEventListener("input", resetSimulation);
+    velocitySlider.addEventListener("input", resetSimulation);
+
+    resetSimulation();
+    animate();
+  </script>
+</body>
+</html>
