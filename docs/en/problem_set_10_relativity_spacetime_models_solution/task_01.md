@@ -1,181 +1,200 @@
 # Problem Set 10  
-## Relativistic Physics
+# Relativistic Physics
 
 ---
 
-# Problem 1 – Time Dilation
+# Problem 1 — Time Dilation
 
 ## Given
 
 A spacecraft is moving with a velocity:
 
-\[
+$$
 v = 0.8c
-\]
+$$
 
 where:
 
-\[
-c
-\]
+- $v$ — velocity of the spacecraft  
+- $c$ — speed of light  
 
-is the speed of light.
+The Lorentz factor is:
 
-The Lorentz factor is defined as:
-
-\[
+$$
 \gamma = \frac{1}{\sqrt{1-\frac{v^2}{c^2}}}
-\]
+$$
 
-Proper time on the spacecraft:
+Proper time measured on the spacecraft:
 
-\[
+$$
 \Delta t_0 = 5 \text{ years}
-\]
+$$
 
 Find:
 
-1. The Lorentz factor \(\gamma\)  
-2. How much time passes on Earth  
-3. The percentage effect of time dilation  
-4. What happens in the limit \(v \to c\)  
-5. Interpret the result physically  
+1. The Lorentz factor $\gamma$
+2. How much time passes on Earth
+3. The percentage effect of time dilation
+4. What happens in the limit $v \to c$
+5. Physical interpretation of the result
 
 ---
 
 # Solution
 
-## 1. Calculating the Lorentz factor
+## 1. Calculating the Lorentz Factor
 
 Given:
 
-\[
+$$
 v = 0.8c
-\]
+$$
 
-Substitute into the formula:
+Substitute into the Lorentz factor formula:
 
-\[
+$$
 \gamma = \frac{1}{\sqrt{1-\frac{(0.8c)^2}{c^2}}}
-\]
+$$
 
-\[
+Simplify:
+
+$$
 \gamma = \frac{1}{\sqrt{1-0.64}}
-\]
+$$
 
-\[
+$$
 \gamma = \frac{1}{\sqrt{0.36}}
-\]
+$$
 
-\[
+$$
 \gamma = \frac{1}{0.6}
-\]
+$$
 
-\[
+$$
 \gamma \approx 1.67
-\]
+$$
+
+Therefore, the Lorentz factor is:
+
+$$
+\boxed{\gamma \approx 1.67}
+$$
 
 ---
 
-## 2. Time passed on Earth
+## 2. Time Passed on Earth
 
-Time dilation formula:
+The time dilation formula is:
 
-\[
+$$
 \Delta t = \gamma \Delta t_0
-\]
+$$
 
-Substitute the values:
+Substitute the known values:
 
-\[
+$$
 \Delta t = 1.67 \times 5
-\]
+$$
 
-\[
+$$
 \Delta t \approx 8.33 \text{ years}
-\]
+$$
 
 Therefore, when 5 years pass on the spacecraft, approximately:
 
-\[
-8.33 \text{ years}
-\]
+$$
+\boxed{8.33 \text{ years}}
+$$
 
 pass on Earth.
 
 ---
 
-## 3. Percentage effect of time dilation
+## 3. Percentage Effect of Time Dilation
 
-Increase in time:
+Difference in time:
 
-\[
-\Delta t - \Delta t_0 = 8.33 - 5 = 3.33 \text{ years}
-\]
+$$
+\Delta t - \Delta t_0 = 8.33 - 5
+$$
+
+$$
+= 3.33 \text{ years}
+$$
 
 Percentage increase:
 
-\[
-\frac{3.33}{5} \times 100\% \approx 66.7\%
-\]
+$$
+\frac{3.33}{5} \times 100\%
+$$
 
-Thus, the time measured on Earth is approximately:
+$$
+\approx 66.7\%
+$$
 
-\[
-66.7\%
-\]
+Therefore, the time measured on Earth is:
+
+$$
+\boxed{66.7\%}
+$$
 
 greater than the time measured on the spacecraft.
 
 ---
 
-## 4. Limit as \(v \to c\)
+## 4. Limit as $v \to c$
 
-If the spacecraft velocity approaches the speed of light:
+As the spacecraft velocity approaches the speed of light:
 
-\[
+$$
 v \to c
-\]
+$$
 
 then:
 
-\[
+$$
 \frac{v^2}{c^2} \to 1
-\]
+$$
 
-So:
+Therefore:
 
-\[
+$$
 1 - \frac{v^2}{c^2} \to 0
-\]
+$$
 
 The Lorentz factor becomes:
 
-\[
+$$
 \gamma = \frac{1}{\sqrt{1-\frac{v^2}{c^2}}}
-\]
+$$
 
-and tends to infinity:
+and approaches infinity:
 
-\[
+$$
 \gamma \to \infty
-\]
+$$
 
-This means that, for an outside observer, time on the spacecraft passes extremely slowly.
+This means that time on the spacecraft becomes extremely slow relative to an outside observer.
 
 ---
 
-## 5. Physical interpretation
+## 5. Physical Interpretation
 
-As an object moves closer to the speed of light, relativistic effects become significant. Time for the moving observer slows down relative to a stationary observer. This phenomenon is called **time dilation**.
+According to Einstein’s theory of special relativity, time passes more slowly for objects moving at very high velocities.
 
-Because the Lorentz factor increases dramatically near the speed of light, a massive object cannot reach exactly:
+As the spacecraft speed gets closer to the speed of light:
 
-\[
-c
-\]
+- time dilation increases,
+- the Lorentz factor grows rapidly,
+- and much more time passes for stationary observers than for travelers inside the spacecraft.
 
-since it would require infinite energy.
+Because the Lorentz factor approaches infinity at:
+
+$$
+v = c
+$$
+
+a massive object would require infinite energy to reach the speed of light. Therefore, objects with mass cannot travel at exactly the speed of light.
 
 ---
 
@@ -183,28 +202,28 @@ since it would require infinite energy.
 
 For a spacecraft moving at:
 
-\[
+$$
 0.8c
-\]
+$$
 
 the Lorentz factor is:
 
-\[
+$$
 \gamma \approx 1.67
-\]
+$$
 
 If 5 years pass on the spacecraft, approximately:
 
-\[
+$$
 8.33 \text{ years}
-\]
+$$
 
 pass on Earth.
 
-The time dilation effect is about:
+The time dilation effect is approximately:
 
-\[
+$$
 66.7\%
-\]
+$$
 
-This demonstrates that time slows down for objects moving at relativistic speeds, and the effect becomes infinitely large as velocity approaches the speed of light.
+This problem demonstrates how time slows down for objects moving at relativistic speeds, and how relativistic effects become extremely large as velocity approaches the speed of light.
