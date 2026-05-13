@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infinite Potential Well Animation</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      color: #38bdf8;
+      margin: 14px 0 5px;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .controls {
+      margin-bottom: 12px;
+    }
+
+    button {
+      padding: 10px 30px;
+      margin: 0 10px;
+      font-size: 17px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .start { background: #22c55e; }
+    .stop { background: #ef4444; }
+
+    .scene {
+      width: 94%;
+      height: 540px;
+      margin: auto;
+      position: relative;
+      border: 2px solid #334155;
+      border-radius: 20px;
+      background: linear-gradient(to bottom, #020617, #1e293b);
+      overflow: hidden;
+    }
+
+    .formula-box {
+      position: absolute;
+      left: 30px;
+      top: 30px;
+      width: 330px;
+      padding: 18px;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #475569;
+      border-radius: 16px;
+      font-size: 18px;
+      line-height: 1.65;
+      z-index: 20;
+    }
+
+    .result-box {
+      position: absolute;
+      right: 30px;
+      top: 30px;
+      width: 330px;
+      padding: 18px;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #475569;
+      border-radius: 16px;
+      font-size: 18px;
+      line-height: 1.65;
+      z-index: 20;
+    }
+
+    .well-area {
+      position: absolute;
+      left: 390px;
+      top: 105px;
+      width: 500px;
+      height: 330px;
+      z-index: 5;
+    }
+
+    .wall {
+      position: absolute;
+      top: 20px;
+      width: 18px;
+      height: 290px;
+      background: #facc15;
+      box-shadow: 0 0 20px #facc15;
+      border-radius: 8px;
+      z-index: 10;
+    }
+
+    .wall.left { left: 0; }
+    .wall.right { right: 0; }
+
+    .well-floor {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 35px;
+      height: 4px;
+      background: #94a3b8;
+    }
+
+    .well-label {
+      position: absolute;
+      bottom: 5px;
+      left: 0;
+      width: 100%;
+      color: #cbd5e1;
+      font-size: 18px;
+    }
+
+    .center-line {
+      position: absolute;
+      left: 50%;
+      top: 20px;
+      width: 2px;
+      height: 290px;
+      border-left: 2px dashed #38bdf8;
+      opacity: 0.7;
+    }
+
+    .center-label {
+      position: absolute;
+      top: 315px;
+      left: 45%;
+      color: #38bdf8;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    svg {
+      position: absolute;
+      left: 18px;
+      top: 45px;
+      width: 464px;
+      height: 250px;
+      overflow: visible;
+    }
+
+    .wave {
+      fill: none;
+      stroke: #22c55e;
+      stroke-width: 5;
+      stroke-linecap: round;
+      animation: wavePulse 2s ease-in-out infinite;
+    }
+
+    .probability {
+      fill: rgba(56, 189, 248, 0.35);
+      stroke: #38bdf8;
+      stroke-width: 3;
+      animation: probPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes wavePulse {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 0.7;
+      }
+      50% {
+        transform: translateY(-8px);
+        opacity: 1;
+      }
+    }
+
+    @keyframes probPulse {
+      0%, 100% {
+        opacity: 0.35;
+      }
+      50% {
+        opacity: 0.75;
+      }
+    }
+
+    .particle {
+      position: absolute;
+      top: 200px;
+      left: 235px;
+      width: 22px;
+      height: 22px;
+      background: #38bdf8;
+      border-radius: 50%;
+      box-shadow: 0 0 25px #38bdf8;
+      animation: particleMove 3s ease-in-out infinite;
+      z-index: 15;
+    }
+
+    @keyframes particleMove {
+      0%, 100% {
+        transform: translateX(-120px);
+        opacity: 0.45;
+      }
+      50% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .energy-bars {
+      position: absolute;
+      left: 420px;
+      bottom: 25px;
+      width: 440px;
+      height: 75px;
+      z-index: 8;
+      text-align: left;
+    }
+
+    .bar {
+      height: 12px;
+      margin: 12px 0;
+      border-radius: 10px;
+      background: #334155;
+      overflow: hidden;
+    }
+
+    .fill1 {
+      width: 25%;
+      height: 100%;
+      background: #22c55e;
+      animation: energyPulse 2s infinite;
+    }
+
+    .fill2 {
+      width: 100%;
+      height: 100%;
+      background: #ef4444;
+      animation: energyPulse 2s infinite;
+    }
+
+    @keyframes energyPulse {
+      0%, 100% { opacity: 0.65; }
+      50% { opacity: 1; }
+    }
+
+    .bar-label {
+      color: #cbd5e1;
+      font-size: 15px;
+    }
+
+    .info-box {
+      width: 90%;
+      margin: 16px auto;
+      padding: 18px;
+      border: 2px solid #334155;
+      border-radius: 18px;
+      background: #020617;
+      text-align: left;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .yellow { color: #facc15; font-weight: bold; }
+    .green { color: #22c55e; font-weight: bold; }
+    .blue { color: #38bdf8; font-weight: bold; }
+    .red { color: #ef4444; font-weight: bold; }
+
+    .paused .wave,
+    .paused .probability,
+    .paused .particle,
+    .paused .fill1,
+    .paused .fill2 {
+      animation-play-state: paused;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Schrödinger Equation</h1>
+
+  <div class="subtitle">
+    1D Infinite Potential Well
+  </div>
+
+  <div class="controls">
+    <button class="start" onclick="startAnimation()">START</button>
+    <button class="stop" onclick="stopAnimation()">STOP</button>
+  </div>
+
+  <div class="scene" id="scene">
+
+    <div class="formula-box">
+      <span class="yellow">Inside the well:</span><br>
+      V(x) = 0, &nbsp; 0 &lt; x &lt; L<br><br>
+
+      <span class="green">Boundary conditions:</span><br>
+      ψ(0) = 0, &nbsp; ψ(L) = 0<br><br>
+
+      <span class="blue">Energy levels:</span><br>
+      E<sub>n</sub> = n²h² / 8mL²
+    </div>
+
+    <div class="result-box">
+      For <span class="green">n = 1</span>:<br>
+      probability is maximum at<br>
+      <span class="blue">x = L / 2</span><br><br>
+
+      Energy ratio:<br>
+      <span class="red">E₂ / E₁ = 4</span><br><br>
+
+      If <span class="yellow">L</span> is doubled:<br>
+      <span class="red">E becomes 4 times smaller</span>
+    </div>
+
+    <div class="well-area">
+      <div class="wall left"></div>
+      <div class="wall right"></div>
+      <div class="well-floor"></div>
+
+      <div class="center-line"></div>
+      <div class="center-label">x = L / 2</div>
+
+      <svg viewBox="0 0 464 250">
+        <path
+          class="probability"
+          d="M 0 220 
+             C 80 220, 120 40, 232 40
+             C 344 40, 384 220, 464 220
+             L 464 220 L 0 220 Z"
+        />
+
+        <path
+          class="wave"
+          d="M 0 125
+             C 80 125, 120 45, 232 45
+             C 344 45, 384 125, 464 125"
+        />
+      </svg>
+
+      <div class="particle"></div>
+      <div class="well-label">Width of the well: L</div>
+    </div>
+
+    <div class="energy-bars">
+      <div class="bar-label">E₁</div>
+      <div class="bar"><div class="fill1"></div></div>
+
+      <div class="bar-label">E₂ = 4E₁</div>
+      <div class="bar"><div class="fill2"></div></div>
+    </div>
+
+  </div>
+
+  <div class="info-box">
+    The yellow walls represent an <span class="yellow">infinite potential well</span>.
+    The wave function must be zero at the walls:
+    <span class="green">ψ(0) = 0</span> and <span class="green">ψ(L) = 0</span>.
+    For the ground state <span class="blue">n = 1</span>, the probability density is largest
+    at the center of the well, <span class="blue">x = L / 2</span>.
+    The energy levels increase as <span class="red">n²</span> and decrease as <span class="red">1/L²</span>.
+  </div>
+
+  <script>
+    const scene = document.getElementById("scene");
+
+    function stopAnimation() {
+      scene.classList.add("paused");
+    }
+
+    function startAnimation() {
+      scene.classList.remove("paused");
+    }
+  </script>
+</body>
+</html>
