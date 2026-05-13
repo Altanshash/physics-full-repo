@@ -11,17 +11,12 @@
       font-family: Arial, sans-serif;
       background: #0f172a;
       color: white;
-    }
-
-    .container {
-      width: 100%;
-      min-height: 100vh;
       text-align: center;
-      padding-top: 20px;
     }
 
     h1 {
       color: #38bdf8;
+      margin-top: 15px;
       margin-bottom: 5px;
     }
 
@@ -31,62 +26,61 @@
       margin-bottom: 15px;
     }
 
-    .buttons {
-      margin-bottom: 20px;
+    .controls {
+      margin-bottom: 15px;
     }
 
     button {
-      padding: 12px 30px;
-      margin: 0 10px;
-      font-size: 18px;
+      padding: 10px 28px;
+      margin: 0 8px;
+      font-size: 17px;
       font-weight: bold;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       cursor: pointer;
+      color: white;
     }
 
     .start {
       background: #22c55e;
-      color: white;
     }
 
     .stop {
       background: #ef4444;
-      color: white;
     }
 
-    .animation-area {
+    .scene {
       width: 92%;
-      height: 470px;
+      height: 500px;
       margin: auto;
       position: relative;
       border: 2px solid #334155;
-      border-radius: 22px;
-      background: radial-gradient(circle, #1e293b 0%, #020617 70%);
+      border-radius: 20px;
+      background: radial-gradient(circle, #1e293b 0%, #020617 75%);
       overflow: hidden;
     }
 
     .nucleus {
       position: absolute;
-      top: 235px;
+      top: 250px;
       left: 50%;
       transform: translate(-50%, -50%);
       width: 70px;
       height: 70px;
-      border-radius: 50%;
       background: #facc15;
+      border-radius: 50%;
       color: #020617;
+      font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
       box-shadow: 0 0 35px #facc15;
       z-index: 5;
     }
 
     .orbit {
       position: absolute;
-      top: 235px;
+      top: 250px;
       left: 50%;
       transform: translate(-50%, -50%);
       border: 2px dashed #64748b;
@@ -108,91 +102,82 @@
       height: 350px;
     }
 
-    .electron-orbit {
+    .label {
       position: absolute;
-      top: 60px;
-      left: calc(50% - 175px);
-      width: 350px;
-      height: 350px;
-      border-radius: 50%;
-      animation: rotateElectron 5s linear infinite;
-      z-index: 6;
+      padding: 6px 12px;
+      border: 1px solid #475569;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 16px;
+    }
+
+    .label1 {
+      top: 170px;
+      left: calc(50% + 80px);
+    }
+
+    .label2 {
+      top: 120px;
+      left: calc(50% + 130px);
+    }
+
+    .label3 {
+      top: 70px;
+      left: calc(50% + 180px);
     }
 
     .electron {
       position: absolute;
-      top: 163px;
-      right: -12px;
       width: 26px;
       height: 26px;
       background: #38bdf8;
       border-radius: 50%;
       box-shadow: 0 0 25px #38bdf8;
-    }
-
-    @keyframes rotateElectron {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .jump-electron {
-      position: absolute;
-      top: 60px;
-      left: calc(50% + 163px);
-      width: 26px;
-      height: 26px;
-      background: #38bdf8;
-      border-radius: 50%;
-      box-shadow: 0 0 25px #38bdf8;
-      animation: jumpDown 4s ease-in-out infinite;
       z-index: 8;
+      animation: electronJump 5s ease-in-out infinite;
     }
 
-    @keyframes jumpDown {
+    @keyframes electronJump {
       0%, 25% {
-        top: 60px;
-        left: calc(50% + 163px);
+        top: 72px;
+        left: calc(50% + 162px);
       }
 
-      50%, 70% {
-        top: 110px;
-        left: calc(50% + 113px);
+      50%, 75% {
+        top: 122px;
+        left: calc(50% + 112px);
       }
 
       100% {
-        top: 60px;
-        left: calc(50% + 163px);
+        top: 72px;
+        left: calc(50% + 162px);
       }
     }
 
-    .photon {
+    .photon-arrow {
       position: absolute;
-      top: 140px;
-      left: calc(50% + 130px);
-      width: 190px;
-      height: 70px;
+      top: 135px;
+      left: calc(50% + 155px);
+      width: 210px;
+      height: 4px;
+      background: #ef4444;
       opacity: 0;
-      animation: photonMove 4s ease-in-out infinite;
-      z-index: 9;
+      animation: photonMove 5s ease-in-out infinite;
+      z-index: 7;
     }
 
-    .photon svg {
-      width: 190px;
-      height: 70px;
-    }
-
-    .photon path {
-      fill: none;
-      stroke: #ef4444;
-      stroke-width: 5;
+    .photon-arrow::after {
+      content: "";
+      position: absolute;
+      right: -16px;
+      top: -7px;
+      border-left: 18px solid #ef4444;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
     }
 
     @keyframes photonMove {
-      0%, 45% {
+      0%, 42% {
         opacity: 0;
         transform: translateX(0);
       }
@@ -203,41 +188,41 @@
 
       100% {
         opacity: 0;
-        transform: translateX(260px);
+        transform: translateX(230px);
       }
     }
 
-    .label {
+    .photon-text {
       position: absolute;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid #475569;
-      border-radius: 10px;
-      padding: 6px 12px;
-      color: #e2e8f0;
+      top: 100px;
+      left: calc(50% + 230px);
+      color: #ef4444;
+      font-weight: bold;
+      opacity: 0;
+      animation: photonText 5s ease-in-out infinite;
     }
 
-    .label1 {
-      top: 155px;
-      left: calc(50% + 85px);
-    }
+    @keyframes photonText {
+      0%, 45% {
+        opacity: 0;
+      }
 
-    .label2 {
-      top: 105px;
-      left: calc(50% + 135px);
-    }
+      55%, 85% {
+        opacity: 1;
+      }
 
-    .label3 {
-      top: 55px;
-      left: calc(50% + 185px);
+      100% {
+        opacity: 0;
+      }
     }
 
     .formula-box {
       position: absolute;
-      top: 25px;
       left: 25px;
+      top: 30px;
+      width: 300px;
+      padding: 18px;
       text-align: left;
-      width: 280px;
-      padding: 15px;
       background: rgba(15, 23, 42, 0.92);
       border: 1px solid #475569;
       border-radius: 16px;
@@ -248,10 +233,10 @@
     .energy-box {
       position: absolute;
       right: 25px;
-      bottom: 25px;
+      bottom: 30px;
+      width: 310px;
+      padding: 18px;
       text-align: left;
-      width: 300px;
-      padding: 15px;
       background: rgba(15, 23, 42, 0.92);
       border: 1px solid #475569;
       border-radius: 16px;
@@ -262,18 +247,17 @@
     .info-box {
       width: 88%;
       margin: 18px auto;
-      background: #020617;
+      padding: 18px;
       border: 2px solid #334155;
       border-radius: 18px;
-      padding: 18px;
+      background: #020617;
+      text-align: left;
       font-size: 18px;
       line-height: 1.6;
-      text-align: left;
-      color: #e2e8f0;
     }
 
-    .blue {
-      color: #38bdf8;
+    .yellow {
+      color: #facc15;
       font-weight: bold;
     }
 
@@ -282,8 +266,8 @@
       font-weight: bold;
     }
 
-    .yellow {
-      color: #facc15;
+    .blue {
+      color: #38bdf8;
       font-weight: bold;
     }
 
@@ -292,91 +276,87 @@
       font-weight: bold;
     }
 
-    .paused .electron-orbit,
-    .paused .jump-electron,
-    .paused .photon {
+    .paused .electron,
+    .paused .photon-arrow,
+    .paused .photon-text {
       animation-play-state: paused;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>Bohr Model of the Hydrogen Atom</h1>
-    <div class="subtitle">Electron transition from n = 3 to n = 2</div>
+  <h1>Bohr Model of the Hydrogen Atom</h1>
 
-    <div class="buttons">
-      <button class="start" onclick="startAnimation()">START</button>
-      <button class="stop" onclick="stopAnimation()">STOP</button>
+  <div class="subtitle">
+    Electron transition from n = 3 to n = 2 emits a photon
+  </div>
+
+  <div class="controls">
+    <button class="start" onclick="startAnimation()">START</button>
+    <button class="stop" onclick="stopAnimation()">STOP</button>
+  </div>
+
+  <div class="scene" id="scene">
+    <div class="formula-box">
+      <span class="yellow">Quantized angular momentum:</span><br>
+      mvr = nℏ<br><br>
+
+      <span class="green">Orbit radius:</span><br>
+      rₙ = a₀n²<br><br>
+
+      <span class="blue">Energy level:</span><br>
+      Eₙ = −13.6 / n² eV
     </div>
 
-    <div class="animation-area" id="animationArea">
-      <div class="formula-box">
-        <span class="yellow">Angular momentum:</span><br />
-        mvr = nℏ<br /><br />
+    <div class="orbit orbit1"></div>
+    <div class="orbit orbit2"></div>
+    <div class="orbit orbit3"></div>
 
-        <span class="green">Orbit radius:</span><br />
-        rₙ = a₀n²<br /><br />
+    <div class="label label1">n = 1</div>
+    <div class="label label2">n = 2</div>
+    <div class="label label3">n = 3</div>
 
-        <span class="blue">Energy:</span><br />
-        Eₙ = −13.6 / n² eV
-      </div>
+    <div class="nucleus">p⁺</div>
 
-      <div class="orbit orbit1"></div>
-      <div class="orbit orbit2"></div>
-      <div class="orbit orbit3"></div>
+    <div class="electron"></div>
 
-      <div class="label label1">n = 1</div>
-      <div class="label label2">n = 2</div>
-      <div class="label label3">n = 3</div>
+    <div class="photon-arrow"></div>
 
-      <div class="nucleus">p⁺</div>
-
-      <div class="electron-orbit">
-        <div class="electron"></div>
-      </div>
-
-      <div class="jump-electron"></div>
-
-      <div class="photon">
-        <svg viewBox="0 0 190 70">
-          <path d="M0 35 Q15 10 30 35 T60 35 T90 35 T120 35 T150 35 T180 35" />
-        </svg>
-      </div>
-
-      <div class="energy-box">
-        Electron transition:<br />
-        <span class="blue">n = 3</span>
-        →
-        <span class="green">n = 2</span>
-        <br /><br />
-
-        Photon energy:<br />
-        <span class="red">ΔE = 1.89 eV</span>
-        <br /><br />
-
-        Wavelength:<br />
-        <span class="red">λ ≈ 656 nm</span>
-      </div>
+    <div class="photon-text">
+      emitted photon
     </div>
 
-    <div class="info-box">
-      In the Bohr model, electrons can exist only in specific energy levels.
-      When an electron moves from a higher orbit to a lower orbit, energy is
-      emitted as a photon. This animation shows the transition from
-      <span class="blue">n = 3</span> to <span class="green">n = 2</span>.
+    <div class="energy-box">
+      Electron transition:<br>
+      <span class="blue">n = 3</span> →
+      <span class="green">n = 2</span><br><br>
+
+      Photon energy:<br>
+      <span class="red">ΔE = 1.89 eV</span><br><br>
+
+      Wavelength:<br>
+      <span class="red">λ ≈ 656 nm</span>
     </div>
   </div>
 
+  <div class="info-box">
+    In the Bohr model, the electron can exist only in specific energy levels.
+    When the electron moves from a higher level to a lower level,
+    it emits energy as a <span class="red">photon</span>.
+    Here, the electron jumps from <span class="blue">n = 3</span>
+    to <span class="green">n = 2</span>, and the emitted photon has wavelength
+    <span class="red">λ ≈ 656 nm</span>.
+  </div>
+
   <script>
-    const animationArea = document.getElementById("animationArea");
+    const scene = document.getElementById("scene");
 
     function stopAnimation() {
-      animationArea.classList.add("paused");
+      scene.classList.add("paused");
     }
 
     function startAnimation() {
-      animationArea.classList.remove("paused");
+      scene.classList.remove("paused");
     }
   </script>
 </body>
