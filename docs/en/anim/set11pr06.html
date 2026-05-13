@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wave Packet Evolution Animation</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      color: #38bdf8;
+      margin: 14px 0 5px;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .controls {
+      margin-bottom: 12px;
+    }
+
+    button {
+      padding: 10px 30px;
+      margin: 0 10px;
+      font-size: 17px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .start { background: #22c55e; }
+    .stop { background: #ef4444; }
+    .reset { background: #38bdf8; }
+
+    .scene {
+      width: 94%;
+      height: 560px;
+      margin: auto;
+      position: relative;
+      border: 2px solid #334155;
+      border-radius: 20px;
+      background: linear-gradient(to bottom, #020617, #1e293b);
+      overflow: hidden;
+    }
+
+    .formula-box {
+      position: absolute;
+      left: 25px;
+      top: 28px;
+      width: 330px;
+      padding: 18px;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #475569;
+      border-radius: 16px;
+      font-size: 18px;
+      line-height: 1.65;
+      z-index: 20;
+    }
+
+    .result-box {
+      position: absolute;
+      right: 25px;
+      top: 28px;
+      width: 330px;
+      padding: 18px;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #475569;
+      border-radius: 16px;
+      font-size: 18px;
+      line-height: 1.65;
+      z-index: 20;
+    }
+
+    .graph-area {
+      position: absolute;
+      left: 390px;
+      top: 130px;
+      width: 520px;
+      height: 320px;
+      border-left: 3px solid #94a3b8;
+      border-bottom: 3px solid #94a3b8;
+      z-index: 5;
+    }
+
+    .x-label {
+      position: absolute;
+      right: 10px;
+      bottom: -35px;
+      color: #cbd5e1;
+      font-size: 18px;
+    }
+
+    .y-label {
+      position: absolute;
+      left: -30px;
+      top: -25px;
+      color: #cbd5e1;
+      font-size: 18px;
+    }
+
+    canvas {
+      width: 520px;
+      height: 320px;
+    }
+
+    .time-box {
+      position: absolute;
+      left: 390px;
+      bottom: 35px;
+      width: 520px;
+      padding: 14px;
+      border: 1px solid #475569;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.92);
+      font-size: 18px;
+      text-align: left;
+      z-index: 20;
+    }
+
+    .bar {
+      margin-top: 10px;
+      width: 100%;
+      height: 12px;
+      border-radius: 20px;
+      background: #334155;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: #22c55e;
+    }
+
+    .info-box {
+      width: 90%;
+      margin: 16px auto;
+      padding: 18px;
+      border: 2px solid #334155;
+      border-radius: 18px;
+      background: #020617;
+      text-align: left;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .yellow { color: #facc15; font-weight: bold; }
+    .green { color: #22c55e; font-weight: bold; }
+    .blue { color: #38bdf8; font-weight: bold; }
+    .red { color: #ef4444; font-weight: bold; }
+  </style>
+</head>
+
+<body>
+  <h1>Evolution of a Wave Packet</h1>
+
+  <div class="subtitle">
+    Animation of probability density |ψ(x,t)|²
+  </div>
+
+  <div class="controls">
+    <button class="start" onclick="startAnimation()">START</button>
+    <button class="stop" onclick="stopAnimation()">STOP</button>
+    <button class="reset" onclick="resetAnimation()">RESET</button>
+  </div>
+
+  <div class="scene">
+
+    <div class="formula-box">
+      <span class="yellow">Initial packet:</span><br>
+      ψ(x,0) = exp(−x² / 2σ²) exp(ik₀x)<br><br>
+
+      <span class="green">Probability density:</span><br>
+      |ψ(x,t)|²<br><br>
+
+      <span class="blue">Time evolution:</span><br>
+      each momentum component moves differently
+    </div>
+
+    <div class="result-box">
+      As time increases:<br><br>
+
+      <span class="green">Δx increases</span><br>
+      the packet spreads out<br><br>
+
+      <span class="blue">Peak height decreases</span><br>
+      probability is conserved<br><br>
+
+      <span class="red">Uncertainty principle:</span><br>
+      ΔxΔp ≥ ℏ / 2
+    </div>
+
+    <div class="graph-area">
+      <div class="y-label">|ψ|²</div>
+      <canvas id="waveCanvas" width="520" height="320"></canvas>
+      <div class="x-label">x</div>
+    </div>
+
+    <div class="time-box">
+      Time: <span class="blue" id="timeValue">0.00</span>
+      &nbsp;&nbsp; Width Δx: <span class="green" id="widthValue">1.00</span>
+      <div class="bar">
+        <div class="bar-fill" id="barFill"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="info-box">
+    The curve shows <span class="green">|ψ(x,t)|²</span>, the probability density of the wave packet.
+    At first, the packet is narrow and localized. As time passes, it becomes wider and the peak becomes lower.
+    This happens because the packet contains many momentum components. Different components move with different speeds,
+    which illustrates the <span class="red">uncertainty principle</span>.
+  </div>
+
+  <script>
+    const canvas = document.getElementById("waveCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const timeValue = document.getElementById("timeValue");
+    const widthValue = document.getElementById("widthValue");
+    const barFill = document.getElementById("barFill");
+
+    let time = 0;
+    let running = true;
+    let animationId;
+
+    function drawWavePacket() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const W = canvas.width;
+      const H = canvas.height;
+
+      const centerX = W / 2;
+
+      const sigma = 35 + time * 10;
+      const amplitude = 160 * (35 / sigma);
+
+      ctx.beginPath();
+      ctx.strokeStyle = "#334155";
+      ctx.lineWidth = 1;
+
+      for (let i = 0; i <= 10; i++) {
+        const x = (W / 10) * i;
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, H);
+      }
+
+      for (let i = 0; i <= 6; i++) {
+        const y = (H / 6) * i;
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+      }
+
+      ctx.stroke();
+
+      ctx.beginPath();
+
+      for (let x = 0; x <= W; x++) {
+        const dx = x - centerX;
+        const probability = Math.exp(-(dx * dx) / (2 * sigma * sigma));
+        const y = H - 20 - probability * amplitude;
+
+        if (x === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+
+      ctx.strokeStyle = "#22c55e";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      ctx.lineTo(W, H - 20);
+      ctx.lineTo(0, H - 20);
+      ctx.closePath();
+
+      ctx.fillStyle = "rgba(56, 189, 248, 0.25)";
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(centerX, H - 20 - amplitude, 7, 0, Math.PI * 2);
+      ctx.fillStyle = "#38bdf8";
+      ctx.shadowColor = "#38bdf8";
+      ctx.shadowBlur = 18;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      timeValue.textContent = time.toFixed(2);
+      widthValue.textContent = (sigma / 35).toFixed(2);
+      barFill.style.width = Math.min((sigma / 120) * 100, 100) + "%";
+    }
+
+    function animate() {
+      if (running) {
+        time += 0.015;
+
+        if (time > 8) {
+          time = 0;
+        }
+
+        drawWavePacket();
+      }
+
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function startAnimation() {
+      running = true;
+    }
+
+    function stopAnimation() {
+      running = false;
+    }
+
+    function resetAnimation() {
+      time = 0;
+      drawWavePacket();
+    }
+
+    drawWavePacket();
+    animate();
+  </script>
+</body>
+</html>
