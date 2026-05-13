@@ -2,41 +2,43 @@
 
 ## Given
 
-The Schwarzschild radius is:
+The Schwarzschild radius formula is:
 
-$$
-r_s = \frac{2GM}{c^2}
-$$
+<div align="center" style="font-size:24px;">
+
+**rₛ = 2GM / c²**
+
+</div>
 
 where:
 
-$$
-G = 6.67 \times 10^{-11} \text{ N·m}^2/\text{kg}^2
-$$
+<div align="center" style="font-size:22px;">
 
-$$
-c = 3.00 \times 10^8 \text{ m/s}
-$$
+**G = 6.67 × 10⁻¹¹ N·m²/kg²**
+
+</div>
+
+<div align="center" style="font-size:22px;">
+
+**c = 3.00 × 10⁸ m/s**
+
+</div>
 
 Mass of the Sun:
 
-$$
-M_{\text{Sun}} = 1.99 \times 10^{30} \text{ kg}
-$$
+<div align="center" style="font-size:22px;">
+
+**M_Sun = 1.99 × 10³⁰ kg**
+
+</div>
 
 Mass of the Earth:
 
-$$
-M_{\text{Earth}} = 5.97 \times 10^{24} \text{ kg}
-$$
+<div align="center" style="font-size:22px;">
 
-Find:
+**M_Earth = 5.97 × 10²⁴ kg**
 
-1. Schwarzschild radius for the Sun  
-2. Schwarzschild radius for the Earth  
-3. Redshift at \( r = 1.5r_s \)  
-4. What happens as \( r \to r_s \)  
-5. Interpretation of the event horizon  
+</div>
 
 ---
 
@@ -44,50 +46,59 @@ Find:
 
 ## 1. Schwarzschild Radius of the Sun
 
-Use the formula:
+Use:
 
-$$
-r_s = \frac{2GM}{c^2}
-$$
+<div align="center" style="font-size:24px;">
+
+**rₛ = 2GM / c²**
+
+</div>
 
 Substitute the values:
 
-$$
-r_s =
-\frac{2(6.67 \times 10^{-11})(1.99 \times 10^{30})}
-{(3.00 \times 10^8)^2}
-$$
+<div align="center" style="font-size:24px;">
 
-Calculate the denominator:
+**rₛ = 2(6.67 × 10⁻¹¹)(1.99 × 10³⁰) / (3.00 × 10⁸)²**
 
-$$
-(3.00 \times 10^8)^2 = 9.00 \times 10^{16}
-$$
+</div>
 
 Calculate the numerator:
 
-$$
-2(6.67 \times 10^{-11})(1.99 \times 10^{30})
-\approx 2.65 \times 10^{20}
-$$
+<div align="center" style="font-size:24px;">
+
+**2(6.67 × 10⁻¹¹)(1.99 × 10³⁰) ≈ 2.65 × 10²⁰**
+
+</div>
+
+Calculate the denominator:
+
+<div align="center" style="font-size:24px;">
+
+**(3.00 × 10⁸)² = 9.00 × 10¹⁶**
+
+</div>
+
+Now divide:
+
+<div align="center" style="font-size:24px;">
+
+**rₛ = (2.65 × 10²⁰) / (9.00 × 10¹⁶)**
+
+</div>
+
+<div align="center" style="font-size:24px;">
+
+**rₛ ≈ 2.95 × 10³ m**
+
+</div>
 
 Therefore:
 
-$$
-r_s =
-\frac{2.65 \times 10^{20}}
-{9.00 \times 10^{16}}
-$$
+<div align="center" style="font-size:26px;">
 
-$$
-r_s \approx 2.95 \times 10^3 \text{ m}
-$$
+**rₛ ≈ 2.95 km**
 
-So:
-
-$$
-r_s \approx 2.95 \text{ km}
-$$
+</div>
 
 ---
 
@@ -95,245 +106,260 @@ $$
 
 Use:
 
-$$
-r_s = \frac{2GM}{c^2}
-$$
+<div align="center" style="font-size:24px;">
 
-Substitute the Earth’s mass:
+**rₛ = 2GM / c²**
 
-$$
-r_s =
-\frac{2(6.67 \times 10^{-11})(5.97 \times 10^{24})}
-{(3.00 \times 10^8)^2}
-$$
+</div>
 
-Numerator:
+Substitute the values:
 
-$$
-2(6.67 \times 10^{-11})(5.97 \times 10^{24})
-\approx 7.96 \times 10^{14}
-$$
+<div align="center" style="font-size:24px;">
 
-Denominator:
+**rₛ = 2(6.67 × 10⁻¹¹)(5.97 × 10²⁴) / (3.00 × 10⁸)²**
 
-$$
-(3.00 \times 10^8)^2 = 9.00 \times 10^{16}
-$$
+</div>
+
+Calculate the numerator:
+
+<div align="center" style="font-size:24px;">
+
+**2(6.67 × 10⁻¹¹)(5.97 × 10²⁴) ≈ 7.96 × 10¹⁴**
+
+</div>
+
+Calculate the denominator:
+
+<div align="center" style="font-size:24px;">
+
+**(3.00 × 10⁸)² = 9.00 × 10¹⁶**
+
+</div>
+
+Now divide:
+
+<div align="center" style="font-size:24px;">
+
+**rₛ = (7.96 × 10¹⁴) / (9.00 × 10¹⁶)**
+
+</div>
+
+<div align="center" style="font-size:24px;">
+
+**rₛ ≈ 8.84 × 10⁻³ m**
+
+</div>
 
 Therefore:
 
-$$
-r_s =
-\frac{7.96 \times 10^{14}}
-{9.00 \times 10^{16}}
-$$
+<div align="center" style="font-size:26px;">
 
-$$
-r_s \approx 8.84 \times 10^{-3} \text{ m}
-$$
+**rₛ ≈ 8.84 mm**
 
-So:
-
-$$
-r_s \approx 8.84 \text{ mm}
-$$
+</div>
 
 ---
 
-## 3. Redshift at \( r = 1.5r_s \)
+## 3. Redshift at r = 1.5rₛ
 
-The gravitational redshift factor near a Schwarzschild black hole is:
+The gravitational redshift is:
 
-$$
-\frac{f_{\infty}}{f_r}
-=
-\sqrt{1 - \frac{r_s}{r}}
-$$
+<div align="center" style="font-size:24px;">
 
-The redshift \(z\) is:
+**z = 1 / √(1 − rₛ/r) − 1**
 
-$$
-z =
-\frac{1}
-{\sqrt{1 - \frac{r_s}{r}}}
-- 1
-$$
+</div>
 
 Given:
 
-$$
-r = 1.5r_s
-$$
+<div align="center" style="font-size:24px;">
+
+**r = 1.5rₛ**
+
+</div>
 
 Substitute:
 
-$$
-z =
-\frac{1}
-{\sqrt{1 - \frac{r_s}{1.5r_s}}}
-- 1
-$$
+<div align="center" style="font-size:24px;">
 
-Cancel \(r_s\):
+**z = 1 / √(1 − rₛ/(1.5rₛ)) − 1**
 
-$$
-z =
-\frac{1}
-{\sqrt{1 - \frac{1}{1.5}}}
-- 1
-$$
+</div>
+
+Cancel rₛ:
+
+<div align="center" style="font-size:24px;">
+
+**z = 1 / √(1 − 1/1.5) − 1**
+
+</div>
 
 Since:
 
-$$
-\frac{1}{1.5} = \frac{2}{3}
-$$
+<div align="center" style="font-size:24px;">
+
+**1/1.5 = 2/3**
+
+</div>
 
 then:
 
-$$
-z =
-\frac{1}
-{\sqrt{1 - \frac{2}{3}}}
-- 1
-$$
+<div align="center" style="font-size:24px;">
 
-$$
-z =
-\frac{1}
-{\sqrt{\frac{1}{3}}}
-- 1
-$$
+**z = 1 / √(1 − 2/3) − 1**
 
-$$
-z = \sqrt{3} - 1
-$$
+</div>
 
-$$
-z \approx 0.732
-$$
+<div align="center" style="font-size:24px;">
 
-So the redshift is:
+**z = 1 / √(1/3) − 1**
 
-$$
-z \approx 0.732
-$$
+</div>
 
-or about:
+<div align="center" style="font-size:24px;">
 
-$$
-73.2\%
-$$
+**z = √3 − 1**
+
+</div>
+
+<div align="center" style="font-size:26px;">
+
+**z ≈ 0.732**
+
+</div>
+
+So the redshift is approximately:
+
+<div align="center" style="font-size:26px;">
+
+**73.2%**
+
+</div>
 
 ---
 
-## 4. What Happens as \( r \to r_s \)?
+## 4. What Happens as r → rₛ?
 
-The redshift formula is:
+The redshift is:
 
-$$
-z =
-\frac{1}
-{\sqrt{1 - \frac{r_s}{r}}}
-- 1
-$$
+<div align="center" style="font-size:24px;">
+
+**z = 1 / √(1 − rₛ/r) − 1**
+
+</div>
 
 As:
 
-$$
-r \to r_s
-$$
+<div align="center" style="font-size:24px;">
+
+**r → rₛ**
+
+</div>
 
 then:
 
-$$
-\frac{r_s}{r} \to 1
-$$
+<div align="center" style="font-size:24px;">
 
-So:
+**rₛ/r → 1**
 
-$$
-1 - \frac{r_s}{r} \to 0
-$$
+</div>
 
 Therefore:
 
-$$
-z \to \infty
-$$
+<div align="center" style="font-size:24px;">
 
-This means light emitted near the Schwarzschild radius becomes infinitely redshifted for a distant observer.
+**1 − rₛ/r → 0**
+
+</div>
+
+So:
+
+<div align="center" style="font-size:26px;">
+
+**z → ∞**
+
+</div>
+
+This means light becomes infinitely redshifted for a distant observer.
 
 ---
 
 ## 5. Interpretation of the Event Horizon
 
-The surface:
+The radius:
 
-$$
-r = r_s
-$$
+<div align="center" style="font-size:24px;">
+
+**r = rₛ**
+
+</div>
 
 is called the event horizon.
 
-At this radius, the escape velocity becomes equal to the speed of light.
+At the event horizon, the escape velocity equals the speed of light.
 
-This means that nothing, not even light, can escape from inside the event horizon.
+This means that nothing can escape from inside this boundary, not even light.
 
-For a distant observer, light from an object approaching the event horizon becomes more and more redshifted.
-
-The object appears to slow down and fade away.
+For a distant observer, an object falling toward the event horizon appears to slow down, become redder, and fade away.
 
 ---
 
 # Conclusion
 
-The Schwarzschild radius is:
+The Schwarzschild radius formula is:
 
-$$
-r_s = \frac{2GM}{c^2}
-$$
+<div align="center" style="font-size:24px;">
+
+**rₛ = 2GM / c²**
+
+</div>
 
 For the Sun:
 
-$$
-r_s \approx 2.95 \text{ km}
-$$
+<div align="center" style="font-size:26px;">
+
+**rₛ ≈ 2.95 km**
+
+</div>
 
 For the Earth:
 
-$$
-r_s \approx 8.84 \text{ mm}
-$$
+<div align="center" style="font-size:26px;">
+
+**rₛ ≈ 8.84 mm**
+
+</div>
 
 At:
 
-$$
-r = 1.5r_s
-$$
+<div align="center" style="font-size:24px;">
+
+**r = 1.5rₛ**
+
+</div>
 
 the gravitational redshift is:
 
-$$
-z \approx 0.732
-$$
+<div align="center" style="font-size:26px;">
 
-or:
+**z ≈ 0.732 = 73.2%**
 
-$$
-73.2\%
-$$
+</div>
 
 As:
 
-$$
-r \to r_s
-$$
+<div align="center" style="font-size:24px;">
+
+**r → rₛ**
+
+</div>
 
 the redshift becomes infinite:
 
-$$
-z \to \infty
-$$
+<div align="center" style="font-size:26px;">
 
-The Schwarzschild radius represents the event horizon of a black hole. Inside this boundary, no signal or light can escape.
+**z → ∞**
+
+</div>
+
+The Schwarzschild radius is the event horizon of a black hole. Inside this radius, no light or signal can escape.
