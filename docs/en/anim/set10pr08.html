@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gravitational Redshift Animation</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#0f172a;
+    color:white;
+    font-family:Arial, sans-serif;
+}
+
+h1{
+    text-align:center;
+    margin-top:20px;
+    color:#7dd3fc;
+}
+
+.container{
+    width:92%;
+    max-width:1150px;
+    margin:30px auto;
+    background:#111827;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(125,211,252,0.3);
+}
+
+.scene{
+    position:relative;
+    height:520px;
+    background:linear-gradient(to top,#1e3a8a,#020617);
+    border-radius:15px;
+    overflow:hidden;
+    border:2px solid #334155;
+}
+
+.earth{
+    position:absolute;
+    bottom:-180px;
+    left:50%;
+    transform:translateX(-50%);
+    width:700px;
+    height:700px;
+    border-radius:50%;
+    background:radial-gradient(circle,#22c55e,#2563eb,#1e3a8a);
+    box-shadow:0 0 40px #2563eb;
+}
+
+.neutron-star{
+    position:absolute;
+    right:90px;
+    top:70px;
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    background:radial-gradient(circle,#f8fafc,#a855f7,#4c1d95);
+    box-shadow:0 0 45px #a855f7;
+}
+
+.star-label{
+    position:absolute;
+    right:55px;
+    top:200px;
+    color:#c084fc;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.photon{
+    position:absolute;
+    left:50%;
+    top:340px;
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    background:red;
+    box-shadow:0 0 25px red;
+    transform:translateX(-50%);
+    animation:photonMove 6s linear infinite;
+}
+
+@keyframes photonMove{
+
+    0%{
+        top:340px;
+        background:red;
+        box-shadow:0 0 25px red;
+    }
+
+    50%{
+        background:orange;
+        box-shadow:0 0 25px orange;
+    }
+
+    100%{
+        top:70px;
+        background:#38bdf8;
+        box-shadow:0 0 25px #38bdf8;
+    }
+}
+
+.wave{
+    position:absolute;
+    left:50%;
+    width:4px;
+    height:280px;
+    transform:translateX(-50%);
+    top:80px;
+    background:linear-gradient(to top,#38bdf8,red);
+    opacity:0.5;
+}
+
+.altitude{
+    position:absolute;
+    left:80px;
+    top:70px;
+    bottom:120px;
+    width:4px;
+    background:white;
+}
+
+.altitude::before{
+    content:"Higher gravitational potential";
+    position:absolute;
+    left:20px;
+    top:-10px;
+    width:260px;
+    color:#38bdf8;
+    font-size:18px;
+}
+
+.altitude::after{
+    content:"Stronger gravity";
+    position:absolute;
+    left:20px;
+    bottom:-10px;
+    width:220px;
+    color:#f87171;
+    font-size:18px;
+}
+
+.dashboard{
+    display:flex;
+    justify-content:space-around;
+    flex-wrap:wrap;
+    gap:20px;
+    margin-top:30px;
+}
+
+.card{
+    width:250px;
+    background:#1e293b;
+    padding:20px;
+    border-radius:12px;
+    border:1px solid #475569;
+    text-align:center;
+}
+
+.card h2{
+    color:#facc15;
+    margin-bottom:15px;
+}
+
+.value{
+    font-size:30px;
+    color:#38bdf8;
+    font-weight:bold;
+}
+
+.graph-box{
+    margin-top:30px;
+    background:#020617;
+    border-radius:14px;
+    border:2px solid #334155;
+    padding:15px;
+}
+
+canvas{
+    display:block;
+    margin:auto;
+    background:#020617;
+}
+
+.explanation{
+    margin-top:25px;
+    background:#1e293b;
+    padding:20px;
+    border-radius:12px;
+    border:1px solid #475569;
+    text-align:center;
+    font-size:22px;
+    line-height:1.7;
+}
+
+.highlight{
+    color:#86efac;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Problem 8 — Gravitational Redshift</h1>
+
+<div class="container">
+
+    <div class="scene">
+
+        <div class="earth"></div>
+
+        <div class="neutron-star"></div>
+
+        <div class="star-label">
+            Neutron Star
+        </div>
+
+        <div class="wave"></div>
+
+        <div class="photon"></div>
+
+        <div class="altitude"></div>
+
+    </div>
+
+    <div class="dashboard">
+
+        <div class="card">
+            <h2>Earth Redshift</h2>
+            <div class="value">
+                1.09 × 10⁻¹⁶
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Neutron Star Redshift</h2>
+            <div class="value">
+                0.2
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Relative Strength</h2>
+            <div class="value">
+                10¹⁵ ×
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Photon Shift</h2>
+            <div class="value">
+                Red → Blue
+            </div>
+        </div>
+
+    </div>
+
+    <div class="graph-box">
+
+        <canvas id="graph" width="950" height="450"></canvas>
+
+    </div>
+
+    <div class="explanation">
+
+        As light moves upward in a gravitational field,
+        its frequency changes because gravity affects time itself.
+
+        <br><br>
+
+        Near Earth, the effect is extremely small.
+
+        <br><br>
+
+        Near compact objects such as a
+        <span class="highlight">neutron star</span>,
+        gravitational redshift becomes enormous.
+
+    </div>
+
+</div>
+
+<script>
+
+const canvas = document.getElementById("graph");
+const ctx = canvas.getContext("2d");
+
+function drawGraph(){
+
+    const W = canvas.width;
+    const H = canvas.height;
+
+    ctx.clearRect(0,0,W,H);
+
+    const left = 90;
+    const bottom = 360;
+    const top = 50;
+    const right = 850;
+
+    ctx.strokeStyle = "#475569";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(left,top);
+    ctx.lineTo(left,bottom);
+    ctx.lineTo(right,bottom);
+    ctx.stroke();
+
+    ctx.fillStyle = "white";
+    ctx.font = "20px Arial";
+
+    ctx.fillText("Gravitational Redshift",20,30);
+    ctx.fillText("Gravity Strength",right-50,bottom+45);
+
+    const labels = [
+        "Earth",
+        "White Dwarf",
+        "Neutron Star"
+    ];
+
+    const values = [
+        0.0000000000000001,
+        0.001,
+        0.2
+    ];
+
+    const barColors = [
+        "#38bdf8",
+        "#facc15",
+        "#a855f7"
+    ];
+
+    for(let i=0;i<3;i++){
+
+        const x = left + 140 + i*220;
+
+        let height;
+
+        if(i===0){
+            height = 8;
+        }
+        else if(i===1){
+            height = 80;
+        }
+        else{
+            height = 250;
+        }
+
+        ctx.fillStyle = barColors[i];
+
+        ctx.fillRect(
+            x,
+            bottom-height,
+            90,
+            height
+        );
+
+        ctx.fillStyle = "white";
+
+        ctx.fillText(
+            labels[i],
+            x-5,
+            bottom+30
+        );
+
+        ctx.fillText(
+            "Δf/f",
+            x+15,
+            bottom-height-15
+        );
+    }
+
+    ctx.fillStyle = "#38bdf8";
+    ctx.fillText("Earth",730,90);
+
+    ctx.fillStyle = "#facc15";
+    ctx.fillText("White Dwarf",680,130);
+
+    ctx.fillStyle = "#a855f7";
+    ctx.fillText("Neutron Star",650,170);
+
+    ctx.strokeStyle = "#86efac";
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(left+185,bottom-8);
+    ctx.lineTo(left+405,bottom-80);
+    ctx.lineTo(left+625,bottom-250);
+    ctx.stroke();
+
+    ctx.fillStyle = "#86efac";
+
+    ctx.fillText(
+        "Redshift grows rapidly with gravity",
+        250,
+        420
+    );
+}
+
+drawGraph();
+
+</script>
+
+</body>
+</html>
