@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Newton Gravity Orbit Classification</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .panel {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    canvas {
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #374151;
+    }
+
+    .controls {
+      max-width: 900px;
+      margin: 10px auto 30px;
+      background: #1f2937;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .control {
+      text-align: left;
+      margin: 14px 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .value {
+      color: #93c5fd;
+      font-weight: bold;
+    }
+
+    button {
+      margin: 8px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Problem 7 — Newton's Gravity and Orbit Classification</h1>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Trajectory</h2>
+      <canvas id="orbitCanvas" width="620" height="620"></canvas>
+    </div>
+
+    <div class="panel">
+      <h2>Energy Over Time</h2>
+      <canvas id="energyCanvas" width="620" height="620"></canvas>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control">
+      <label>Initial velocity v:
+        <span id="velocityValue" class="value"></span>
+      </label>
+      <input type="range" id="velocity" min="0.45" max="1.80" step="0.01" value="0.90">
+    </div>
+
+    <div class="control">
+      <label>Gravity strength GM:
+        <span id="gmValue" class="value"></span>
+      </label>
+      <input type="range" id="gm" min="10000" max="40000" step="1000" value="22000">
+    </div>
+
+    <div class="control">
+      <label>Simulation speed:
+        <span id="speedValue" class="value"></span>
+      </label>
+      <input type="range" id="speed" min="0.2" max="2.5" step="0.1" value="1.0">
+    </div>
+
+    <button onclick="toggleAnimation()">Pause / Play</button>
+    <button onclick="resetSimulation()">Reset</button>
+    <button onclick="clearTrace()">Clear Trace</button>
+  </div>
+
+  <script>
+    const orbitCanvas = document.getElementById("orbitCanvas");
+    const orbitCtx = orbitCanvas.getContext("2d");
+
+    const energyCanvas = document.getElementById("energyCanvas");
+    const energyCtx = energyCanvas.getContext("2d");
+
+    const velocitySlider = document.getElementById("velocity");
+    const gmSlider = document.getElementById("gm");
+    const speedSlider = document.getElementById("speed");
+
+    const velocityValue = document.getElementById("velocityValue");
+    const gmValue = document.getElementById("gmValue");
+    const speedValue = document.getElementById("speedValue");
+
+    let running = true;
+
+    let x, y, vx, vy;
+    let trace = [];
+    let energyTrace = [];
+
+    const m = 1;
+    const startX = 180;
+    const startY = 0;
+    const dt = 0.08;
+
+    function values() {
+      return {
+        velocity: Number(velocitySlider.value),
+        GM: Number(gmSlider.value),
+        speed: Number(speedSlider.value)
+      };
+    }
+
+    function updateLabels() {
+      const v = values();
+      velocityValue.textContent = v.velocity.toFixed(2);
+      gmValue.textContent = v.GM;
+      speedValue.textContent = v.speed.toFixed(1);
+    }
+
+    function resetSimulation() {
+      const v = values();
+
+      x = startX;
+      y = startY;
+
+      vx = 0;
+      vy = v.velocity * Math.sqrt(v.GM / startX);
+
+      trace = [];
+      energyTrace = [];
+    }
+
+    function clearTrace() {
+      trace = [];
+      energyTrace = [];
+    }
+
+    function energy() {
+      const v = values();
+      const r = Math.sqrt(x * x + y * y);
+      const speed2 = vx * vx + vy * vy;
+
+      return 0.5 * m * speed2 - (v.GM * m) / r;
+    }
+
+    function classifyOrbit(E) {
+      const eps = 1.5;
+
+      if (E < -eps) return "Elliptical orbit, E < 0";
+      if (Math.abs(E) <= eps) return "Parabolic trajectory, E ≈ 0";
+      return "Hyperbolic trajectory, E > 0";
+    }
+
+    function acceleration(px, py) {
+      const v = values();
+      const r2 = px * px + py * py;
+      const r = Math.sqrt(r2);
+      const factor = -v.GM / (r2 * r);
+
+      return {
+        ax: factor * px,
+        ay: factor * py
+      };
+    }
+
+    function stepSimulation() {
+      const v = values();
+
+      for (let i = 0; i < v.speed; i++) {
+        const a1 = acceleration(x, y);
+
+        vx += a1.ax * dt;
+        vy += a1.ay * dt;
+
+        x += vx * dt;
+        y += vy * dt;
+
+        const E = energy();
+
+        trace.push({ x, y });
+        energyTrace.push(E);
+
+        if (trace.length > 2500) trace.shift();
+        if (energyTrace.length > 700) energyTrace.shift();
+
+        const r = Math.sqrt(x * x + y * y);
+
+        if (r > 1200 || r < 8) {
+          running = false;
+        }
+      }
+    }
+
+    function drawAxes(ctx, w, h, cx, cy) {
+      ctx.strokeStyle = "#e5e7eb";
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.moveTo(0, cy);
+      ctx.lineTo(w, cy);
+      ctx.moveTo(cx, 0);
+      ctx.lineTo(cx, h);
+      ctx.stroke();
+    }
+
+    function drawOrbit() {
+      const w = orbitCanvas.width;
+      const h = orbitCanvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      orbitCtx.clearRect(0, 0, w, h);
+      drawAxes(orbitCtx, w, h, cx, cy);
+
+      const E = energy();
+      const classification = classifyOrbit(E);
+
+      orbitCtx.fillStyle = "#111827";
+      orbitCtx.font = "15px Arial";
+      orbitCtx.fillText("Central mass", cx + 12, cy - 12);
+      orbitCtx.fillText("Energy E = " + E.toFixed(2), 20, 30);
+      orbitCtx.fillText(classification, 20, 55);
+
+      orbitCtx.fillStyle = "#f59e0b";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx, cy, 10, 0, Math.PI * 2);
+      orbitCtx.fill();
+
+      if (trace.length > 1) {
+        orbitCtx.strokeStyle = "#2563eb";
+        orbitCtx.lineWidth = 2;
+        orbitCtx.beginPath();
+
+        for (let i = 0; i < trace.length; i++) {
+          const p = trace[i];
+
+          if (i === 0) {
+            orbitCtx.moveTo(cx + p.x, cy - p.y);
+          } else {
+            orbitCtx.lineTo(cx + p.x, cy - p.y);
+          }
+        }
+
+        orbitCtx.stroke();
+      }
+
+      orbitCtx.fillStyle = "#dc2626";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx + x, cy - y, 7, 0, Math.PI * 2);
+      orbitCtx.fill();
+    }
+
+    function drawEnergyGraph() {
+      const w = energyCanvas.width;
+      const h = energyCanvas.height;
+      const margin = 60;
+
+      energyCtx.clearRect(0, 0, w, h);
+
+      energyCtx.strokeStyle = "#111827";
+      energyCtx.lineWidth = 2;
+
+      energyCtx.beginPath();
+      energyCtx.moveTo(margin, h / 2);
+      energyCtx.lineTo(w - margin, h / 2);
+      energyCtx.moveTo(margin, margin);
+      energyCtx.lineTo(margin, h - margin);
+      energyCtx.stroke();
+
+      energyCtx.fillStyle = "#111827";
+      energyCtx.font = "14px Arial";
+      energyCtx.fillText("0 energy", margin + 8, h / 2 - 8);
+      energyCtx.fillText("time", w - 90, h / 2 + 30);
+      energyCtx.fillText("E", margin - 30, margin - 15);
+
+      if (energyTrace.length > 1) {
+        let maxAbs = Math.max(...energyTrace.map(e => Math.abs(e)), 10);
+
+        energyCtx.strokeStyle = "#7c3aed";
+        energyCtx.lineWidth = 2;
+        energyCtx.beginPath();
+
+        for (let i = 0; i < energyTrace.length; i++) {
+          const px = margin + (i / 700) * (w - 2 * margin);
+          const py = h / 2 - (energyTrace[i] / maxAbs) * (h / 2 - margin - 20);
+
+          if (i === 0) {
+            energyCtx.moveTo(px, py);
+          } else {
+            energyCtx.lineTo(px, py);
+          }
+        }
+
+        energyCtx.stroke();
+      }
+
+      const E = energy();
+
+      energyCtx.fillStyle = "#111827";
+      energyCtx.font = "15px Arial";
+      energyCtx.fillText("Current E = " + E.toFixed(2), 20, 30);
+      energyCtx.fillText("E < 0: ellipse", 20, 55);
+      energyCtx.fillText("E = 0: parabola", 20, 80);
+      energyCtx.fillText("E > 0: hyperbola", 20, 105);
+    }
+
+    function animate() {
+      updateLabels();
+
+      if (running) {
+        stepSimulation();
+      }
+
+      drawOrbit();
+      drawEnergyGraph();
+
+      requestAnimationFrame(animate);
+    }
+
+    function toggleAnimation() {
+      running = !running;
+    }
+
+    velocitySlider.addEventListener("input", function () {
+      running = true;
+      resetSimulation();
+    });
+
+    gmSlider.addEventListener("input", function () {
+      running = true;
+      resetSimulation();
+    });
+
+    speedSlider.addEventListener("input", updateLabels);
+
+    resetSimulation();
+    animate();
+  </script>
+</body>
+</html>
