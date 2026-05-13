@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Comparison of Copernican and Epicycle Models</title>
+  <title>Problem 3 - Model Comparison</title>
 
   <style>
     body {
@@ -15,14 +15,13 @@
     }
 
     h1 {
-      margin: 20px 0;
-      font-size: 28px;
+      margin: 20px;
     }
 
     .container {
       display: flex;
       justify-content: center;
-      gap: 30px;
+      gap: 25px;
       flex-wrap: wrap;
       padding: 20px;
     }
@@ -35,26 +34,21 @@
 
     canvas {
       background: white;
-      border-radius: 10px;
+      border-radius: 8px;
       border: 2px solid #374151;
     }
 
     .controls {
       max-width: 850px;
       margin: 10px auto 30px;
-      background: #1f2937;
       padding: 20px;
+      background: #1f2937;
       border-radius: 12px;
     }
 
     .control {
-      margin: 14px 0;
       text-align: left;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
+      margin: 14px 0;
     }
 
     input[type="range"] {
@@ -73,8 +67,8 @@
       border-radius: 8px;
       background: #2563eb;
       color: white;
-      font-size: 15px;
       cursor: pointer;
+      font-size: 15px;
     }
 
     button:hover {
@@ -84,16 +78,16 @@
 </head>
 
 <body>
-  <h1>Comparison: Heliocentric Model and Epicycle Model</h1>
+  <h1>Problem 3 - Comparison of Heliocentric and Epicycle Models</h1>
 
   <div class="container">
     <div class="panel">
       <h2>Trajectory Comparison</h2>
-      <canvas id="mainCanvas" width="560" height="560"></canvas>
+      <canvas id="orbitCanvas" width="560" height="560"></canvas>
     </div>
 
     <div class="panel">
-      <h2>Model Error</h2>
+      <h2>Error Graph</h2>
       <canvas id="errorCanvas" width="560" height="560"></canvas>
     </div>
   </div>
@@ -101,22 +95,22 @@
   <div class="controls">
     <div class="control">
       <label>Mars radius RM: <span id="RMValue" class="value"></span></label>
-      <input type="range" id="RM" min="80" max="220" value="170" />
+      <input type="range" id="RM" min="80" max="220" value="170">
     </div>
 
     <div class="control">
       <label>Earth radius RZ: <span id="RZValue" class="value"></span></label>
-      <input type="range" id="RZ" min="40" max="160" value="100" />
+      <input type="range" id="RZ" min="40" max="160" value="100">
     </div>
 
     <div class="control">
       <label>Mars angular velocity ωM: <span id="omegaMValue" class="value"></span></label>
-      <input type="range" id="omegaM" min="0.2" max="3" step="0.1" value="1.1" />
+      <input type="range" id="omegaM" min="0.2" max="3" step="0.1" value="1.1">
     </div>
 
     <div class="control">
       <label>Earth angular velocity ωZ: <span id="omegaZValue" class="value"></span></label>
-      <input type="range" id="omegaZ" min="0.2" max="4" step="0.1" value="2.0" />
+      <input type="range" id="omegaZ" min="0.2" max="4" step="0.1" value="2.0">
     </div>
 
     <button onclick="toggleAnimation()">Pause / Play</button>
@@ -125,16 +119,16 @@
   </div>
 
   <script>
-    const mainCanvas = document.getElementById("mainCanvas");
-    const mainCtx = mainCanvas.getContext("2d");
+    const orbitCanvas = document.getElementById("orbitCanvas");
+    const orbitCtx = orbitCanvas.getContext("2d");
 
     const errorCanvas = document.getElementById("errorCanvas");
     const errorCtx = errorCanvas.getContext("2d");
 
-    const RMSlider = document.getElementById("RM");
-    const RZSlider = document.getElementById("RZ");
-    const omegaMSlider = document.getElementById("omegaM");
-    const omegaZSlider = document.getElementById("omegaZ");
+    const RM = document.getElementById("RM");
+    const RZ = document.getElementById("RZ");
+    const omegaM = document.getElementById("omegaM");
+    const omegaZ = document.getElementById("omegaZ");
 
     const RMValue = document.getElementById("RMValue");
     const RZValue = document.getElementById("RZValue");
@@ -144,146 +138,138 @@
     let t = 0;
     let running = true;
 
-    let heliocentricRelativeTrace = [];
-    let epicycleTrace = [];
+    let helioTrace = [];
+    let epiTrace = [];
     let errorTrace = [];
 
-    function getValues() {
+    function values() {
       return {
-        RM: Number(RMSlider.value),
-        RZ: Number(RZSlider.value),
-        omegaM: Number(omegaMSlider.value),
-        omegaZ: Number(omegaZSlider.value)
+        RM: Number(RM.value),
+        RZ: Number(RZ.value),
+        omegaM: Number(omegaM.value),
+        omegaZ: Number(omegaZ.value)
       };
     }
 
     function updateLabels() {
-      const v = getValues();
-
+      const v = values();
       RMValue.textContent = v.RM;
       RZValue.textContent = v.RZ;
       omegaMValue.textContent = v.omegaM;
       omegaZValue.textContent = v.omegaZ;
     }
 
-    function heliocentricRelativePosition(time) {
-      const { RM, RZ, omegaM, omegaZ } = getValues();
+    function heliocentricRelative(time) {
+      const v = values();
 
       return {
-        x: RM * Math.cos(omegaM * time) - RZ * Math.cos(omegaZ * time),
-        y: RM * Math.sin(omegaM * time) - RZ * Math.sin(omegaZ * time)
+        x: v.RM * Math.cos(v.omegaM * time) - v.RZ * Math.cos(v.omegaZ * time),
+        y: v.RM * Math.sin(v.omegaM * time) - v.RZ * Math.sin(v.omegaZ * time)
       };
     }
 
-    function epicyclePosition(time) {
-      const { RM, RZ, omegaM, omegaZ } = getValues();
+    function epicycleModel(time) {
+      const v = values();
 
       return {
-        x: RM * Math.cos(omegaM * time) + RZ * Math.cos(omegaZ * time + Math.PI),
-        y: RM * Math.sin(omegaM * time) + RZ * Math.sin(omegaZ * time + Math.PI)
+        x: v.RM * Math.cos(v.omegaM * time) + v.RZ * Math.cos(v.omegaZ * time + Math.PI),
+        y: v.RM * Math.sin(v.omegaM * time) + v.RZ * Math.sin(v.omegaZ * time + Math.PI)
       };
     }
 
-    function drawAxes(ctx, width, height, cx, cy) {
+    function drawAxes(ctx, w, h, cx, cy) {
       ctx.strokeStyle = "#e5e7eb";
       ctx.lineWidth = 1;
 
       ctx.beginPath();
-      ctx.moveTo(cx, 0);
-      ctx.lineTo(cx, height);
       ctx.moveTo(0, cy);
-      ctx.lineTo(width, cy);
+      ctx.lineTo(w, cy);
+      ctx.moveTo(cx, 0);
+      ctx.lineTo(cx, h);
       ctx.stroke();
 
       ctx.fillStyle = "#111827";
       ctx.font = "13px Arial";
       ctx.fillText("0", cx + 5, cy + 15);
+      ctx.fillText("x", w - 20, cy - 8);
+      ctx.fillText("y", cx + 8, 20);
     }
 
-    function drawMainGraph() {
-      const width = mainCanvas.width;
-      const height = mainCanvas.height;
-      const cx = width / 2;
-      const cy = height / 2;
+    function drawTrajectory() {
+      const w = orbitCanvas.width;
+      const h = orbitCanvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
 
-      mainCtx.clearRect(0, 0, width, height);
-      drawAxes(mainCtx, width, height, cx, cy);
+      orbitCtx.clearRect(0, 0, w, h);
+      drawAxes(orbitCtx, w, h, cx, cy);
 
-      if (heliocentricRelativeTrace.length > 1) {
-        mainCtx.strokeStyle = "#2563eb";
-        mainCtx.lineWidth = 3;
-        mainCtx.beginPath();
+      orbitCtx.fillStyle = "#111827";
+      orbitCtx.font = "14px Arial";
+      orbitCtx.fillText("Blue = heliocentric relative model", 15, 25);
+      orbitCtx.fillText("Red dashed = fitted epicycle model", 15, 45);
 
-        for (let i = 0; i < heliocentricRelativeTrace.length; i++) {
-          const p = heliocentricRelativeTrace[i];
-          const px = cx + p.x;
-          const py = cy - p.y;
+      drawPath(orbitCtx, helioTrace, cx, cy, "#2563eb", 3, false);
+      drawPath(orbitCtx, epiTrace, cx, cy, "#dc2626", 2, true);
 
-          if (i === 0) mainCtx.moveTo(px, py);
-          else mainCtx.lineTo(px, py);
-        }
+      const hpos = heliocentricRelative(t);
+      const epos = epicycleModel(t);
 
-        mainCtx.stroke();
+      orbitCtx.fillStyle = "#2563eb";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx + hpos.x, cy - hpos.y, 7, 0, Math.PI * 2);
+      orbitCtx.fill();
+
+      orbitCtx.fillStyle = "#dc2626";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx + epos.x, cy - epos.y, 5, 0, Math.PI * 2);
+      orbitCtx.fill();
+    }
+
+    function drawPath(ctx, data, cx, cy, color, width, dashed) {
+      if (data.length < 2) return;
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.setLineDash(dashed ? [8, 6] : []);
+
+      ctx.beginPath();
+
+      for (let i = 0; i < data.length; i++) {
+        const px = cx + data[i].x;
+        const py = cy - data[i].y;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
       }
 
-      if (epicycleTrace.length > 1) {
-        mainCtx.strokeStyle = "#dc2626";
-        mainCtx.lineWidth = 1.5;
-        mainCtx.beginPath();
-
-        for (let i = 0; i < epicycleTrace.length; i++) {
-          const p = epicycleTrace[i];
-          const px = cx + p.x;
-          const py = cy - p.y;
-
-          if (i === 0) mainCtx.moveTo(px, py);
-          else mainCtx.lineTo(px, py);
-        }
-
-        mainCtx.stroke();
-      }
-
-      const h = heliocentricRelativePosition(t);
-      const e = epicyclePosition(t);
-
-      mainCtx.fillStyle = "#2563eb";
-      mainCtx.beginPath();
-      mainCtx.arc(cx + h.x, cy - h.y, 7, 0, Math.PI * 2);
-      mainCtx.fill();
-
-      mainCtx.fillStyle = "#dc2626";
-      mainCtx.beginPath();
-      mainCtx.arc(cx + e.x, cy - e.y, 5, 0, Math.PI * 2);
-      mainCtx.fill();
-
-      mainCtx.fillStyle = "#111827";
-      mainCtx.font = "14px Arial";
-      mainCtx.fillText("Blue: heliocentric relative model", 15, 25);
-      mainCtx.fillText("Red: fitted epicycle model", 15, 45);
+      ctx.stroke();
+      ctx.setLineDash([]);
     }
 
     function drawErrorGraph() {
-      const width = errorCanvas.width;
-      const height = errorCanvas.height;
-      const margin = 45;
+      const w = errorCanvas.width;
+      const h = errorCanvas.height;
+      const margin = 55;
 
-      errorCtx.clearRect(0, 0, width, height);
+      errorCtx.clearRect(0, 0, w, h);
 
       errorCtx.strokeStyle = "#e5e7eb";
       errorCtx.lineWidth = 1;
 
       errorCtx.beginPath();
-      errorCtx.moveTo(margin, height / 2);
-      errorCtx.lineTo(width - margin, height / 2);
+      errorCtx.moveTo(margin, h - margin);
+      errorCtx.lineTo(w - margin, h - margin);
       errorCtx.moveTo(margin, margin);
-      errorCtx.lineTo(margin, height - margin);
+      errorCtx.lineTo(margin, h - margin);
       errorCtx.stroke();
 
       errorCtx.fillStyle = "#111827";
       errorCtx.font = "14px Arial";
-      errorCtx.fillText("time", width - 80, height / 2 - 10);
-      errorCtx.fillText("error", margin + 10, margin - 15);
-      errorCtx.fillText("0", margin - 20, height / 2 + 5);
+      errorCtx.fillText("time", w - 90, h - margin + 30);
+      errorCtx.fillText("error", margin - 35, margin - 15);
+      errorCtx.fillText("0", margin - 22, h - margin + 5);
+      errorCtx.fillText("10", margin - 28, h - margin - 100);
 
       if (errorTrace.length > 1) {
         errorCtx.strokeStyle = "#7c3aed";
@@ -291,19 +277,22 @@
         errorCtx.beginPath();
 
         for (let i = 0; i < errorTrace.length; i++) {
-          const px = margin + (i / 500) * (width - 2 * margin);
-          const py = height / 2 - errorTrace[i] * 20;
+          const x = margin + (i / 500) * (w - 2 * margin);
+          const y = h - margin - errorTrace[i] * 10;
 
-          if (i === 0) errorCtx.moveTo(px, py);
-          else errorCtx.lineTo(px, py);
+          if (i === 0) errorCtx.moveTo(x, y);
+          else errorCtx.lineTo(x, y);
         }
 
         errorCtx.stroke();
       }
 
+      const currentError = errorTrace.length > 0 ? errorTrace[errorTrace.length - 1] : 0;
+
       errorCtx.fillStyle = "#111827";
-      errorCtx.font = "14px Arial";
-      errorCtx.fillText("If models match, error stays near 0", 15, 25);
+      errorCtx.font = "15px Arial";
+      errorCtx.fillText("Current error: " + currentError.toFixed(6), 20, 30);
+      errorCtx.fillText("For exact fitting, error should be 0.", 20, 52);
     }
 
     function animate() {
@@ -312,31 +301,24 @@
       if (running) {
         t += 0.015;
 
-        const h = heliocentricRelativePosition(t);
-        const e = epicyclePosition(t);
+        const hpos = heliocentricRelative(t);
+        const epos = epicycleModel(t);
 
         const error = Math.sqrt(
-          Math.pow(h.x - e.x, 2) + Math.pow(h.y - e.y, 2)
+          Math.pow(hpos.x - epos.x, 2) +
+          Math.pow(hpos.y - epos.y, 2)
         );
 
-        heliocentricRelativeTrace.push(h);
-        epicycleTrace.push(e);
+        helioTrace.push(hpos);
+        epiTrace.push(epos);
         errorTrace.push(error);
 
-        if (heliocentricRelativeTrace.length > 1500) {
-          heliocentricRelativeTrace.shift();
-        }
-
-        if (epicycleTrace.length > 1500) {
-          epicycleTrace.shift();
-        }
-
-        if (errorTrace.length > 500) {
-          errorTrace.shift();
-        }
+        if (helioTrace.length > 1800) helioTrace.shift();
+        if (epiTrace.length > 1800) epiTrace.shift();
+        if (errorTrace.length > 500) errorTrace.shift();
       }
 
-      drawMainGraph();
+      drawTrajectory();
       drawErrorGraph();
 
       requestAnimationFrame(animate);
@@ -352,15 +334,15 @@
     }
 
     function clearTrace() {
-      heliocentricRelativeTrace = [];
-      epicycleTrace = [];
+      helioTrace = [];
+      epiTrace = [];
       errorTrace = [];
     }
 
-    RMSlider.addEventListener("input", clearTrace);
-    RZSlider.addEventListener("input", clearTrace);
-    omegaMSlider.addEventListener("input", clearTrace);
-    omegaZSlider.addEventListener("input", clearTrace);
+    RM.addEventListener("input", clearTrace);
+    RZ.addEventListener("input", clearTrace);
+    omegaM.addEventListener("input", clearTrace);
+    omegaZ.addEventListener("input", clearTrace);
 
     animate();
   </script>
