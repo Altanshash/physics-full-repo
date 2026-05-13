@@ -4,41 +4,39 @@
 
 Two events are given in frame S:
 
-$$
-x_1 = 0, \quad t_1 = 0
-$$
+<center>
 
-$$
-x_2 = 900 \text{ m}, \quad t_2 = 4 \text{ microseconds}
-$$
+x₁ = 0 , t₁ = 0
 
-Frame S' moves with velocity:
+</center>
 
-$$
+<br>
+
+<center>
+
+x₂ = 900 m , t₂ = 4 μs
+
+</center>
+
+<br>
+
+Frame S′ moves with velocity:
+
+<center>
+
 v = 0.6c
-$$
+
+</center>
+
+<br>
 
 Speed of light:
 
-$$
-c = 3 \times 10^8 \text{ m/s}
-$$
+<center>
 
-Lorentz transformations:
+c = 3 × 10⁸ m/s
 
-$$
-x' = \gamma (x - vt)
-$$
-
-$$
-t' = \gamma (t - vx / c^2)
-$$
-
-Spacetime interval:
-
-$$
-s^2 = c^2t^2 - x^2
-$$
+</center>
 
 ---
 
@@ -46,189 +44,321 @@ $$
 
 ## 1. Lorentz Factor
 
-$$
-\gamma = 1 / \sqrt{1 - v^2 / c^2}
-$$
+Lorentz factor formula:
 
-Since:
+<center>
 
-$$
-v = 0.6c
-$$
+γ = 1 / √(1 − v²/c²)
 
-then:
+</center>
 
-$$
-\gamma = 1 / \sqrt{1 - 0.6^2}
-$$
+<br>
 
-$$
-\gamma = 1 / \sqrt{1 - 0.36}
-$$
+Substitute the velocity:
 
-$$
-\gamma = 1 / \sqrt{0.64}
-$$
+<center>
 
-$$
-\gamma = 1 / 0.8
-$$
+γ = 1 / √(1 − 0.6²)
 
-$$
-\gamma = 1.25
-$$
+</center>
+
+<br>
+
+<center>
+
+γ = 1 / √(1 − 0.36)
+
+</center>
+
+<br>
+
+<center>
+
+γ = 1 / √0.64
+
+</center>
+
+<br>
+
+<center>
+
+γ = 1 / 0.8
+
+</center>
+
+<br>
+
+<center>
+
+γ = 1.25
+
+</center>
 
 ---
 
-## 2. Transform the Position Coordinate
+# 2. Transform the Position Coordinate
+
+Position transformation formula:
+
+<center>
+
+x′ = γ(x − vt)
+
+</center>
+
+<br>
 
 Given:
 
-$$
-x = 900 \text{ m}
-$$
+<center>
 
-$$
-t = 4 \times 10^{-6} \text{ s}
-$$
+x = 900 m
+
+</center>
+
+<br>
+
+<center>
+
+t = 4 × 10⁻⁶ s
+
+</center>
+
+<br>
 
 Velocity:
 
-$$
-v = 0.6 \times 3 \times 10^8
-$$
+<center>
 
-$$
-v = 1.8 \times 10^8 \text{ m/s}
-$$
+v = 0.6 × 3 × 10⁸
 
-First calculate:
+</center>
 
-$$
-vt = (1.8 \times 10^8)(4 \times 10^{-6})
-$$
+<br>
 
-$$
-vt = 720 \text{ m}
-$$
+<center>
 
-Now calculate:
+v = 1.8 × 10⁸ m/s
 
-$$
-x' = 1.25(900 - 720)
-$$
+</center>
 
-$$
-x' = 1.25(180)
-$$
+<br>
 
-$$
-x' = 225 \text{ m}
-$$
+First calculate vt:
 
----
+<center>
 
-## 3. Transform the Time Coordinate
+vt = (1.8 × 10⁸)(4 × 10⁻⁶)
 
-Formula:
+</center>
 
-$$
-t' = \gamma (t - vx / c^2)
-$$
+<br>
 
-First calculate:
+<center>
 
-$$
-vx = (1.8 \times 10^8)(900)
-$$
+vt = 720 m
 
-$$
-vx = 1.62 \times 10^{11}
-$$
+</center>
 
-Calculate:
-
-$$
-c^2 = (3 \times 10^8)^2
-$$
-
-$$
-c^2 = 9 \times 10^{16}
-$$
-
-Now:
-
-$$
-vx / c^2 = (1.62 \times 10^{11}) / (9 \times 10^{16})
-$$
-
-$$
-vx / c^2 = 1.8 \times 10^{-6} \text{ s}
-$$
+<br>
 
 Now substitute:
 
-$$
-t' = 1.25(4 \times 10^{-6} - 1.8 \times 10^{-6})
-$$
+<center>
 
-$$
-t' = 1.25(2.2 \times 10^{-6})
-$$
+x′ = 1.25(900 − 720)
 
-$$
-t' = 2.75 \times 10^{-6} \text{ s}
-$$
+</center>
 
-$$
-t' = 2.75 \text{ microseconds}
-$$
+<br>
+
+<center>
+
+x′ = 1.25(180)
+
+</center>
+
+<br>
+
+<center>
+
+x′ = 225 m
+
+</center>
 
 ---
 
-## 4. Can the Order of Events Change?
+# 3. Transform the Time Coordinate
 
-The first event occurs at:
+Time transformation formula:
 
-$$
-t_1' = 0
-$$
+<center>
 
-The second event occurs at:
+t′ = γ(t − vx/c²)
 
-$$
-t_2' = 2.75 \text{ microseconds}
-$$
+</center>
+
+<br>
+
+First calculate vx:
+
+<center>
+
+vx = (1.8 × 10⁸)(900)
+
+</center>
+
+<br>
+
+<center>
+
+vx = 1.62 × 10¹¹
+
+</center>
+
+<br>
+
+Calculate c²:
+
+<center>
+
+c² = (3 × 10⁸)²
+
+</center>
+
+<br>
+
+<center>
+
+c² = 9 × 10¹⁶
+
+</center>
+
+<br>
+
+Now calculate:
+
+<center>
+
+vx/c² = (1.62 × 10¹¹) / (9 × 10¹⁶)
+
+</center>
+
+<br>
+
+<center>
+
+vx/c² = 1.8 × 10⁻⁶ s
+
+</center>
+
+<br>
+
+Substitute into the formula:
+
+<center>
+
+t′ = 1.25(4 × 10⁻⁶ − 1.8 × 10⁻⁶)
+
+</center>
+
+<br>
+
+<center>
+
+t′ = 1.25(2.2 × 10⁻⁶)
+
+</center>
+
+<br>
+
+<center>
+
+t′ = 2.75 × 10⁻⁶ s
+
+</center>
+
+<br>
+
+<center>
+
+t′ = 2.75 μs
+
+</center>
+
+---
+
+# 4. Can the Order of Events Change?
+
+First event:
+
+<center>
+
+t₁′ = 0
+
+</center>
+
+<br>
+
+Second event:
+
+<center>
+
+t₂′ = 2.75 μs
+
+</center>
+
+<br>
 
 Since:
 
-$$
-t_2' > t_1'
-$$
+<center>
+
+t₂′ > t₁′
+
+</center>
+
+<br>
 
 the order of events does not change.
 
-Also:
+Now calculate:
 
-$$
-c \Delta t = (3 \times 10^8)(4 \times 10^{-6})
-$$
+<center>
 
-$$
-c \Delta t = 1200 \text{ m}
-$$
+cΔt = (3 × 10⁸)(4 × 10⁻⁶)
 
-and:
+</center>
 
-$$
-\Delta x = 900 \text{ m}
-$$
+<br>
+
+<center>
+
+cΔt = 1200 m
+
+</center>
+
+<br>
+
+Spatial separation:
+
+<center>
+
+Δx = 900 m
+
+</center>
+
+<br>
 
 Since:
 
-$$
-1200 > 900
-$$
+<center>
+
+cΔt > Δx
+
+</center>
+
+<br>
 
 the interval is timelike.
 
@@ -236,110 +366,186 @@ Therefore, the order of events cannot change in any inertial frame.
 
 ---
 
-## 5. Spacetime Interval in Frame S
+# 5. Spacetime Interval
 
-Formula:
+Spacetime interval formula:
 
-$$
-s^2 = c^2t^2 - x^2
-$$
+<center>
 
-This can be written as:
+s² = c²t² − x²
 
-$$
-s^2 = (ct)^2 - x^2
-$$
+</center>
 
-First:
+<br>
 
-$$
-ct = 1200 \text{ m}
-$$
+This can also be written as:
 
-So:
+<center>
 
-$$
-s^2 = 1200^2 - 900^2
-$$
+s² = (ct)² − x²
 
-$$
-s^2 = 1440000 - 810000
-$$
+</center>
 
-$$
-s^2 = 630000 \text{ m}^2
-$$
+<br>
+
+Calculate ct:
+
+<center>
+
+ct = (3 × 10⁸)(4 × 10⁻⁶)
+
+</center>
+
+<br>
+
+<center>
+
+ct = 1200 m
+
+</center>
+
+<br>
+
+Now calculate:
+
+<center>
+
+s² = 1200² − 900²
+
+</center>
+
+<br>
+
+<center>
+
+s² = 1,440,000 − 810,000
+
+</center>
+
+<br>
+
+<center>
+
+s² = 630,000 m²
+
+</center>
 
 ---
 
-## 6. Verify Invariance in Frame S'
+# 6. Verify Invariance
 
-In frame S':
+In frame S′:
 
-$$
-x' = 225 \text{ m}
-$$
+<center>
 
-$$
-t' = 2.75 \times 10^{-6} \text{ s}
-$$
+x′ = 225 m
 
-Calculate:
+</center>
 
-$$
-ct' = (3 \times 10^8)(2.75 \times 10^{-6})
-$$
+<br>
 
-$$
-ct' = 825 \text{ m}
-$$
+<center>
 
-Now:
+t′ = 2.75 × 10⁻⁶ s
 
-$$
-s'^2 = 825^2 - 225^2
-$$
+</center>
 
-$$
-s'^2 = 680625 - 50625
-$$
+<br>
 
-$$
-s'^2 = 630000 \text{ m}^2
-$$
+Calculate ct′:
 
-So:
+<center>
 
-$$
-s'^2 = s^2
-$$
+ct′ = (3 × 10⁸)(2.75 × 10⁻⁶)
+
+</center>
+
+<br>
+
+<center>
+
+ct′ = 825 m
+
+</center>
+
+<br>
+
+Now calculate:
+
+<center>
+
+s′² = 825² − 225²
+
+</center>
+
+<br>
+
+<center>
+
+s′² = 680,625 − 50,625
+
+</center>
+
+<br>
+
+<center>
+
+s′² = 630,000 m²
+
+</center>
+
+<br>
+
+Therefore:
+
+<center>
+
+s′² = s²
+
+</center>
 
 ---
 
 # Conclusion
 
-The transformed coordinates of the second event in frame S' are:
+The transformed coordinates of the second event in frame S′ are:
 
-$$
-x_2' = 225 \text{ m}
-$$
+<center>
 
-$$
-t_2' = 2.75 \text{ microseconds}
-$$
+x₂′ = 225 m
 
-The order of events does not change.
+</center>
+
+<br>
+
+<center>
+
+t₂′ = 2.75 μs
+
+</center>
+
+<br>
+
+The order of events does not change because the interval is timelike.
 
 The spacetime interval is:
 
-$$
-s^2 = 630000 \text{ m}^2
-$$
+<center>
+
+s² = 630,000 m²
+
+</center>
+
+<br>
 
 The interval is the same in both frames:
 
-$$
-s'^2 = s^2
-$$
+<center>
 
-Therefore, the spacetime interval is invariant under Lorentz transformation.
+s′² = s²
+
+</center>
+
+<br>
+
+Thus, the spacetime interval is invariant under Lorentz transformation.
