@@ -1,27 +1,391 @@
-<style>
-  .gamma-bar {
-    position: absolute;
-    left: 390px;
-    top: 360px;
-    width: 500px;
-    padding: 14px;
-    background: rgba(15, 23, 42, 0.92);
-    border: 1px solid #475569;
-    border-radius: 14px;
-    text-align: left;
-    font-size: 17px;
-    z-index: 15;
-    box-sizing: border-box;
-  }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Special Relativity Animation</title>
 
-  .clock-panel {
-    position: absolute;
-    left: 390px;
-    top: 470px; /* бұрын 455 еді, енді төмен түсірілді */
-    width: 500px;
-    height: 150px;
-    display: flex;
-    gap: 18px;
-    z-index: 10;
-  }
-</style>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      color: #38bdf8;
+      margin: 14px 0 5px;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .controls {
+      margin-bottom: 12px;
+    }
+
+    button {
+      padding: 10px 26px;
+      margin: 0 8px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .start { background: #22c55e; }
+    .stop { background: #ef4444; }
+    .reset { background: #38bdf8; }
+
+    .scene {
+      width: 94%;
+      height: 720px;
+      margin: auto;
+      position: relative;
+      border: 2px solid #334155;
+      border-radius: 20px;
+      background: linear-gradient(to bottom, #020617, #1e293b);
+      overflow: hidden;
+    }
+
+    .formula-box,
+    .result-box {
+      position: absolute;
+      top: 25px;
+      width: 330px;
+      padding: 18px;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid #475569;
+      border-radius: 16px;
+      font-size: 18px;
+      line-height: 1.65;
+      z-index: 20;
+    }
+
+    .formula-box { left: 25px; }
+    .result-box { right: 25px; }
+
+    .space-area {
+      position: absolute;
+      left: 390px;
+      top: 70px;
+      width: 500px;
+      height: 260px;
+      border: 1px solid #475569;
+      border-radius: 18px;
+      background: rgba(15, 23, 42, 0.35);
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    .earth {
+      position: absolute;
+      left: 25px;
+      bottom: 35px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #22c55e, #1d4ed8);
+      box-shadow: 0 0 25px #38bdf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      z-index: 5;
+    }
+
+    .rocket {
+      position: absolute;
+      left: 120px;
+      top: 95px;
+      width: 130px;
+      height: 55px;
+      background: #cbd5e1;
+      border-radius: 50px 20px 20px 50px;
+      box-shadow: 0 0 20px #38bdf8;
+      animation: rocketMove 4s linear infinite;
+      z-index: 7;
+    }
+
+    .rocket::before {
+      content: "";
+      position: absolute;
+      right: -28px;
+      top: 0;
+      border-left: 32px solid #cbd5e1;
+      border-top: 27px solid transparent;
+      border-bottom: 28px solid transparent;
+    }
+
+    .rocket::after {
+      content: "";
+      position: absolute;
+      left: -35px;
+      top: 15px;
+      border-right: 35px solid #ef4444;
+      border-top: 13px solid transparent;
+      border-bottom: 13px solid transparent;
+      filter: drop-shadow(0 0 12px #ef4444);
+      animation: flamePulse 0.35s infinite;
+    }
+
+    @keyframes flamePulse {
+      0%, 100% { opacity: 0.5; transform: scaleX(0.8); }
+      50% { opacity: 1; transform: scaleX(1.15); }
+    }
+
+    @keyframes rocketMove {
+      0% { transform: translateX(0) scaleX(1); }
+      45% { transform: translateX(185px) scaleX(0.72); }
+      55% { transform: translateX(185px) scaleX(0.72); }
+      100% { transform: translateX(0) scaleX(1); }
+    }
+
+    .light-beam {
+      position: absolute;
+      left: 105px;
+      top: 125px;
+      width: 15px;
+      height: 5px;
+      background: #facc15;
+      border-radius: 10px;
+      box-shadow: 0 0 18px #facc15;
+      animation: lightMove 2s linear infinite;
+      z-index: 6;
+    }
+
+    @keyframes lightMove {
+      0% { transform: translateX(0); opacity: 1; }
+      100% { transform: translateX(360px); opacity: 0; }
+    }
+
+    .gamma-bar {
+      position: absolute;
+      left: 390px;
+      top: 360px;
+      width: 500px;
+      padding: 16px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid #475569;
+      border-radius: 16px;
+      text-align: left;
+      font-size: 17px;
+      z-index: 15;
+      box-sizing: border-box;
+    }
+
+    .bar {
+      margin-top: 12px;
+      width: 100%;
+      height: 14px;
+      border-radius: 20px;
+      background: #334155;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      width: 67%;
+      height: 100%;
+      background: #22c55e;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.65; }
+      50% { opacity: 1; }
+    }
+
+    .clock-panel {
+      position: absolute;
+      left: 390px;
+      top: 490px;
+      width: 500px;
+      height: 170px;
+      display: flex;
+      gap: 18px;
+      z-index: 10;
+    }
+
+    .clock-box {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid #475569;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: left;
+      font-size: 18px;
+      line-height: 1.5;
+      box-sizing: border-box;
+    }
+
+    .clock {
+      width: 65px;
+      height: 65px;
+      border: 3px solid #94a3b8;
+      border-radius: 50%;
+      position: relative;
+      margin-top: 16px;
+      display: inline-block;
+    }
+
+    .hand {
+      position: absolute;
+      left: 30px;
+      bottom: 30px;
+      width: 4px;
+      height: 25px;
+      background: #38bdf8;
+      border-radius: 4px;
+      transform-origin: bottom center;
+    }
+
+    .earth-hand { animation: rotateFast 1.2s linear infinite; }
+    .rocket-hand { animation: rotateSlow 2.0s linear infinite; }
+
+    @keyframes rotateFast {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .info-box {
+      width: 90%;
+      margin: 16px auto;
+      padding: 18px;
+      border: 2px solid #334155;
+      border-radius: 18px;
+      background: #020617;
+      text-align: left;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .yellow { color: #facc15; font-weight: bold; }
+    .green { color: #22c55e; font-weight: bold; }
+    .blue { color: #38bdf8; font-weight: bold; }
+    .red { color: #ef4444; font-weight: bold; }
+
+    .paused .rocket,
+    .paused .rocket::after,
+    .paused .light-beam,
+    .paused .earth-hand,
+    .paused .rocket-hand,
+    .paused .bar-fill {
+      animation-play-state: paused;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Special Relativity</h1>
+
+  <div class="subtitle">
+    Time dilation, length contraction, and constant speed of light
+  </div>
+
+  <div class="controls">
+    <button class="start" onclick="startAnimation()">START</button>
+    <button class="stop" onclick="stopAnimation()">STOP</button>
+    <button class="reset" onclick="resetAnimation()">RESET</button>
+  </div>
+
+  <div class="scene" id="scene">
+
+    <div class="formula-box">
+      <span class="yellow">Speed of light:</span><br>
+      c = 3.0 × 10⁸ m/s<br><br>
+
+      <span class="green">Lorentz factor:</span><br>
+      γ = 1 / √(1 − v²/c²)<br><br>
+
+      <span class="blue">Time dilation:</span><br>
+      Δt = γΔt₀<br><br>
+
+      <span class="red">Length contraction:</span><br>
+      L = L₀ / γ
+    </div>
+
+    <div class="result-box">
+      Example:<br>
+      <span class="blue">v = 0.8c</span><br><br>
+
+      γ = 1 / √(1 − 0.8²)<br>
+      <span class="green">γ ≈ 1.67</span><br><br>
+
+      Moving clock runs slower.<br>
+      Moving rocket appears shorter.
+    </div>
+
+    <div class="space-area">
+      <div class="earth">Earth</div>
+      <div class="rocket"></div>
+      <div class="light-beam"></div>
+    </div>
+
+    <div class="gamma-bar">
+      Relativistic effect strength for v = 0.8c:
+      <span class="green">γ ≈ 1.67</span>
+      <div class="bar">
+        <div class="bar-fill"></div>
+      </div>
+    </div>
+
+    <div class="clock-panel">
+      <div class="clock-box">
+        <span class="yellow">Earth clock</span><br>
+        normal time
+        <br>
+        <div class="clock">
+          <div class="hand earth-hand"></div>
+        </div>
+      </div>
+
+      <div class="clock-box">
+        <span class="blue">Rocket clock</span><br>
+        slower time
+        <br>
+        <div class="clock">
+          <div class="hand rocket-hand"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="info-box">
+    In special relativity, the speed of light is constant for all observers.
+    When an object moves close to the speed of light, time dilation occurs:
+    the moving clock runs slower. At the same time, the moving object appears shorter
+    in the direction of motion. For <span class="blue">v = 0.8c</span>,
+    the Lorentz factor is <span class="green">γ ≈ 1.67</span>.
+  </div>
+
+  <script>
+    const scene = document.getElementById("scene");
+
+    function stopAnimation() {
+      scene.classList.add("paused");
+    }
+
+    function startAnimation() {
+      scene.classList.remove("paused");
+    }
+
+    function resetAnimation() {
+      scene.classList.remove("paused");
+    }
+  </script>
+</body>
+</html>
