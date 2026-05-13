@@ -16,17 +16,17 @@
 
     h1 {
       color: #38bdf8;
-      margin: 15px 0 5px;
+      margin: 14px 0 5px;
     }
 
     .subtitle {
       color: #cbd5e1;
       font-size: 18px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .controls {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     button {
@@ -40,13 +40,8 @@
       color: white;
     }
 
-    .start {
-      background: #22c55e;
-    }
-
-    .stop {
-      background: #ef4444;
-    }
+    .start { background: #22c55e; }
+    .stop { background: #ef4444; }
 
     .scene {
       width: 94%;
@@ -62,22 +57,37 @@
     .formula-box {
       position: absolute;
       left: 30px;
-      top: 30px;
-      width: 280px;
+      top: 35px;
+      width: 300px;
       padding: 18px;
       text-align: left;
       background: rgba(15, 23, 42, 0.95);
       border: 1px solid #475569;
       border-radius: 16px;
       font-size: 18px;
-      line-height: 1.7;
-      z-index: 10;
+      line-height: 1.65;
+      z-index: 20;
+    }
+
+    .result-box {
+      position: absolute;
+      right: 30px;
+      top: 35px;
+      width: 330px;
+      padding: 18px;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #475569;
+      border-radius: 16px;
+      font-size: 18px;
+      line-height: 1.65;
+      z-index: 20;
     }
 
     .lamp {
       position: absolute;
       left: 70px;
-      top: 270px;
+      top: 335px;
       width: 90px;
       height: 90px;
       background: #facc15;
@@ -88,7 +98,29 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 6;
+      z-index: 8;
+    }
+
+    .metal {
+      position: absolute;
+      left: 760px;
+      top: 250px;
+      width: 90px;
+      height: 210px;
+      background: linear-gradient(to right, #cbd5e1, #64748b);
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      z-index: 8;
+    }
+
+    .metal-label {
+      position: absolute;
+      left: 735px;
+      top: 470px;
+      width: 150px;
+      color: #cbd5e1;
+      font-size: 17px;
+      z-index: 9;
     }
 
     .photon {
@@ -100,64 +132,30 @@
       border-radius: 20px;
       box-shadow: 0 0 18px #facc15;
       animation: photonMove 3s linear infinite;
-      z-index: 5;
+      z-index: 7;
     }
 
-    .p1 {
-      top: 285px;
-      animation-delay: 0s;
-    }
-
-    .p2 {
-      top: 330px;
-      animation-delay: 0.6s;
-    }
-
-    .p3 {
-      top: 375px;
-      animation-delay: 1.2s;
-    }
+    .p1 { top: 355px; animation-delay: 0s; }
+    .p2 { top: 385px; animation-delay: 0.6s; }
+    .p3 { top: 415px; animation-delay: 1.2s; }
 
     @keyframes photonMove {
       0% {
         transform: translateX(0);
         opacity: 1;
       }
-
       85% {
         opacity: 1;
       }
-
       100% {
-        transform: translateX(720px);
+        transform: translateX(590px);
         opacity: 0;
       }
     }
 
-    .metal {
-      position: absolute;
-      right: 230px;
-      top: 220px;
-      width: 85px;
-      height: 230px;
-      background: linear-gradient(to right, #cbd5e1, #64748b);
-      border-radius: 12px;
-      border: 2px solid #e2e8f0;
-      z-index: 6;
-    }
-
-    .metal-label {
-      position: absolute;
-      right: 205px;
-      top: 462px;
-      color: #cbd5e1;
-      font-size: 17px;
-      z-index: 6;
-    }
-
     .electron {
       position: absolute;
-      right: 255px;
+      left: 855px;
       width: 23px;
       height: 23px;
       background: #38bdf8;
@@ -165,62 +163,34 @@
       box-shadow: 0 0 22px #38bdf8;
       opacity: 0;
       animation: electronEmit 3s linear infinite;
-      z-index: 8;
+      z-index: 10;
     }
 
-    .e1 {
-      top: 250px;
-      animation-delay: 2s;
-    }
-
-    .e2 {
-      top: 315px;
-      animation-delay: 2.4s;
-    }
-
-    .e3 {
-      top: 380px;
-      animation-delay: 2.8s;
-    }
+    .e1 { top: 275px; animation-delay: 2s; }
+    .e2 { top: 340px; animation-delay: 2.4s; }
+    .e3 { top: 405px; animation-delay: 2.8s; }
 
     @keyframes electronEmit {
       0% {
         transform: translateX(0);
         opacity: 0;
       }
-
       15% {
         opacity: 1;
       }
-
       100% {
-        transform: translateX(170px);
+        transform: translateX(160px);
         opacity: 0;
       }
     }
 
-    .result-box {
-      position: absolute;
-      right: 30px;
-      top: 40px;
-      width: 330px;
-      padding: 18px;
-      text-align: left;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid #475569;
-      border-radius: 16px;
-      font-size: 18px;
-      line-height: 1.65;
-      z-index: 10;
-    }
-
     .frequency-area {
       position: absolute;
-      left: 70px;
-      bottom: 40px;
+      left: 60px;
+      bottom: 32px;
       width: 520px;
       text-align: left;
-      z-index: 10;
+      z-index: 20;
     }
 
     .threshold-text {
@@ -245,13 +215,8 @@
     }
 
     @keyframes pulseFill {
-      0%, 100% {
-        opacity: 0.65;
-      }
-
-      50% {
-        opacity: 1;
-      }
+      0%, 100% { opacity: 0.65; }
+      50% { opacity: 1; }
     }
 
     .info-box {
@@ -298,18 +263,18 @@
       W = 3.2 eV<br><br>
 
       <span class="green">Threshold frequency:</span><br>
-      f₀ = W / h<br><br>
+      f<sub>0</sub> = W / h<br><br>
 
       <span class="blue">Kinetic energy:</span><br>
-      Kmax = hf − W
+      K<sub>max</sub> = hf − W
     </div>
 
     <div class="result-box">
-      Since <span class="green">f = 1.5f₀</span>:<br><br>
+      Since <span class="green">f = 1.5f<sub>0</sub></span>:<br><br>
 
       Photon energy is greater than the work function.<br><br>
 
-      <span class="blue">Kmax = 1.6 eV</span><br>
+      <span class="blue">K<sub>max</sub> = 1.6 eV</span><br>
       <span class="red">Stopping potential = 1.6 V</span>
     </div>
 
@@ -328,7 +293,7 @@
 
     <div class="frequency-area">
       <div class="threshold-text">
-        frequency: f = 1.5f₀ → electrons are emitted
+        frequency: f = 1.5f<sub>0</sub> → electrons are emitted
       </div>
       <div class="threshold-line">
         <div class="frequency-fill"></div>
@@ -340,7 +305,7 @@
   <div class="info-box">
     Yellow particles represent <span class="yellow">photons</span>.
     They strike the metal surface. If the light frequency is greater than the
-    <span class="green">threshold frequency f₀</span>, electrons are emitted.
+    <span class="green">threshold frequency f<sub>0</sub></span>, electrons are emitted.
     Increasing intensity sends more photons, so more electrons are emitted,
     but the <span class="blue">maximum kinetic energy</span> depends only on frequency,
     not intensity.
