@@ -6,8 +6,8 @@
 
 The motion of a planet is represented as the sum of two circular motions:
 
-1. Motion along the deferent (main circle)
-2. Motion along the epicycle
+1. Motion along the deferent, which is the main circle.
+2. Motion along the epicycle.
 
 The parametric equations are:
 
@@ -21,11 +21,11 @@ $$
 
 Where:
 
-- \(R\) — radius of the deferent
-- \(r\) — radius of the epicycle
-- \(\omega\) — angular velocity of the deferent
-- \(\Omega\) — angular velocity of the epicycle
-- \(t\) — time
+- $R$ is the radius of the deferent.
+- $r$ is the radius of the epicycle.
+- $\omega$ is the angular velocity of the deferent.
+- $\Omega$ is the angular velocity of the epicycle.
+- $t$ is time.
 
 ---
 
@@ -33,19 +33,36 @@ Where:
 
 ## 1. Parametric Equations of the Trajectory
 
-The position vector of the planet is the sum of the deferent motion and epicycle motion:
+The position of the planet is the sum of the deferent motion and the epicycle motion.
+
+For the deferent:
 
 $$
-\vec{r}(t)=
-\begin{pmatrix}
-R\cos(\omega t) \\
-R\sin(\omega t)
-\end{pmatrix}
-+
-\begin{pmatrix}
-r\cos(\Omega t) \\
-r\sin(\Omega t)
-\end{pmatrix}
+x_1(t)=R\cos(\omega t)
+$$
+
+$$
+y_1(t)=R\sin(\omega t)
+$$
+
+For the epicycle:
+
+$$
+x_2(t)=r\cos(\Omega t)
+$$
+
+$$
+y_2(t)=r\sin(\Omega t)
+$$
+
+Adding these two motions gives:
+
+$$
+x(t)=x_1(t)+x_2(t)
+$$
+
+$$
+y(t)=y_1(t)+y_2(t)
 $$
 
 Therefore:
@@ -58,65 +75,74 @@ $$
 y(t)=R\sin(\omega t)+r\sin(\Omega t)
 $$
 
-These equations describe the complete trajectory of the planet.
+These equations describe the trajectory of the planet.
 
 ---
 
-## 2. Angular Projection
+## 2. Ecliptic Longitude
 
-The ecliptic longitude of the planet is:
+The ecliptic longitude is the angle of the planet measured from the origin.
+
+It is given by:
 
 $$
-\varphi(t)=\operatorname{atan2}(y(t),x(t))
+\varphi(t)=\arctan\left(\frac{y(t)}{x(t)}\right)
 $$
 
-Substituting the parametric equations:
+Substituting $x(t)$ and $y(t)$:
 
 $$
 \varphi(t)=
-\operatorname{atan2}
-\left(
-R\sin(\omega t)+r\sin(\Omega t),
+\arctan\left(
+\frac{
+R\sin(\omega t)+r\sin(\Omega t)
+}{
 R\cos(\omega t)+r\cos(\Omega t)
+}
 \right)
 $$
+
+This function describes the angular position of the planet as seen from the origin.
 
 ---
 
 ## 3. Condition for Retrograde Motion
 
-Retrograde motion occurs when the angular velocity changes direction:
+Retrograde motion occurs when the apparent angular motion becomes negative.
+
+Therefore, the condition is:
 
 $$
 \frac{d\varphi}{dt}<0
 $$
 
-For a parametric curve:
+For a parametric curve, the angular velocity is:
 
 $$
 \frac{d\varphi}{dt}
 =
-\frac{x\dot{y}-y\dot{x}}{x^2+y^2}
+\frac{x(t)y'(t)-y(t)x'(t)}
+{x^2(t)+y^2(t)}
 $$
 
-First, compute the derivatives:
+Now find the derivatives:
 
 $$
-\dot{x}(t)
+x'(t)
 =
 -R\omega\sin(\omega t)-r\Omega\sin(\Omega t)
 $$
 
 $$
-\dot{y}(t)
+y'(t)
 =
 R\omega\cos(\omega t)+r\Omega\cos(\Omega t)
 $$
 
-Retrograde motion occurs when:
+Since the denominator $x^2(t)+y^2(t)$ is positive, retrograde motion occurs when:
 
 $$
-x\dot{y}-y\dot{x}<0
+x(t)y'(t)-y(t)x'(t)<0
 $$
 
 After simplification:
@@ -139,21 +165,21 @@ $$
 
 ---
 
-## 4. Moments of Direction Change
+## 4. Moments of Change in Direction
 
-The direction changes when:
+The direction of motion changes when the angular velocity becomes zero:
 
 $$
 \frac{d\varphi}{dt}=0
 $$
 
-Since \(x^2+y^2>0\), we solve:
+This gives:
 
 $$
-x\dot{y}-y\dot{x}=0
+x(t)y'(t)-y(t)x'(t)=0
 $$
 
-Therefore:
+So:
 
 $$
 R^2\omega+r^2\Omega
@@ -162,7 +188,7 @@ Rr(\omega+\Omega)\cos((\omega-\Omega)t)
 =0
 $$
 
-Solving for time:
+Solving for the cosine term:
 
 $$
 \cos((\omega-\Omega)t)
@@ -171,14 +197,12 @@ $$
 {Rr(\omega+\Omega)}
 $$
 
-Hence:
+Therefore, the moments of direction change are:
 
 $$
 t_n=
 \frac{
-\pm
-\arccos
-\left(
+\pm\arccos\left(
 -\frac{R^2\omega+r^2\Omega}
 {Rr(\omega+\Omega)}
 \right)
@@ -190,55 +214,68 @@ $$
 Where:
 
 $$
-n\in\mathbb{Z}
+n\in Z
 $$
 
-Solutions exist only if:
+Such moments exist only if:
 
 $$
 \left|
 \frac{R^2\omega+r^2\Omega}
 {Rr(\omega+\Omega)}
 \right|
-\leq1
+\leq 1
 $$
 
 ---
 
 # HTML Requirements
 
-The interactive visualization must include:
+The HTML model must include:
 
-- Sliders for:
-  - \(R\)
-  - \(r\)
-  - \(\omega\)
-  - \(\Omega\)
+- Sliders for $R$, $r$, $\omega$, and $\Omega$
+- A trajectory trace of the planet
+- A graph of the ecliptic longitude $\varphi(t)$
 
-- Planet trajectory trace
-
-- Graph of ecliptic longitude:
+The ecliptic longitude is:
 
 $$
-\varphi(t)=\operatorname{atan2}(y(t),x(t))
+\varphi(t)=
+\arctan\left(
+\frac{
+R\sin(\omega t)+r\sin(\Omega t)
+}{
+R\cos(\omega t)+r\cos(\Omega t)
+}
+\right)
 $$
 
 ---
 
 # Conclusion
 
-Ptolemy’s model explains planetary motion using two circular motions: the deferent and the epicycle. Combining these motions produces complex trajectories that can reproduce apparent retrograde motion.
+Ptolemy’s model describes the motion of a planet as a combination of two circular motions: motion along the deferent and motion along the epicycle.
 
-Retrograde motion occurs when:
+The trajectory is described by:
+
+$$
+x(t)=R\cos(\omega t)+r\cos(\Omega t)
+$$
+
+$$
+y(t)=R\sin(\omega t)+r\sin(\Omega t)
+$$
+
+Retrograde motion occurs when the angular velocity is negative:
 
 $$
 \frac{d\varphi}{dt}<0
 $$
 
-The moments when the apparent direction changes are obtained from:
+The moments when the planet changes its apparent direction are found from:
 
 $$
 \frac{d\varphi}{dt}=0
 $$
 
-The behavior depends on the radii \(R\), \(r\) and angular velocities \(\omega\), \(\Omega\).
+Thus, the appearance of retrograde motion depends on the values of $R$, $r$, $\omega$, and $\Omega$.
