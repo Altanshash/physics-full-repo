@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ptolemy Epicycle Animation</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 28px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .panel {
+      background: #1f2937;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    }
+
+    canvas {
+      background: #ffffff;
+      border-radius: 10px;
+      border: 2px solid #374151;
+    }
+
+    .controls {
+      max-width: 760px;
+      margin: 10px auto 30px;
+      background: #1f2937;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .control {
+      margin: 15px 0;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    button {
+      margin: 8px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .value {
+      color: #93c5fd;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Ptolemy's Epicycle Model Animation</h1>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Planet Trajectory</h2>
+      <canvas id="orbitCanvas" width="520" height="520"></canvas>
+    </div>
+
+    <div class="panel">
+      <h2>Ecliptic Longitude φ(t)</h2>
+      <canvas id="phiCanvas" width="520" height="520"></canvas>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control">
+      <label>Deferent radius R: <span id="RValue" class="value"></span></label>
+      <input type="range" id="R" min="40" max="180" value="120" />
+    </div>
+
+    <div class="control">
+      <label>Epicycle radius r: <span id="rValue" class="value"></span></label>
+      <input type="range" id="r" min="10" max="100" value="55" />
+    </div>
+
+    <div class="control">
+      <label>Angular velocity ω: <span id="omegaValue" class="value"></span></label>
+      <input type="range" id="omega" min="-5" max="5" step="0.1" value="1" />
+    </div>
+
+    <div class="control">
+      <label>Angular velocity Ω: <span id="OmegaValue" class="value"></span></label>
+      <input type="range" id="Omega" min="-8" max="8" step="0.1" value="-3" />
+    </div>
+
+    <button onclick="toggleAnimation()">Pause / Play</button>
+    <button onclick="resetAnimation()">Reset</button>
+    <button onclick="clearTrace()">Clear Trace</button>
+  </div>
+
+  <script>
+    const orbitCanvas = document.getElementById("orbitCanvas");
+    const orbitCtx = orbitCanvas.getContext("2d");
+
+    const phiCanvas = document.getElementById("phiCanvas");
+    const phiCtx = phiCanvas.getContext("2d");
+
+    const RSlider = document.getElementById("R");
+    const rSlider = document.getElementById("r");
+    const omegaSlider = document.getElementById("omega");
+    const OmegaSlider = document.getElementById("Omega");
+
+    const RValue = document.getElementById("RValue");
+    const rValue = document.getElementById("rValue");
+    const omegaValue = document.getElementById("omegaValue");
+    const OmegaValue = document.getElementById("OmegaValue");
+
+    let t = 0;
+    let running = true;
+
+    let trace = [];
+    let phiTrace = [];
+
+    function getValues() {
+      return {
+        R: Number(RSlider.value),
+        r: Number(rSlider.value),
+        omega: Number(omegaSlider.value),
+        Omega: Number(OmegaSlider.value)
+      };
+    }
+
+    function updateLabels() {
+      const values = getValues();
+
+      RValue.textContent = values.R;
+      rValue.textContent = values.r;
+      omegaValue.textContent = values.omega;
+      OmegaValue.textContent = values.Omega;
+    }
+
+    function planetPosition(time) {
+      const { R, r, omega, Omega } = getValues();
+
+      const x = R * Math.cos(omega * time) + r * Math.cos(Omega * time);
+      const y = R * Math.sin(omega * time) + r * Math.sin(Omega * time);
+
+      const deferentX = R * Math.cos(omega * time);
+      const deferentY = R * Math.sin(omega * time);
+
+      return { x, y, deferentX, deferentY };
+    }
+
+    function drawOrbit() {
+      const width = orbitCanvas.width;
+      const height = orbitCanvas.height;
+      const cx = width / 2;
+      const cy = height / 2;
+
+      const { R, r, omega } = getValues();
+      const pos = planetPosition(t);
+
+      orbitCtx.clearRect(0, 0, width, height);
+
+      orbitCtx.strokeStyle = "#e5e7eb";
+      orbitCtx.lineWidth = 1;
+      orbitCtx.beginPath();
+      orbitCtx.moveTo(cx, 0);
+      orbitCtx.lineTo(cx, height);
+      orbitCtx.moveTo(0, cy);
+      orbitCtx.lineTo(width, cy);
+      orbitCtx.stroke();
+
+      orbitCtx.strokeStyle = "#9ca3af";
+      orbitCtx.lineWidth = 1.5;
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx, cy, R, 0, Math.PI * 2);
+      orbitCtx.stroke();
+
+      orbitCtx.strokeStyle = "#60a5fa";
+      orbitCtx.lineWidth = 1.5;
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx + pos.deferentX, cy - pos.deferentY, r, 0, Math.PI * 2);
+      orbitCtx.stroke();
+
+      if (trace.length > 1) {
+        orbitCtx.strokeStyle = "#ef4444";
+        orbitCtx.lineWidth = 2;
+        orbitCtx.beginPath();
+
+        for (let i = 0; i < trace.length; i++) {
+          const point = trace[i];
+          const px = cx + point.x;
+          const py = cy - point.y;
+
+          if (i === 0) {
+            orbitCtx.moveTo(px, py);
+          } else {
+            orbitCtx.lineTo(px, py);
+          }
+        }
+
+        orbitCtx.stroke();
+      }
+
+      orbitCtx.strokeStyle = "#111827";
+      orbitCtx.lineWidth = 2;
+      orbitCtx.beginPath();
+      orbitCtx.moveTo(cx, cy);
+      orbitCtx.lineTo(cx + pos.deferentX, cy - pos.deferentY);
+      orbitCtx.lineTo(cx + pos.x, cy - pos.y);
+      orbitCtx.stroke();
+
+      orbitCtx.fillStyle = "#111827";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx, cy, 5, 0, Math.PI * 2);
+      orbitCtx.fill();
+
+      orbitCtx.fillStyle = "#2563eb";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx + pos.deferentX, cy - pos.deferentY, 5, 0, Math.PI * 2);
+      orbitCtx.fill();
+
+      orbitCtx.fillStyle = "#dc2626";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx + pos.x, cy - pos.y, 7, 0, Math.PI * 2);
+      orbitCtx.fill();
+    }
+
+    function drawPhiGraph() {
+      const width = phiCanvas.width;
+      const height = phiCanvas.height;
+      const margin = 45;
+
+      phiCtx.clearRect(0, 0, width, height);
+
+      phiCtx.strokeStyle = "#e5e7eb";
+      phiCtx.lineWidth = 1;
+
+      phiCtx.beginPath();
+      phiCtx.moveTo(margin, height / 2);
+      phiCtx.lineTo(width - margin, height / 2);
+      phiCtx.moveTo(margin, margin);
+      phiCtx.lineTo(margin, height - margin);
+      phiCtx.stroke();
+
+      phiCtx.fillStyle = "#111827";
+      phiCtx.font = "14px Arial";
+      phiCtx.fillText("time", width - 80, height / 2 - 10);
+      phiCtx.fillText("φ(t)", margin + 10, margin - 15);
+
+      phiCtx.fillText("π", 15, margin + 5);
+      phiCtx.fillText("0", 25, height / 2 + 5);
+      phiCtx.fillText("-π", 10, height - margin + 5);
+
+      if (phiTrace.length > 1) {
+        phiCtx.strokeStyle = "#7c3aed";
+        phiCtx.lineWidth = 2;
+        phiCtx.beginPath();
+
+        for (let i = 0; i < phiTrace.length; i++) {
+          const px = margin + (i / 500) * (width - 2 * margin);
+          const py = height / 2 - (phiTrace[i] / Math.PI) * (height / 2 - margin);
+
+          if (i === 0) {
+            phiCtx.moveTo(px, py);
+          } else {
+            phiCtx.lineTo(px, py);
+          }
+        }
+
+        phiCtx.stroke();
+      }
+    }
+
+    function animate() {
+      updateLabels();
+
+      if (running) {
+        t += 0.015;
+
+        const pos = planetPosition(t);
+        const phi = Math.atan2(pos.y, pos.x);
+
+        trace.push({ x: pos.x, y: pos.y });
+        phiTrace.push(phi);
+
+        if (trace.length > 2000) {
+          trace.shift();
+        }
+
+        if (phiTrace.length > 500) {
+          phiTrace.shift();
+        }
+      }
+
+      drawOrbit();
+      drawPhiGraph();
+
+      requestAnimationFrame(animate);
+    }
+
+    function toggleAnimation() {
+      running = !running;
+    }
+
+    function resetAnimation() {
+      t = 0;
+      trace = [];
+      phiTrace = [];
+    }
+
+    function clearTrace() {
+      trace = [];
+      phiTrace = [];
+    }
+
+    RSlider.addEventListener("input", clearTrace);
+    rSlider.addEventListener("input", clearTrace);
+    omegaSlider.addEventListener("input", clearTrace);
+    OmegaSlider.addEventListener("input", clearTrace);
+
+    animate();
+  </script>
+</body>
+</html>
