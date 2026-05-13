@@ -2,88 +2,77 @@
 
 ## Given
 
-Two events are given in frame \(S\):
+Two events are given in frame S:
 
 $$
-x_1 = 0, \qquad t_1 = 0
+x_1 = 0, \quad t_1 = 0
 $$
 
 $$
-x_2 = 900 \text{ m}, \qquad t_2 = 4 \,\mu s
+x_2 = 900 \text{ m}, \quad t_2 = 4 \text{ microseconds}
 $$
 
-Frame \(S'\) moves with velocity:
+Frame S' moves with velocity:
 
 $$
 v = 0.6c
 $$
 
-The Lorentz transformations are:
+Speed of light:
+
+$$
+c = 3 \times 10^8 \text{ m/s}
+$$
+
+Lorentz transformations:
 
 $$
 x' = \gamma (x - vt)
 $$
 
 $$
-t' = \gamma \left(t - \frac{vx}{c^2}\right)
+t' = \gamma (t - vx / c^2)
 $$
 
-The spacetime interval is:
+Spacetime interval:
 
 $$
-s^2 = c^2 t^2 - x^2
+s^2 = c^2t^2 - x^2
 $$
-
----
-
-# Find
-
-1. The transformed coordinates of the second event in \(S'\)
-2. Whether the order of events can change
-3. The spacetime interval
-4. Verification that the interval is invariant
 
 ---
 
 # Solution
 
-## 1. Calculate the Lorentz Factor
+## 1. Lorentz Factor
 
-Given:
+$$
+\gamma = 1 / \sqrt{1 - v^2 / c^2}
+$$
+
+Since:
 
 $$
 v = 0.6c
 $$
 
-Use the Lorentz factor formula:
+then:
 
 $$
-\gamma = \frac{1}{\sqrt{1-\frac{v^2}{c^2}}}
-$$
-
-Substitute the value of velocity:
-
-$$
-\gamma = \frac{1}{\sqrt{1-0.6^2}}
+\gamma = 1 / \sqrt{1 - 0.6^2}
 $$
 
 $$
-\gamma = \frac{1}{\sqrt{1-0.36}}
+\gamma = 1 / \sqrt{1 - 0.36}
 $$
 
 $$
-\gamma = \frac{1}{\sqrt{0.64}}
+\gamma = 1 / \sqrt{0.64}
 $$
 
 $$
-\gamma = \frac{1}{0.8}
+\gamma = 1 / 0.8
 $$
-
-$$
-\gamma = 1.25
-$$
-
-Therefore:
 
 $$
 \gamma = 1.25
@@ -93,27 +82,17 @@ $$
 
 ## 2. Transform the Position Coordinate
 
-For the second event:
+Given:
 
 $$
-x_2 = 900 \text{ m}
+x = 900 \text{ m}
 $$
 
 $$
-t_2 = 4 \times 10^{-6} \text{ s}
+t = 4 \times 10^{-6} \text{ s}
 $$
 
-The speed of light is:
-
-$$
-c = 3 \times 10^8 \text{ m/s}
-$$
-
-Therefore:
-
-$$
-v = 0.6c
-$$
+Velocity:
 
 $$
 v = 0.6 \times 3 \times 10^8
@@ -123,13 +102,7 @@ $$
 v = 1.8 \times 10^8 \text{ m/s}
 $$
 
-Use the Lorentz transformation:
-
-$$
-x' = \gamma (x - vt)
-$$
-
-First calculate \(vt\):
+First calculate:
 
 $$
 vt = (1.8 \times 10^8)(4 \times 10^{-6})
@@ -139,100 +112,76 @@ $$
 vt = 720 \text{ m}
 $$
 
-Now substitute:
+Now calculate:
 
 $$
-x_2' = 1.25(900 - 720)
-$$
-
-$$
-x_2' = 1.25(180)
+x' = 1.25(900 - 720)
 $$
 
 $$
-x_2' = 225 \text{ m}
+x' = 1.25(180)
 $$
 
-Therefore:
-
 $$
-x_2' = 225 \text{ m}
+x' = 225 \text{ m}
 $$
 
 ---
 
 ## 3. Transform the Time Coordinate
 
-Use the transformation:
+Formula:
 
 $$
-t' = \gamma \left(t - \frac{vx}{c^2}\right)
+t' = \gamma (t - vx / c^2)
 $$
 
 First calculate:
 
 $$
-\frac{vx}{c^2}
-$$
-
-Substitute the known values:
-
-$$
-\frac{(1.8 \times 10^8)(900)}{(3 \times 10^8)^2}
-$$
-
-Calculate the numerator:
-
-$$
-1.8 \times 10^8 \times 900
-=
-1.62 \times 10^{11}
-$$
-
-Calculate the denominator:
-
-$$
-(3 \times 10^8)^2
-=
-9 \times 10^{16}
-$$
-
-Now divide:
-
-$$
-\frac{1.62 \times 10^{11}}{9 \times 10^{16}}
-=
-1.8 \times 10^{-6} \text{ s}
-$$
-
-Now substitute into the time equation:
-
-$$
-t_2' =
-1.25
-\left(
-4 \times 10^{-6}
--
-1.8 \times 10^{-6}
-\right)
+vx = (1.8 \times 10^8)(900)
 $$
 
 $$
-t_2'
-=
-1.25(2.2 \times 10^{-6})
+vx = 1.62 \times 10^{11}
+$$
+
+Calculate:
+
+$$
+c^2 = (3 \times 10^8)^2
 $$
 
 $$
-t_2'
-=
-2.75 \times 10^{-6} \text{ s}
+c^2 = 9 \times 10^{16}
 $$
 
-Therefore:
+Now:
 
 $$
-t_2' = 2.75 \,\mu s
+vx / c^2 = (1.62 \times 10^{11}) / (9 \times 10^{16})
+$$
+
+$$
+vx / c^2 = 1.8 \times 10^{-6} \text{ s}
+$$
+
+Now substitute:
+
+$$
+t' = 1.25(4 \times 10^{-6} - 1.8 \times 10^{-6})
+$$
+
+$$
+t' = 1.25(2.2 \times 10^{-6})
+$$
+
+$$
+t' = 2.75 \times 10^{-6} \text{ s}
+$$
+
+$$
+t' = 2.75 \text{ microseconds}
 $$
 
 ---
@@ -242,13 +191,13 @@ $$
 The first event occurs at:
 
 $$
-t_1 = 0
+t_1' = 0
 $$
 
-The transformed second event occurs at:
+The second event occurs at:
 
 $$
-t_2' = 2.75 \,\mu s
+t_2' = 2.75 \text{ microseconds}
 $$
 
 Since:
@@ -259,178 +208,138 @@ $$
 
 the order of events does not change.
 
-Now determine the type of interval.
-
-Calculate:
+Also:
 
 $$
-c \Delta t
+c \Delta t = (3 \times 10^8)(4 \times 10^{-6})
 $$
 
 $$
-=
-(3 \times 10^8)(4 \times 10^{-6})
+c \Delta t = 1200 \text{ m}
 $$
 
-$$
-=
-1200 \text{ m}
-$$
-
-The spatial separation is:
+and:
 
 $$
 \Delta x = 900 \text{ m}
 $$
 
-Compare:
+Since:
 
 $$
 1200 > 900
 $$
 
-Thus:
+the interval is timelike.
 
-$$
-c\Delta t > \Delta x
-$$
-
-The interval is timelike.
-
-For timelike-separated events, the order of events cannot change in any inertial frame.
-
-Therefore:
-
-$$
-\text{The order of events cannot change.}
-$$
+Therefore, the order of events cannot change in any inertial frame.
 
 ---
 
-## 5. Calculate the Spacetime Interval
+## 5. Spacetime Interval in Frame S
 
-Use:
-
-$$
-s^2 = c^2 t^2 - x^2
-$$
-
-First calculate:
+Formula:
 
 $$
-ct
-=
-(3 \times 10^8)(4 \times 10^{-6})
+s^2 = c^2t^2 - x^2
 $$
+
+This can be written as:
+
+$$
+s^2 = (ct)^2 - x^2
+$$
+
+First:
 
 $$
 ct = 1200 \text{ m}
 $$
 
-Now substitute:
+So:
 
 $$
 s^2 = 1200^2 - 900^2
 $$
 
 $$
-s^2 = 1\,440\,000 - 810\,000
+s^2 = 1440000 - 810000
 $$
 
 $$
-s^2 = 630\,000 \text{ m}^2
-$$
-
-Therefore:
-
-$$
-s^2 = 6.3 \times 10^5 \text{ m}^2
+s^2 = 630000 \text{ m}^2
 $$
 
 ---
 
-## 6. Verify Invariance in Frame \(S'\)
+## 6. Verify Invariance in Frame S'
 
-In frame \(S'\):
-
-$$
-x_2' = 225 \text{ m}
-$$
+In frame S':
 
 $$
-t_2' = 2.75 \times 10^{-6} \text{ s}
+x' = 225 \text{ m}
+$$
+
+$$
+t' = 2.75 \times 10^{-6} \text{ s}
 $$
 
 Calculate:
 
 $$
-ct'
-=
-(3 \times 10^8)(2.75 \times 10^{-6})
+ct' = (3 \times 10^8)(2.75 \times 10^{-6})
 $$
 
 $$
 ct' = 825 \text{ m}
 $$
 
-Now calculate the interval:
+Now:
 
 $$
 s'^2 = 825^2 - 225^2
 $$
 
 $$
-s'^2 = 680\,625 - 50\,625
+s'^2 = 680625 - 50625
 $$
 
 $$
-s'^2 = 630\,000 \text{ m}^2
+s'^2 = 630000 \text{ m}^2
 $$
 
-Therefore:
+So:
 
 $$
 s'^2 = s^2
 $$
 
-The spacetime interval is invariant.
-
 ---
 
 # Conclusion
 
-For the second event, the transformed coordinates in frame \(S'\) are:
+The transformed coordinates of the second event in frame S' are:
 
 $$
 x_2' = 225 \text{ m}
 $$
 
 $$
-t_2' = 2.75 \,\mu s
+t_2' = 2.75 \text{ microseconds}
 $$
 
-The order of events does not change because the interval is timelike:
+The order of events does not change.
+
+The spacetime interval is:
 
 $$
-c\Delta t > \Delta x
+s^2 = 630000 \text{ m}^2
 $$
 
-The spacetime interval in frame \(S\) is:
+The interval is the same in both frames:
 
 $$
-s^2 = 6.3 \times 10^5 \text{ m}^2
+s'^2 = s^2
 $$
 
-The interval in frame \(S'\) is:
-
-$$
-s'^2 = 6.3 \times 10^5 \text{ m}^2
-$$
-
-Thus:
-
-$$
-s^2 = s'^2
-$$
-
-This confirms that the spacetime interval remains invariant under Lorentz transformations.
+Therefore, the spacetime interval is invariant under Lorentz transformation.
