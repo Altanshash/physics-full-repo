@@ -4,11 +4,15 @@
 
 Relativistic equation of motion:
 
-<div align="center" style="font-size:26px;"><b>d(γmv) / dt = F</b></div>
+$$
+\frac{d}{dt}(\gamma mv)=F
+$$
 
 where:
 
-<div align="center" style="font-size:24px;"><b>γ = 1 / √(1 − v²/c²)</b></div>
+$$
+\gamma=\frac{1}{\sqrt{1-\frac{v^2}{c^2}}}
+$$
 
 A constant force acts on a particle.
 
@@ -28,27 +32,35 @@ We need to:
 
 In classical mechanics:
 
-<div align="center" style="font-size:26px;"><b>F = ma</b></div>
+$$
+F=ma
+$$
 
 Therefore:
 
-<div align="center" style="font-size:26px;"><b>a = F / m</b></div>
+$$
+a=\frac{F}{m}
+$$
 
 Velocity:
 
-<div align="center" style="font-size:26px;"><b>v(t) = at</b></div>
+$$
+v(t)=at
+$$
 
 Position:
 
-<div align="center" style="font-size:26px;"><b>x(t) = 1/2 at²</b></div>
+$$
+x(t)=\frac{1}{2}at^2
+$$
 
-In the classical model, velocity increases without limit.
+In the classical model, velocity increases without limit:
 
-So, mathematically:
+$$
+v\to\infty
+$$
 
-<div align="center" style="font-size:26px;"><b>v → ∞</b></div>
-
-This is not physically correct for very high speeds.
+This becomes unphysical at very high speeds.
 
 ---
 
@@ -56,47 +68,67 @@ This is not physically correct for very high speeds.
 
 Relativistic momentum is:
 
-<div align="center" style="font-size:26px;"><b>p = γmv</b></div>
+$$
+p=\gamma mv
+$$
 
 The equation of motion is:
 
-<div align="center" style="font-size:26px;"><b>dp / dt = F</b></div>
+$$
+\frac{dp}{dt}=F
+$$
 
 For constant force:
 
-<div align="center" style="font-size:26px;"><b>p(t) = Ft</b></div>
+$$
+p(t)=Ft
+$$
 
-Velocity can be found from momentum:
+Velocity is obtained from momentum:
 
-<div align="center" style="font-size:26px;"><b>v = p / √(m² + p²/c²)</b></div>
+$$
+v=\frac{p}{\sqrt{m^2+\frac{p^2}{c^2}}}
+$$
 
-As time increases, velocity approaches the speed of light:
+As time increases:
 
-<div align="center" style="font-size:26px;"><b>v → c</b></div>
+$$
+v\to c
+$$
 
-but never exceeds it.
+The particle approaches the speed of light but never exceeds it.
 
 ---
 
 ## 3. RK4 Method
 
-The RK4 method is a numerical method used to solve differential equations.
+The RK4 method numerically solves differential equations.
 
 For position:
 
-<div align="center" style="font-size:26px;"><b>dx / dt = v</b></div>
+$$
+\frac{dx}{dt}=v
+$$
 
-For velocity in the relativistic case:
+For relativistic velocity:
 
-<div align="center" style="font-size:26px;"><b>dv / dt = F / (mγ³)</b></div>
+$$
+\frac{dv}{dt}=\frac{F}{m\gamma^3}
+$$
 
 where:
 
-<div align="center" style="font-size:26px;"><b>γ = 1 / √(1 − v²/c²)</b></div>
+$$
+\gamma=\frac{1}{\sqrt{1-\frac{v^2}{c^2}}}
+$$
 
-The RK4 method updates velocity and position step by step.
+The RK4 method calculates intermediate slopes:
 
-It gives more accurate results than the simple Euler method.
+$$
+k_1,k_2,k_3,k_4
+$$
+
+and combines them for accurate numerical integration.
 
 ---
 
@@ -104,43 +136,81 @@ It gives more accurate results than the simple Euler method.
 
 ### Classical motion
 
-The classical velocity increases linearly:
+The classical velocity grows linearly:
 
-<div align="center" style="font-size:26px;"><b>vclassical = at</b></div>
+$$
+v_{\text{classical}}=at
+$$
 
-This means the classical particle can exceed the speed of light.
+Thus, the classical model predicts:
 
-This violates relativity.
+$$
+v>c
+$$
 
-### Relativistic motion
+for sufficiently large time.
 
-The relativistic velocity increases at first, but then the acceleration decreases.
-
-As the velocity gets closer to \(c\), the Lorentz factor increases.
-
-Because of this, more force is needed to produce the same acceleration.
-
-Thus:
-
-<div align="center" style="font-size:26px;"><b>vrelativistic &lt; c</b></div>
+This contradicts relativity.
 
 ---
 
-## 5. Asymptotic Approach to c
+### Relativistic motion
+
+The relativistic velocity increases more slowly.
+
+As velocity grows:
+
+$$
+\gamma\to\infty
+$$
+
+Therefore, acceleration decreases:
+
+$$
+a=\frac{F}{m\gamma^3}
+$$
+
+and the velocity satisfies:
+
+$$
+v<c
+$$
+
+for all time.
+
+---
+
+## 5. Asymptotic Approach to \(c\)
 
 At low speeds:
 
-<div align="center" style="font-size:26px;"><b>v ≪ c</b></div>
+$$
+v\ll c
+$$
 
-classical and relativistic results are almost the same.
+the Lorentz factor becomes:
+
+$$
+\gamma\approx1
+$$
+
+Thus, relativistic motion reduces to classical motion.
 
 At high speeds:
 
-<div align="center" style="font-size:26px;"><b>v → c</b></div>
+$$
+v\to c
+$$
 
-the relativistic velocity approaches the speed of light asymptotically.
+the Lorentz factor grows rapidly:
 
-This means it gets closer and closer to \(c\), but never reaches or exceeds it.
+$$
+\gamma\to\infty
+$$
+
+Therefore, larger and larger energy is required to produce smaller increases in velocity.
+
+The speed approaches \(c\) asymptotically.
 
 ---
 
@@ -148,44 +218,62 @@ This means it gets closer and closer to \(c\), but never reaches or exceeds it.
 
 Classical kinetic energy:
 
-<div align="center" style="font-size:26px;"><b>Kclassical = 1/2 mv²</b></div>
+$$
+K_{\text{classical}}=\frac{1}{2}mv^2
+$$
 
 Relativistic kinetic energy:
 
-<div align="center" style="font-size:26px;"><b>Krelativistic = (γ − 1)mc²</b></div>
+$$
+K_{\text{relativistic}}=(\gamma-1)mc^2
+$$
 
-At small velocities, these two energies are approximately equal.
+At low velocities:
 
-At relativistic velocities, the relativistic kinetic energy becomes much larger.
+$$
+K_{\text{classical}}\approx K_{\text{relativistic}}
+$$
 
-This is because energy goes into increasing the Lorentz factor rather than allowing the object to exceed the speed of light.
+At relativistic velocities:
+
+$$
+K_{\text{relativistic}}\gg K_{\text{classical}}
+$$
+
+This difference becomes extremely large near the speed of light.
 
 ---
 
 # Conclusion
 
-The numerical simulation shows that classical and relativistic motion are similar only at low speeds.
+The numerical simulation shows that classical and relativistic motion agree only at low velocities.
 
-In the classical model:
+Classically:
 
-<div align="center" style="font-size:26px;"><b>v = at</b></div>
+$$
+v=at
+$$
 
-so velocity grows without limit.
+so velocity can increase without bound.
 
-In the relativistic model:
+Relativistically:
 
-<div align="center" style="font-size:26px;"><b>v → c</b></div>
+$$
+v\to c
+$$
 
-so the speed approaches the speed of light but never exceeds it.
+so the particle approaches the speed of light but never reaches it.
 
-The RK4 method allows accurate numerical calculation of:
+The RK4 method provides accurate numerical solutions for:
 
-<div align="center" style="font-size:26px;"><b>v(t)</b></div>
+$$
+v(t)
+$$
 
 and:
 
-<div align="center" style="font-size:26px;"><b>x(t)</b></div>
+$$
+x(t)
+$$
 
-The main physical result is that relativity prevents any massive object from reaching or exceeding the speed of light.
-
-At high speeds, the energy difference between the classical and relativistic models becomes very large.
+The simulation demonstrates that special relativity limits the motion of massive particles and strongly modifies their energy at high velocities.
