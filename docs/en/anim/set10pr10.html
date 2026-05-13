@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Relativistic Motion Simulation</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#0f172a;
+    color:white;
+    font-family:Arial,sans-serif;
+}
+
+h1{
+    text-align:center;
+    color:#7dd3fc;
+    margin-top:20px;
+}
+
+.container{
+    width:92%;
+    max-width:1200px;
+    margin:30px auto;
+    background:#111827;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(125,211,252,0.25);
+}
+
+.scene{
+    position:relative;
+    height:220px;
+    background:#020617;
+    border-radius:15px;
+    border:2px solid #334155;
+    overflow:hidden;
+}
+
+.track{
+    position:absolute;
+    left:40px;
+    right:40px;
+    top:110px;
+    height:4px;
+    background:#475569;
+}
+
+.particle-classical{
+    position:absolute;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:#f97316;
+    box-shadow:0 0 20px #f97316;
+    top:96px;
+    left:40px;
+}
+
+.particle-rel{
+    position:absolute;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:#38bdf8;
+    box-shadow:0 0 20px #38bdf8;
+    top:126px;
+    left:40px;
+}
+
+.label{
+    position:absolute;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.label1{
+    top:88px;
+    left:40px;
+    color:#f97316;
+}
+
+.label2{
+    top:150px;
+    left:40px;
+    color:#38bdf8;
+}
+
+.controls{
+    text-align:center;
+    margin-top:25px;
+    font-size:22px;
+}
+
+input{
+    width:350px;
+}
+
+.dashboard{
+    display:flex;
+    justify-content:space-around;
+    flex-wrap:wrap;
+    gap:20px;
+    margin-top:30px;
+}
+
+.card{
+    width:240px;
+    background:#1e293b;
+    padding:20px;
+    border-radius:12px;
+    border:1px solid #475569;
+    text-align:center;
+}
+
+.card h2{
+    color:#facc15;
+    margin-bottom:12px;
+    font-size:20px;
+}
+
+.value{
+    color:#38bdf8;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.graph-box{
+    margin-top:30px;
+    background:#020617;
+    border:2px solid #334155;
+    border-radius:14px;
+    padding:15px;
+}
+
+canvas{
+    display:block;
+    margin:auto;
+    background:#020617;
+}
+
+.explanation{
+    margin-top:25px;
+    background:#1e293b;
+    padding:22px;
+    border-radius:12px;
+    border:1px solid #475569;
+    text-align:center;
+    font-size:22px;
+    line-height:1.7;
+}
+
+.highlight{
+    color:#86efac;
+    font-weight:bold;
+}
+
+button{
+    margin-top:20px;
+    padding:12px 25px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Problem 10 — Numerical Simulation of Relativistic Motion</h1>
+
+<div class="container">
+
+    <div class="scene">
+
+        <div class="track"></div>
+
+        <div class="label label1">
+            Classical particle
+        </div>
+
+        <div class="label label2">
+            Relativistic particle
+        </div>
+
+        <div
+            class="particle-classical"
+            id="classicalParticle">
+        </div>
+
+        <div
+            class="particle-rel"
+            id="relParticle">
+        </div>
+
+    </div>
+
+    <div class="controls">
+
+        Applied force:
+        <span id="forceText">1.0</span>
+
+        <br><br>
+
+        <input
+            type="range"
+            id="forceSlider"
+            min="0.2"
+            max="5"
+            step="0.1"
+            value="1"
+        >
+
+        <br><br>
+
+        <button onclick="restartSimulation()">
+            Restart Simulation
+        </button>
+
+    </div>
+
+    <div class="dashboard">
+
+        <div class="card">
+            <h2>Classical Velocity</h2>
+            <div class="value" id="classicalVelocity">
+                0.00c
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Relativistic Velocity</h2>
+            <div class="value" id="relVelocity">
+                0.00c
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Lorentz Factor</h2>
+            <div class="value" id="gammaValue">
+                1.00
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Simulation Time</h2>
+            <div class="value" id="timeValue">
+                0.0
+            </div>
+        </div>
+
+    </div>
+
+    <div class="graph-box">
+
+        <canvas
+            id="graph"
+            width="950"
+            height="450">
+        </canvas>
+
+    </div>
+
+    <div class="explanation">
+
+        The classical particle continues accelerating indefinitely.
+
+        <br><br>
+
+        The relativistic particle slows its acceleration as its velocity approaches
+
+        <span class="highlight">the speed of light</span>.
+
+        <br><br>
+
+        Relativity prevents any massive particle from exceeding \(c\).
+
+    </div>
+
+</div>
+
+<script>
+
+const classicalParticle =
+    document.getElementById("classicalParticle");
+
+const relParticle =
+    document.getElementById("relParticle");
+
+const classicalVelocity =
+    document.getElementById("classicalVelocity");
+
+const relVelocity =
+    document.getElementById("relVelocity");
+
+const gammaValue =
+    document.getElementById("gammaValue");
+
+const timeValue =
+    document.getElementById("timeValue");
+
+const forceSlider =
+    document.getElementById("forceSlider");
+
+const forceText =
+    document.getElementById("forceText");
+
+const canvas =
+    document.getElementById("graph");
+
+const ctx =
+    canvas.getContext("2d");
+
+let t = 0;
+
+let classicalV = 0;
+let relV = 0;
+
+let classicalX = 0;
+let relX = 0;
+
+let running;
+
+const c = 1;
+
+function gamma(v){
+
+    return 1 /
+        Math.sqrt(1 - v*v);
+}
+
+function restartSimulation(){
+
+    clearInterval(running);
+
+    t = 0;
+
+    classicalV = 0;
+    relV = 0;
+
+    classicalX = 0;
+    relX = 0;
+
+    velocityHistory = [];
+
+    startSimulation();
+}
+
+let velocityHistory = [];
+
+function startSimulation(){
+
+    running = setInterval(() => {
+
+        const F =
+            parseFloat(forceSlider.value);
+
+        forceText.textContent =
+            F.toFixed(1);
+
+        const dt = 0.02;
+
+        t += dt;
+
+        // Classical
+
+        classicalV += F * dt;
+
+        classicalX += classicalV * dt;
+
+        // Relativistic
+
+        const g =
+            gamma(relV);
+
+        const aRel =
+            F / (g*g*g);
+
+        relV += aRel * dt;
+
+        if(relV > 0.999){
+            relV = 0.999;
+        }
+
+        relX += relV * dt;
+
+        classicalVelocity.innerHTML =
+            classicalV.toFixed(2) + "c";
+
+        relVelocity.innerHTML =
+            relV.toFixed(3) + "c";
+
+        gammaValue.innerHTML =
+            gamma(relV).toFixed(2);
+
+        timeValue.innerHTML =
+            t.toFixed(1);
+
+        classicalParticle.style.left =
+            (40 + classicalX*20) + "px";
+
+        relParticle.style.left =
+            (40 + relX*20) + "px";
+
+        velocityHistory.push({
+            t:t,
+            classical:classicalV,
+            relativistic:relV
+        });
+
+        if(velocityHistory.length > 400){
+            velocityHistory.shift();
+        }
+
+        drawGraph();
+
+    },20);
+}
+
+function drawGraph(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    const left = 70;
+    const bottom = 370;
+    const top = 40;
+    const right = 900;
+
+    ctx.strokeStyle = "#475569";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(left,top);
+    ctx.lineTo(left,bottom);
+    ctx.lineTo(right,bottom);
+
+    ctx.stroke();
+
+    ctx.fillStyle = "white";
+    ctx.font = "20px Arial";
+
+    ctx.fillText(
+        "Velocity",
+        20,
+        30
+    );
+
+    ctx.fillText(
+        "Time",
+        850,
+        420
+    );
+
+    for(let i=0;i<=5;i++){
+
+        const y =
+            bottom - i*60;
+
+        ctx.strokeStyle =
+            "#1e293b";
+
+        ctx.beginPath();
+
+        ctx.moveTo(left,y);
+        ctx.lineTo(right,y);
+
+        ctx.stroke();
+
+        ctx.fillStyle =
+            "#cbd5e1";
+
+        ctx.fillText(
+            (i*0.2).toFixed(1),
+            30,
+            y+5
+        );
+    }
+
+    // classical curve
+
+    ctx.beginPath();
+
+    velocityHistory.forEach((p,i)=>{
+
+        const x =
+            left + i*2;
+
+        const y =
+            bottom - Math.min(p.classical,1)*300;
+
+        if(i===0){
+            ctx.moveTo(x,y);
+        }
+        else{
+            ctx.lineTo(x,y);
+        }
+    });
+
+    ctx.strokeStyle =
+        "#f97316";
+
+    ctx.lineWidth = 4;
+
+    ctx.stroke();
+
+    // relativistic curve
+
+    ctx.beginPath();
+
+    velocityHistory.forEach((p,i)=>{
+
+        const x =
+            left + i*2;
+
+        const y =
+            bottom - p.relativistic*300;
+
+        if(i===0){
+            ctx.moveTo(x,y);
+        }
+        else{
+            ctx.lineTo(x,y);
+        }
+    });
+
+    ctx.strokeStyle =
+        "#38bdf8";
+
+    ctx.lineWidth = 4;
+
+    ctx.stroke();
+
+    // speed of light
+
+    ctx.strokeStyle =
+        "#ef4444";
+
+    ctx.setLineDash([8,8]);
+
+    ctx.beginPath();
+
+    ctx.moveTo(left,70);
+    ctx.lineTo(right,70);
+
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    ctx.fillStyle =
+        "#ef4444";
+
+    ctx.fillText(
+        "c",
+        910,
+        76
+    );
+
+    ctx.fillStyle =
+        "#f97316";
+
+    ctx.fillText(
+        "Classical",
+        690,
+        120
+    );
+
+    ctx.fillStyle =
+        "#38bdf8";
+
+    ctx.fillText(
+        "Relativistic",
+        690,
+        160
+    );
+}
+
+startSimulation();
+
+</script>
+
+</body>
+</html>
