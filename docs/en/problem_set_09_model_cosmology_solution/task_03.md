@@ -7,147 +7,156 @@ We compare two models of planetary motion:
 1. The epicycle model.
 2. The heliocentric model.
 
-The goal is to fit the epicycle parameters to the trajectory generated in the heliocentric model.
+The epicycle model is:
 
-The epicycle model can be written as:
+$$
+x(t)=R\cos(\omega t)+r\cos(\Omega t)
+$$
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?x(t)=R\cos(\omega t)+r\cos(\Omega t)" />
-</p>
+$$
+y(t)=R\sin(\omega t)+r\sin(\Omega t)
+$$
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?y(t)=R\sin(\omega t)+r\sin(\Omega t)" />
-</p>
+The heliocentric relative trajectory is:
 
-The heliocentric relative trajectory can be written as:
+$$
+x(t)=R_M\cos(\omega_M t)-R_Z\cos(\omega_Z t)
+$$
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?x(t)=R_M\cos(\omega_Mt)-R_Z\cos(\omega_Zt)" />
-</p>
-
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?y(t)=R_M\sin(\omega_Mt)-R_Z\sin(\omega_Zt)" />
-</p>
+$$
+y(t)=R_M\sin(\omega_M t)-R_Z\sin(\omega_Z t)
+$$
 
 ---
 
 ## Solution
 
-## 1. Fitting the Epicycle Parameters
+### 1. Fitting the Epicycle Parameters
 
-To make the epicycle model match the heliocentric relative trajectory, we compare the two forms.
+The epicycle model and the heliocentric relative model have similar forms.
 
 Epicycle model:
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?x(t)=R\cos(\omega t)+r\cos(\Omega t)" />
-</p>
+$$
+x(t)=R\cos(\omega t)+r\cos(\Omega t)
+$$
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?y(t)=R\sin(\omega t)+r\sin(\Omega t)" />
-</p>
+$$
+y(t)=R\sin(\omega t)+r\sin(\Omega t)
+$$
 
 Heliocentric relative model:
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?x(t)=R_M\cos(\omega_Mt)-R_Z\cos(\omega_Zt)" />
-</p>
+$$
+x(t)=R_M\cos(\omega_M t)-R_Z\cos(\omega_Z t)
+$$
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?y(t)=R_M\sin(\omega_Mt)-R_Z\sin(\omega_Zt)" />
-</p>
+$$
+y(t)=R_M\sin(\omega_M t)-R_Z\sin(\omega_Z t)
+$$
 
-The negative term can be written as a phase shift:
+The negative terms can be interpreted as a phase shift of pi:
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?-R_Z\cos(\omega_Zt)=R_Z\cos(\omega_Zt+\pi)" />
-</p>
+$$
+-R_Z\cos(\omega_Z t)=R_Z\cos(\omega_Z t+\pi)
+$$
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?-R_Z\sin(\omega_Zt)=R_Z\sin(\omega_Zt+\pi)" />
-</p>
+$$
+-R_Z\sin(\omega_Z t)=R_Z\sin(\omega_Z t+\pi)
+$$
 
-So the heliocentric relative trajectory has the same mathematical structure as an epicycle model.
+Therefore, the parameters can be matched as:
 
-A possible correspondence is:
+$$
+R=R_M
+$$
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?R=R_M,\quad r=R_Z,\quad \omega=\omega_M,\quad \Omega=\omega_Z" />
-</p>
+$$
+r=R_Z
+$$
 
-with a phase shift of π for the Earth-related term.
+$$
+\omega=\omega_M
+$$
+
+$$
+\Omega=\omega_Z
+$$
+
+with a phase shift of pi for the Earth term.
 
 ---
 
-## 2. Number of Parameters in Both Models
+### 2. Number of Parameters in Both Models
 
-The basic epicycle model uses the following parameters:
+The basic epicycle model uses four main parameters:
 
-- Radius of deferent: **R**
-- Radius of epicycle: **r**
-- Angular velocity of deferent: **ω**
-- Angular velocity of epicycle: **Ω**
+- Radius of deferent: $R$
+- Radius of epicycle: $r$
+- Angular velocity of deferent: $\omega$
+- Angular velocity of epicycle: $\Omega$
 
 So the epicycle model has **4 main parameters**.
 
-The heliocentric model uses:
+The heliocentric model also uses four main parameters:
 
-- Earth orbit radius: **RZ**
-- Mars orbit radius: **RM**
-- Earth angular velocity: **ωZ**
-- Mars angular velocity: **ωM**
+- Earth orbit radius: $R_Z$
+- Mars orbit radius: $R_M$
+- Earth angular velocity: $\omega_Z$
+- Mars angular velocity: $\omega_M$
 
-So the heliocentric model also has **4 main parameters** for two circular orbits.
+So the heliocentric model also has **4 main parameters**.
 
-However, the interpretation is different.
-
-In the epicycle model, parameters are introduced to reproduce the apparent motion.
-
-In the heliocentric model, parameters describe real orbital motion around the Sun.
+However, their meanings are different. In the epicycle model, parameters are used mainly to reproduce the observed motion. In the heliocentric model, parameters describe real circular motion around the Sun.
 
 ---
 
-## 3. Which Model Is More Economical?
+### 3. Which Model Is More Economical?
 
-Both models can reproduce similar retrograde loops.
+Both models can reproduce a similar retrograde loop.
 
-However, the heliocentric model is more economical because:
+However, the heliocentric model is more economical because retrograde motion appears naturally from relative motion.
 
-- It explains retrograde motion naturally.
-- It does not need artificial epicycles.
-- The same principle explains the motion of different planets.
-- Retrograde motion appears because Earth overtakes Mars.
+Earth moves on an inner orbit and has a larger angular velocity. When Earth overtakes Mars, Mars appears to move backward in the sky.
 
-The epicycle model can fit observations, but it becomes more complicated when higher accuracy is needed.
+The epicycle model can describe this motion, but it needs an additional circular motion to explain the loop.
 
 ---
 
-## 4. Interpretation
+### 4. Interpretation
 
-The comparison shows that two models can sometimes describe the same observed trajectory.
+This comparison shows that different mathematical models can describe the same observed motion.
 
-The epicycle model is mathematically useful, but it treats retrograde motion as an added geometric construction.
+The epicycle model is useful for fitting the apparent trajectory, but it does not give a simple physical explanation.
 
-The heliocentric model gives a simpler physical explanation. It explains the same phenomenon as a result of relative motion.
-
-Thus, the heliocentric model simplifies the description of planetary motion.
+The heliocentric model explains the same effect more naturally. Retrograde motion is not a separate special motion; it is the result of observing Mars from a moving Earth.
 
 ---
 
-# Conclusion
+## Conclusion
 
 The epicycle model and the heliocentric model can produce similar apparent trajectories.
 
-The epicycle parameters can be fitted to the heliocentric trajectory by matching:
+A simple parameter correspondence is:
 
-<p align="center">
-  <img src="https://latex.codecogs.com/svg.image?R=R_M,\quad r=R_Z,\quad \omega=\omega_M,\quad \Omega=\omega_Z" />
-</p>
+$$
+R=R_M
+$$
 
-with a phase shift of π.
+$$
+r=R_Z
+$$
 
-Although both models may use a similar number of basic parameters, the heliocentric model is more economical in meaning.
+$$
+\omega=\omega_M
+$$
 
-It explains retrograde motion as a natural consequence of relative motion, while the epicycle model introduces extra circular motion to reproduce the same effect.
+$$
+\Omega=\omega_Z
+$$
+
+with a phase shift of pi.
+
+Although both models use four main parameters, the heliocentric model is more economical because it explains retrograde motion naturally.
 
 Therefore, the heliocentric model gives a simpler and more physically meaningful description of planetary motion.
