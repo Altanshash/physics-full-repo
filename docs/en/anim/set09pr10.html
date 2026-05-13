@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Three-Body Stability Analysis</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .panel {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    canvas {
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #374151;
+    }
+
+    .controls {
+      max-width: 950px;
+      margin: 10px auto 30px;
+      background: #1f2937;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .control {
+      text-align: left;
+      margin: 14px 0;
+    }
+
+    input[type="range"], select {
+      width: 100%;
+      padding: 6px;
+    }
+
+    .value {
+      color: #93c5fd;
+      font-weight: bold;
+    }
+
+    button {
+      margin: 8px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Problem 10 — Stability Analysis and Conserved Quantities</h1>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Three-Body Motion</h2>
+      <canvas id="orbitCanvas" width="620" height="620"></canvas>
+    </div>
+
+    <div class="panel">
+      <h2>Energy E(t)</h2>
+      <canvas id="energyCanvas" width="620" height="300"></canvas>
+    </div>
+
+    <div class="panel">
+      <h2>Angular Momentum L(t)</h2>
+      <canvas id="momentumCanvas" width="620" height="300"></canvas>
+    </div>
+
+    <div class="panel">
+      <h2>Center of Mass Drift</h2>
+      <canvas id="cmCanvas" width="620" height="300"></canvas>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control">
+      <label>Time step Δt:
+        <span id="dtValue" class="value"></span>
+      </label>
+      <input type="range" id="dt" min="0.002" max="0.04" step="0.001" value="0.01">
+    </div>
+
+    <div class="control">
+      <label>Integration method:</label>
+      <select id="method">
+        <option value="rk4">RK4</option>
+        <option value="euler">Euler</option>
+      </select>
+    </div>
+
+    <div class="control">
+      <label>Simulation speed:
+        <span id="speedValue" class="value"></span>
+      </label>
+      <input type="range" id="speed" min="1" max="10" value="4">
+    </div>
+
+    <button onclick="toggleAnimation()">Pause / Play</button>
+    <button onclick="resetSimulation()">Reset</button>
+    <button onclick="clearGraphs()">Clear Graphs</button>
+  </div>
+
+  <script>
+    const orbitCanvas = document.getElementById("orbitCanvas");
+    const orbitCtx = orbitCanvas.getContext("2d");
+
+    const energyCanvas = document.getElementById("energyCanvas");
+    const energyCtx = energyCanvas.getContext("2d");
+
+    const momentumCanvas = document.getElementById("momentumCanvas");
+    const momentumCtx = momentumCanvas.getContext("2d");
+
+    const cmCanvas = document.getElementById("cmCanvas");
+    const cmCtx = cmCanvas.getContext("2d");
+
+    const dtSlider = document.getElementById("dt");
+    const methodSelect = document.getElementById("method");
+    const speedSlider = document.getElementById("speed");
+
+    const dtValue = document.getElementById("dtValue");
+    const speedValue = document.getElementById("speedValue");
+
+    let bodies = [];
+    let running = true;
+
+    let energyData = [];
+    let momentumData = [];
+    let cmData = [];
+
+    let initialEnergy = 0;
+    let initialMomentum = 0;
+    let initialCM = { x: 0, y: 0 };
+
+    const G = 80;
+    const softening = 25;
+
+    function values() {
+      return {
+        dt: Number(dtSlider.value),
+        method: methodSelect.value,
+        speed: Number(speedSlider.value)
+      };
+    }
+
+    function updateLabels() {
+      const v = values();
+      dtValue.textContent = v.dt.toFixed(3);
+      speedValue.textContent = v.speed;
+    }
+
+    function resetSimulation() {
+      bodies = [
+        { name: "m₁", m: 12, x: -120, y: 0, vx: 0, vy: 1.15, color: "#2563eb", trace: [] },
+        { name: "m₂", m: 12, x: 120, y: 0, vx: 0, vy: -1.15, color: "#dc2626", trace: [] },
+        { name: "m₃", m: 12, x: 0, y: 150, vx: -1.25, vy: 0, color: "#16a34a", trace: [] }
+      ];
+
+      removeCenterOfMassMotion();
+
+      initialEnergy = totalEnergy();
+      initialMomentum = angularMomentum();
+      initialCM = centerOfMass();
+
+      energyData = [];
+      momentumData = [];
+      cmData = [];
+      running = true;
+    }
+
+    function removeCenterOfMassMotion() {
+      let totalMass = 0;
+      let px = 0;
+      let py = 0;
+
+      for (const b of bodies) {
+        totalMass += b.m;
+        px += b.m * b.vx;
+        py += b.m * b.vy;
+      }
+
+      const vxCM = px / totalMass;
+      const vyCM = py / totalMass;
+
+      for (const b of bodies) {
+        b.vx -= vxCM;
+        b.vy -= vyCM;
+      }
+    }
+
+    function cloneState() {
+      return bodies.map(b => ({
+        m: b.m,
+        x: b.x,
+        y: b.y,
+        vx: b.vx,
+        vy: b.vy
+      }));
+    }
+
+    function accelerations(state) {
+      const acc = state.map(() => ({ ax: 0, ay: 0 }));
+
+      for (let i = 0; i < state.length; i++) {
+        for (let j = 0; j < state.length; j++) {
+          if (i === j) continue;
+
+          const dx = state[j].x - state[i].x;
+          const dy = state[j].y - state[i].y;
+
+          const r2 = dx * dx + dy * dy + softening;
+          const r = Math.sqrt(r2);
+          const factor = G * state[j].m / (r2 * r);
+
+          acc[i].ax += factor * dx;
+          acc[i].ay += factor * dy;
+        }
+      }
+
+      return acc;
+    }
+
+    function derivative(state) {
+      const acc = accelerations(state);
+
+      return state.map((b, i) => ({
+        dx: b.vx,
+        dy: b.vy,
+        dvx: acc[i].ax,
+        dvy: acc[i].ay
+      }));
+    }
+
+    function addState(state, k, scale) {
+      return state.map((b, i) => ({
+        m: b.m,
+        x: b.x + k[i].dx * scale,
+        y: b.y + k[i].dy * scale,
+        vx: b.vx + k[i].dvx * scale,
+        vy: b.vy + k[i].dvy * scale
+      }));
+    }
+
+    function rk4Step(dt) {
+      const s0 = cloneState();
+
+      const k1 = derivative(s0);
+      const k2 = derivative(addState(s0, k1, dt / 2));
+      const k3 = derivative(addState(s0, k2, dt / 2));
+      const k4 = derivative(addState(s0, k3, dt));
+
+      for (let i = 0; i < bodies.length; i++) {
+        bodies[i].x += dt / 6 * (k1[i].dx + 2 * k2[i].dx + 2 * k3[i].dx + k4[i].dx);
+        bodies[i].y += dt / 6 * (k1[i].dy + 2 * k2[i].dy + 2 * k3[i].dy + k4[i].dy);
+
+        bodies[i].vx += dt / 6 * (k1[i].dvx + 2 * k2[i].dvx + 2 * k3[i].dvx + k4[i].dvx);
+        bodies[i].vy += dt / 6 * (k1[i].dvy + 2 * k2[i].dvy + 2 * k3[i].dvy + k4[i].dvy);
+      }
+    }
+
+    function eulerStep(dt) {
+      const acc = accelerations(cloneState());
+
+      for (let i = 0; i < bodies.length; i++) {
+        bodies[i].vx += acc[i].ax * dt;
+        bodies[i].vy += acc[i].ay * dt;
+
+        bodies[i].x += bodies[i].vx * dt;
+        bodies[i].y += bodies[i].vy * dt;
+      }
+    }
+
+    function totalEnergy() {
+      let kinetic = 0;
+      let potential = 0;
+
+      for (let i = 0; i < bodies.length; i++) {
+        const b = bodies[i];
+        kinetic += 0.5 * b.m * (b.vx * b.vx + b.vy * b.vy);
+
+        for (let j = i + 1; j < bodies.length; j++) {
+          const c = bodies[j];
+          const dx = c.x - b.x;
+          const dy = c.y - b.y;
+          const r = Math.sqrt(dx * dx + dy * dy + softening);
+          potential += -G * b.m * c.m / r;
+        }
+      }
+
+      return kinetic + potential;
+    }
+
+    function angularMomentum() {
+      let L = 0;
+
+      for (const b of bodies) {
+        L += b.m * (b.x * b.vy - b.y * b.vx);
+      }
+
+      return L;
+    }
+
+    function centerOfMass() {
+      let totalMass = 0;
+      let x = 0;
+      let y = 0;
+
+      for (const b of bodies) {
+        totalMass += b.m;
+        x += b.m * b.x;
+        y += b.m * b.y;
+      }
+
+      return {
+        x: x / totalMass,
+        y: y / totalMass
+      };
+    }
+
+    function stepSimulation() {
+      const v = values();
+
+      if (v.method === "rk4") {
+        rk4Step(v.dt);
+      } else {
+        eulerStep(v.dt);
+      }
+
+      for (const b of bodies) {
+        b.trace.push({ x: b.x, y: b.y });
+        if (b.trace.length > 1000) b.trace.shift();
+      }
+
+      const E = totalEnergy();
+      const L = angularMomentum();
+      const CM = centerOfMass();
+
+      energyData.push(E - initialEnergy);
+      momentumData.push(L - initialMomentum);
+
+      const cmDrift = Math.sqrt(
+        Math.pow(CM.x - initialCM.x, 2) +
+        Math.pow(CM.y - initialCM.y, 2)
+      );
+
+      cmData.push(cmDrift);
+
+      if (energyData.length > 600) energyData.shift();
+      if (momentumData.length > 600) momentumData.shift();
+      if (cmData.length > 600) cmData.shift();
+    }
+
+    function drawOrbit() {
+      const w = orbitCanvas.width;
+      const h = orbitCanvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      orbitCtx.clearRect(0, 0, w, h);
+
+      orbitCtx.strokeStyle = "#e5e7eb";
+      orbitCtx.lineWidth = 1;
+      orbitCtx.beginPath();
+      orbitCtx.moveTo(0, cy);
+      orbitCtx.lineTo(w, cy);
+      orbitCtx.moveTo(cx, 0);
+      orbitCtx.lineTo(cx, h);
+      orbitCtx.stroke();
+
+      const CM = centerOfMass();
+
+      orbitCtx.fillStyle = "#111827";
+      orbitCtx.font = "15px Arial";
+      orbitCtx.fillText("Method: " + values().method.toUpperCase(), 20, 30);
+      orbitCtx.fillText("Center of mass is marked in yellow.", 20, 55);
+
+      orbitCtx.fillStyle = "#f59e0b";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx + CM.x, cy - CM.y, 7, 0, Math.PI * 2);
+      orbitCtx.fill();
+
+      for (const b of bodies) {
+        if (b.trace.length > 1) {
+          orbitCtx.strokeStyle = b.color;
+          orbitCtx.lineWidth = 2;
+          orbitCtx.beginPath();
+
+          for (let i = 0; i < b.trace.length; i++) {
+            const p = b.trace[i];
+            if (i === 0) orbitCtx.moveTo(cx + p.x, cy - p.y);
+            else orbitCtx.lineTo(cx + p.x, cy - p.y);
+          }
+
+          orbitCtx.stroke();
+        }
+
+        const radius = 5 + Math.sqrt(b.m);
+        orbitCtx.fillStyle = b.color;
+        orbitCtx.beginPath();
+        orbitCtx.arc(cx + b.x, cy - b.y, radius, 0, Math.PI * 2);
+        orbitCtx.fill();
+      }
+    }
+
+    function drawGraph(ctx, canvas, data, title, unitText) {
+      const w = canvas.width;
+      const h = canvas.height;
+      const margin = 50;
+
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.strokeStyle = "#111827";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(margin, h / 2);
+      ctx.lineTo(w - margin, h / 2);
+      ctx.moveTo(margin, margin);
+      ctx.lineTo(margin, h - margin);
+      ctx.stroke();
+
+      ctx.fillStyle = "#111827";
+      ctx.font = "14px Arial";
+      ctx.fillText(title, 20, 25);
+      ctx.fillText("time", w - 85, h / 2 + 28);
+      ctx.fillText("0", margin - 20, h / 2 + 5);
+
+      if (data.length > 1) {
+        const maxAbs = Math.max(...data.map(v => Math.abs(v)), 1e-6);
+
+        ctx.strokeStyle = "#7c3aed";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+
+        for (let i = 0; i < data.length; i++) {
+          const x = margin + (i / 600) * (w - 2 * margin);
+          const y = h / 2 - (data[i] / maxAbs) * (h / 2 - margin - 15);
+
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+
+        ctx.stroke();
+
+        const current = data[data.length - 1];
+
+        ctx.fillStyle = "#111827";
+        ctx.font = "14px Arial";
+        ctx.fillText(unitText + ": " + current.toExponential(3), 20, 50);
+      }
+    }
+
+    function animate() {
+      updateLabels();
+
+      if (running) {
+        const v = values();
+        for (let i = 0; i < v.speed; i++) {
+          stepSimulation();
+        }
+      }
+
+      drawOrbit();
+      drawGraph(energyCtx, energyCanvas, energyData, "Energy error: E(t) - E(0)", "ΔE");
+      drawGraph(momentumCtx, momentumCanvas, momentumData, "Angular momentum error: L(t) - L(0)", "ΔL");
+      drawGraph(cmCtx, cmCanvas, cmData, "Center of mass drift", "drift");
+
+      requestAnimationFrame(animate);
+    }
+
+    function toggleAnimation() {
+      running = !running;
+    }
+
+    function clearGraphs() {
+      energyData = [];
+      momentumData = [];
+      cmData = [];
+
+      for (const b of bodies) {
+        b.trace = [];
+      }
+    }
+
+    dtSlider.addEventListener("input", resetSimulation);
+    methodSelect.addEventListener("change", resetSimulation);
+
+    resetSimulation();
+    animate();
+  </script>
+</body>
+</html>
