@@ -4,188 +4,151 @@
 
 Weak-field approximation:
 
-<div align="center" style="font-size:26px;">
+$$
+\frac{\Delta f}{f} \approx \frac{\Delta \Phi}{c^2}
+$$
 
-**Δf**  
-**──── ≈ ΔΦ / c²**  
-** f**
+Near the Earth’s surface:
 
-</div>
-
-where:
-
-- **Δf / f** — relative change in frequency  
-- **ΔΦ** — change in gravitational potential  
-- **c** — speed of light  
-
-Near Earth’s surface:
-
-<div align="center" style="font-size:26px;">
-
-**ΔΦ = gh**
-
-</div>
+$$
+\Delta \Phi = gh
+$$
 
 where:
 
-- **g = 9.8 m/s²**
-- **c = 3 × 10⁸ m/s**
+$$
+g = 9.8 \text{ m/s}^2
+$$
+
+$$
+c = 3 \times 10^8 \text{ m/s}
+$$
+
+For calculation, take:
+
+$$
+h = 1 \text{ m}
+$$
 
 ---
 
 # Solution
 
-## 1. Derive the Shift for Earth’s Surface
+## 1. Derive the Shift for the Earth’s Surface
 
-The gravitational potential difference near Earth is:
+The gravitational redshift formula is:
 
-<div align="center" style="font-size:26px;">
+$$
+\frac{\Delta f}{f} \approx \frac{\Delta \Phi}{c^2}
+$$
 
-**ΔΦ = gh**
+Near the Earth’s surface, the change in gravitational potential is:
 
-</div>
+$$
+\Delta \Phi = gh
+$$
 
-Substitute this into the redshift formula:
+Substitute this into the formula:
 
-<div align="center" style="font-size:26px;">
+$$
+\frac{\Delta f}{f} \approx \frac{gh}{c^2}
+$$
 
-**Δf**  
-**──── ≈ gh / c²**  
-** f**
+So, for the Earth’s surface:
 
-</div>
-
-So, for Earth’s surface:
-
-<div align="center" style="font-size:28px;">
-
-**Δf**  
-**──── ≈ gh / c²**  
-** f**
-
-</div>
+$$
+\frac{\Delta f}{f} \approx \frac{gh}{c^2}
+$$
 
 ---
 
 ## 2. Calculate the Relative Change in Frequency
 
-For a height difference:
+Substitute the values:
 
-<div align="center" style="font-size:26px;">
-
-**h = 1 m**
-
-</div>
-
-we have:
-
-<div align="center" style="font-size:26px;">
-
-**Δf**  
-**──── ≈ (9.8 × 1) / (3 × 10⁸)²**  
-** f**
-
-</div>
+$$
+\frac{\Delta f}{f} \approx \frac{9.8 \times 1}{(3 \times 10^8)^2}
+$$
 
 Calculate the denominator:
 
-<div align="center" style="font-size:26px;">
+$$
+(3 \times 10^8)^2 = 9 \times 10^{16}
+$$
 
-**(3 × 10⁸)² = 9 × 10¹⁶**
+Then:
 
-</div>
+$$
+\frac{\Delta f}{f} \approx \frac{9.8}{9 \times 10^{16}}
+$$
 
-Therefore:
+$$
+\frac{\Delta f}{f} \approx 1.09 \times 10^{-16}
+$$
 
-<div align="center" style="font-size:26px;">
+Therefore, the relative frequency change near Earth for a height difference of 1 meter is:
 
-**Δf**  
-**──── ≈ 9.8 / (9 × 10¹⁶)**  
-** f**
-
-</div>
-
-<div align="center" style="font-size:28px;">
-
-**Δf**  
-**──── ≈ 1.09 × 10⁻¹⁶**  
-** f**
-
-</div>
+$$
+\frac{\Delta f}{f} \approx 1.09 \times 10^{-16}
+$$
 
 ---
 
 ## 3. Interpretation as Gravitational Time Dilation
 
-A clock at a higher position in a gravitational field has higher gravitational potential.
+A clock at a higher position in a gravitational field runs faster than a clock at a lower position.
 
-Therefore:
+This means:
 
-<div align="center" style="font-size:26px;">
+$$
+\text{higher clock} \rightarrow \text{faster}
+$$
 
-**higher clock runs faster**
+$$
+\text{lower clock} \rightarrow \text{slower}
+$$
 
-</div>
+Light moving upward loses energy, so its frequency decreases.
 
-and:
-
-<div align="center" style="font-size:26px;">
-
-**lower clock runs slower**
-
-</div>
-
-This means light moving upward loses energy and its frequency decreases.
-
-So, the light is gravitationally redshifted.
+This effect is called gravitational redshift.
 
 ---
 
 ## 4. Estimate the Effect for a Neutron Star
 
-For a neutron star, the gravitational field is very strong.
+For a compact object such as a neutron star, the approximate redshift scale is:
 
-The approximate redshift scale is:
+$$
+\frac{\Delta f}{f} \approx \frac{GM}{Rc^2}
+$$
 
-<div align="center" style="font-size:26px;">
+Take typical neutron star values:
 
-**GM**  
-**──── ≈ redshift scale**  
-**Rc²**
+$$
+M \approx 1.4M_{\odot}
+$$
 
-</div>
-
-Typical neutron star values:
-
-<div align="center" style="font-size:26px;">
-
-**M ≈ 1.4M☉**
-
-</div>
-
-<div align="center" style="font-size:26px;">
-
-**R ≈ 10 km**
-
-</div>
+$$
+R \approx 10 \text{ km}
+$$
 
 For these values:
 
-<div align="center" style="font-size:28px;">
+$$
+\frac{GM}{Rc^2} \approx 0.2
+$$
 
-**GM**  
-**──── ≈ 0.2**  
-**Rc²**
+So the gravitational redshift is approximately:
 
-</div>
+$$
+\frac{\Delta f}{f} \approx 0.2
+$$
 
-So the neutron star gravitational redshift is approximately:
+or:
 
-<div align="center" style="font-size:28px;">
-
-**20%**
-
-</div>
+$$
+20\%
+$$
 
 ---
 
@@ -193,43 +156,29 @@ So the neutron star gravitational redshift is approximately:
 
 For Earth over a height difference of 1 meter:
 
-<div align="center" style="font-size:26px;">
-
-**Δf**  
-**──── ≈ 1.09 × 10⁻¹⁶**  
-** f**
-
-</div>
+$$
+\frac{\Delta f}{f} \approx 1.09 \times 10^{-16}
+$$
 
 For a neutron star:
 
-<div align="center" style="font-size:26px;">
+$$
+\frac{\Delta f}{f} \approx 0.2
+$$
 
-**Δf**  
-**──── ≈ 0.2**  
-** f**
+Compare the two effects:
 
-</div>
+$$
+\frac{0.2}{1.09 \times 10^{-16}} \approx 1.8 \times 10^{15}
+$$
 
-Comparison:
+Thus, the neutron star effect is about:
 
-<div align="center" style="font-size:26px;">
+$$
+10^{15}
+$$
 
-**0.2**  
-**──────────── ≈ 1.8 × 10¹⁵**  
-**1.09 × 10⁻¹⁶**
-
-</div>
-
-Thus, the neutron star effect is approximately:
-
-<div align="center" style="font-size:28px;">
-
-**10¹⁵ times larger**
-
-</div>
-
-than the laboratory-scale effect on Earth.
+times larger than the laboratory-scale gravitational redshift on Earth.
 
 ---
 
@@ -237,42 +186,34 @@ than the laboratory-scale effect on Earth.
 
 The weak-field gravitational redshift formula is:
 
-<div align="center" style="font-size:28px;">
-
-**Δf**  
-**──── ≈ ΔΦ / c²**  
-** f**
-
-</div>
+$$
+\frac{\Delta f}{f} \approx \frac{\Delta \Phi}{c^2}
+$$
 
 Near Earth’s surface:
 
-<div align="center" style="font-size:28px;">
-
-**Δf**  
-**──── ≈ gh / c²**  
-** f**
-
-</div>
+$$
+\frac{\Delta f}{f} \approx \frac{gh}{c^2}
+$$
 
 For a height difference of 1 meter:
 
-<div align="center" style="font-size:28px;">
+$$
+\frac{\Delta f}{f} \approx 1.09 \times 10^{-16}
+$$
 
-**Δf**  
-**──── ≈ 1.09 × 10⁻¹⁶**  
-** f**
+This effect is very small on Earth, but it can be measured using precise atomic clocks.
 
-</div>
+For a neutron star, the gravitational redshift can be approximately:
 
-This effect is very small on Earth but measurable with precise atomic clocks.
+$$
+\frac{\Delta f}{f} \approx 0.2
+$$
 
-For a neutron star, the effect is much stronger:
+This is about:
 
-<div align="center" style="font-size:28px;">
+$$
+20\%
+$$
 
-**Δf / f ≈ 0.2 ≈ 20%**
-
-</div>
-
-Therefore, gravitational redshift is negligible in everyday conditions but very important near compact objects such as neutron stars.
+So gravitational redshift is weak on Earth but very strong near compact objects such as neutron stars.
