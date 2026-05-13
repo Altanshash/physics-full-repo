@@ -3,19 +3,19 @@
 ## Given
 
 $$
-v = 2.0 \times 10^6 \ \text{m/s}
+v = 2.0 \times 10^6 \text{ m/s}
 $$
 
 $$
-m_e = 9.11 \times 10^{-31} \ \text{kg}
+m_e = 9.11 \times 10^{-31} \text{ kg}
 $$
 
 $$
-h = 6.626 \times 10^{-34} \ \text{J·s}
+h = 6.626 \times 10^{-34} \text{ J·s}
 $$
 
 $$
-d \approx 10^{-10} \ \text{m}
+d = 1.0 \times 10^{-10} \text{ m}
 $$
 
 ---
@@ -24,76 +24,45 @@ $$
 
 ### 1. Momentum of the electron
 
-Formula:
-
 $$
 p = mv
 $$
 
-Substitution:
-
 $$
-p = \left(9.11 \times 10^{-31}\right)\left(2.0 \times 10^6\right)
+p = (9.11 \times 10^{-31})(2.0 \times 10^6)
 $$
 
-Answer:
-
 $$
-p = 1.82 \times 10^{-24} \ \text{kg·m/s}
+p = 1.82 \times 10^{-24} \text{ kg·m/s}
 $$
 
 ---
 
 ### 2. de Broglie wavelength
 
-Formula:
-
 $$
 \lambda = \frac{h}{p}
 $$
 
-Substitution:
-
 $$
-\lambda =
-\frac{6.626 \times 10^{-34}}
-{1.82 \times 10^{-24}}
+\lambda = \frac{6.626 \times 10^{-34}}{1.82 \times 10^{-24}}
 $$
 
-Answer:
-
 $$
-\lambda \approx 3.64 \times 10^{-10} \ \text{m}
+\lambda = 3.64 \times 10^{-10} \text{ m}
 $$
 
 ---
 
 ### 3. Comparison with the size of an atom
 
-Typical atom size:
-
 $$
-d \approx 10^{-10} \ \text{m}
+\frac{\lambda}{d} = \frac{3.64 \times 10^{-10}}{1.0 \times 10^{-10}}
 $$
 
-Electron wavelength:
-
 $$
-\lambda \approx 3.64 \times 10^{-10} \ \text{m}
+\frac{\lambda}{d} = 3.64
 $$
-
-Comparison:
-
-$$
-\frac{\lambda}{d}
-=
-\frac{3.64 \times 10^{-10}}
-{1.0 \times 10^{-10}}
-=
-3.64
-$$
-
-So:
 
 $$
 \lambda \approx 3.6d
@@ -105,7 +74,7 @@ The electron wavelength is comparable to the size of an atom.
 
 ### 4. Change in wavelength when velocity is doubled
 
-de Broglie equation:
+The de Broglie wavelength is inversely proportional to velocity:
 
 $$
 \lambda = \frac{h}{mv}
@@ -117,25 +86,22 @@ $$
 v_2 = 2v
 $$
 
-Then:
+then:
 
 $$
 \lambda_2 = \frac{h}{m(2v)}
 $$
 
 $$
-\lambda_2 = \frac{1}{2}\lambda
+\lambda_2 = \frac{\lambda}{2}
 $$
 
 $$
-\lambda_2 =
-\frac{3.64 \times 10^{-10}}{2}
+\lambda_2 = \frac{3.64 \times 10^{-10}}{2}
 $$
 
-Answer:
-
 $$
-\lambda_2 \approx 1.82 \times 10^{-10} \ \text{m}
+\lambda_2 = 1.82 \times 10^{-10} \text{ m}
 $$
 
 ---
@@ -148,9 +114,7 @@ $$
 v \uparrow \quad \Rightarrow \quad \lambda \downarrow
 $$
 
-A smaller wavelength is harder to observe.
-
-Therefore, the wave effect becomes **harder to observe**.
+Therefore, when the velocity is doubled, the wave effect becomes **harder to observe**.
 
 ---
 
@@ -159,21 +123,25 @@ Therefore, the wave effect becomes **harder to observe**.
 The momentum of the electron is:
 
 $$
-p = 1.82 \times 10^{-24} \ \text{kg·m/s}
+p = 1.82 \times 10^{-24} \text{ kg·m/s}
 $$
 
 The de Broglie wavelength is:
 
 $$
-\lambda \approx 3.64 \times 10^{-10} \ \text{m}
+\lambda = 3.64 \times 10^{-10} \text{ m}
 $$
 
-This wavelength is close to the size of an atom, so the electron can show wave properties.
-
-If the velocity is doubled:
+This value is comparable to the size of an atom:
 
 $$
-\lambda_2 = 1.82 \times 10^{-10} \ \text{m}
+\lambda \approx 3.6d
 $$
 
-The wavelength becomes two times smaller, so the wave effect is harder to observe.
+If the velocity is doubled, the wavelength becomes:
+
+$$
+\lambda_2 = 1.82 \times 10^{-10} \text{ m}
+$$
+
+So, the wavelength becomes two times smaller and the wave effect is harder to observe.
