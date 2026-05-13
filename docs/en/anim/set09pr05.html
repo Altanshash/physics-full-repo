@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kepler's Third Law</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .panel {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    canvas {
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #374151;
+    }
+
+    table {
+      margin: 15px auto;
+      border-collapse: collapse;
+      background: white;
+      color: #111827;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 8px 12px;
+    }
+
+    th {
+      background: #e5e7eb;
+    }
+
+    .results {
+      max-width: 760px;
+      margin: 10px auto 30px;
+      padding: 20px;
+      background: #1f2937;
+      border-radius: 12px;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .value {
+      color: #93c5fd;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Problem 5 - Kepler's Third Law Data Analysis</h1>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Graph of T² as a Function of a³</h2>
+      <canvas id="graphCanvas" width="720" height="560"></canvas>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Planetary Data</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Planet</th>
+          <th>a</th>
+          <th>T</th>
+          <th>a³</th>
+          <th>T²</th>
+        </tr>
+      </thead>
+      <tbody id="dataTable"></tbody>
+    </table>
+  </div>
+
+  <div class="results">
+    Regression model:
+    <span class="value">T² = C a³ + b</span><br>
+
+    Proportionality constant C:
+    <span id="slopeValue" class="value"></span><br>
+
+    Intercept b:
+    <span id="interceptValue" class="value"></span><br>
+
+    Goodness of fit R²:
+    <span id="r2Value" class="value"></span>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("graphCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const dataTable = document.getElementById("dataTable");
+    const slopeValue = document.getElementById("slopeValue");
+    const interceptValue = document.getElementById("interceptValue");
+    const r2Value = document.getElementById("r2Value");
+
+    const planets = [
+      { name: "Mercury", a: 0.387, T: 0.241 },
+      { name: "Venus", a: 0.723, T: 0.615 },
+      { name: "Earth", a: 1.000, T: 1.000 },
+      { name: "Mars", a: 1.524, T: 1.881 },
+      { name: "Jupiter", a: 5.203, T: 11.862 },
+      { name: "Saturn", a: 9.537, T: 29.457 }
+    ];
+
+    const points = planets.map(p => {
+      return {
+        name: p.name,
+        a: p.a,
+        T: p.T,
+        x: Math.pow(p.a, 3),
+        y: Math.pow(p.T, 2)
+      };
+    });
+
+    function linearRegression(data) {
+      const n = data.length;
+
+      let sumX = 0;
+      let sumY = 0;
+      let sumXY = 0;
+      let sumXX = 0;
+
+      for (let p of data) {
+        sumX += p.x;
+        sumY += p.y;
+        sumXY += p.x * p.y;
+        sumXX += p.x * p.x;
+      }
+
+      const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+      const intercept = (sumY - slope * sumX) / n;
+
+      const meanY = sumY / n;
+
+      let ssTot = 0;
+      let ssRes = 0;
+
+      for (let p of data) {
+        const predicted = slope * p.x + intercept;
+        ssTot += Math.pow(p.y - meanY, 2);
+        ssRes += Math.pow(p.y - predicted, 2);
+      }
+
+      const r2 = 1 - ssRes / ssTot;
+
+      return { slope, intercept, r2 };
+    }
+
+    const regression = linearRegression(points);
+
+    function fillTable() {
+      dataTable.innerHTML = "";
+
+      for (let p of points) {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${p.name}</td>
+          <td>${p.a.toFixed(3)}</td>
+          <td>${p.T.toFixed(3)}</td>
+          <td>${p.x.toFixed(3)}</td>
+          <td>${p.y.toFixed(3)}</td>
+        `;
+
+        dataTable.appendChild(row);
+      }
+    }
+
+    function drawGraph(progress) {
+      const w = canvas.width;
+      const h = canvas.height;
+      const margin = 70;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const maxX = Math.max(...points.map(p => p.x)) * 1.08;
+      const maxY = Math.max(...points.map(p => p.y)) * 1.08;
+
+      function mapX(x) {
+        return margin + (x / maxX) * (w - 2 * margin);
+      }
+
+      function mapY(y) {
+        return h - margin - (y / maxY) * (h - 2 * margin);
+      }
+
+      ctx.strokeStyle = "#111827";
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(w - margin, h - margin);
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(margin, margin);
+      ctx.stroke();
+
+      ctx.fillStyle = "#111827";
+      ctx.font = "15px Arial";
+      ctx.fillText("a³", w - margin - 20, h - margin + 40);
+      ctx.fillText("T²", margin - 45, margin - 20);
+
+      for (let i = 0; i <= 5; i++) {
+        const xValue = (maxX / 5) * i;
+        const yValue = (maxY / 5) * i;
+
+        const xPixel = mapX(xValue);
+        const yPixel = mapY(yValue);
+
+        ctx.strokeStyle = "#e5e7eb";
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+        ctx.moveTo(xPixel, h - margin);
+        ctx.lineTo(xPixel, margin);
+        ctx.moveTo(margin, yPixel);
+        ctx.lineTo(w - margin, yPixel);
+        ctx.stroke();
+
+        ctx.fillStyle = "#111827";
+        ctx.font = "12px Arial";
+        ctx.fillText(xValue.toFixed(0), xPixel - 10, h - margin + 18);
+        ctx.fillText(yValue.toFixed(0), margin - 45, yPixel + 4);
+      }
+
+      ctx.strokeStyle = "#dc2626";
+      ctx.lineWidth = 3;
+
+      const x1 = 0;
+      const x2 = maxX * progress;
+      const y1 = regression.slope * x1 + regression.intercept;
+      const y2 = regression.slope * x2 + regression.intercept;
+
+      ctx.beginPath();
+      ctx.moveTo(mapX(x1), mapY(y1));
+      ctx.lineTo(mapX(x2), mapY(y2));
+      ctx.stroke();
+
+      for (let p of points) {
+        if (p.x <= maxX * progress) {
+          ctx.fillStyle = "#2563eb";
+          ctx.beginPath();
+          ctx.arc(mapX(p.x), mapY(p.y), 7, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = "#111827";
+          ctx.font = "13px Arial";
+          ctx.fillText(p.name, mapX(p.x) + 8, mapY(p.y) - 8);
+        }
+      }
+
+      ctx.fillStyle = "#111827";
+      ctx.font = "15px Arial";
+      ctx.fillText("Blue points: planetary data", 20, 30);
+      ctx.fillText("Red line: linear regression", 20, 52);
+    }
+
+    let progress = 0;
+
+    function animate() {
+      progress += 0.006;
+
+      if (progress > 1) {
+        progress = 1;
+      }
+
+      drawGraph(progress);
+
+      requestAnimationFrame(animate);
+    }
+
+    fillTable();
+
+    slopeValue.textContent = regression.slope.toFixed(6);
+    interceptValue.textContent = regression.intercept.toFixed(6);
+    r2Value.textContent = regression.r2.toFixed(6);
+
+    animate();
+  </script>
+</body>
+</html>
