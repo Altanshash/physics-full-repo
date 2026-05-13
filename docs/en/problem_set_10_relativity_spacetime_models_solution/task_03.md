@@ -4,39 +4,39 @@
 
 Two events are given in frame S:
 
-<center>
+<div align="center">
 
 x₁ = 0 , t₁ = 0
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 x₂ = 900 m , t₂ = 4 μs
 
-</center>
+</div>
 
 <br>
 
 Frame S′ moves with velocity:
 
-<center>
+<div align="center">
 
 v = 0.6c
 
-</center>
+</div>
 
 <br>
 
 Speed of light:
 
-<center>
+<div align="center">
 
 c = 3 × 10⁸ m/s
 
-</center>
+</div>
 
 ---
 
@@ -46,53 +46,53 @@ c = 3 × 10⁸ m/s
 
 Lorentz factor formula:
 
-<center>
+<div align="center">
 
 γ = 1 / √(1 − v²/c²)
 
-</center>
+</div>
 
 <br>
 
 Substitute the velocity:
 
-<center>
+<div align="center">
 
 γ = 1 / √(1 − 0.6²)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 γ = 1 / √(1 − 0.36)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 γ = 1 / √0.64
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 γ = 1 / 0.8
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 γ = 1.25
 
-</center>
+</div>
 
 ---
 
@@ -100,91 +100,91 @@ Substitute the velocity:
 
 Position transformation formula:
 
-<center>
+<div align="center">
 
 x′ = γ(x − vt)
 
-</center>
+</div>
 
 <br>
 
 Given:
 
-<center>
+<div align="center">
 
 x = 900 m
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 t = 4 × 10⁻⁶ s
 
-</center>
+</div>
 
 <br>
 
 Velocity:
 
-<center>
+<div align="center">
 
 v = 0.6 × 3 × 10⁸
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 v = 1.8 × 10⁸ m/s
 
-</center>
+</div>
 
 <br>
 
 First calculate vt:
 
-<center>
+<div align="center">
 
 vt = (1.8 × 10⁸)(4 × 10⁻⁶)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 vt = 720 m
 
-</center>
+</div>
 
 <br>
 
 Now substitute:
 
-<center>
+<div align="center">
 
 x′ = 1.25(900 − 720)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 x′ = 1.25(180)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 x′ = 225 m
 
-</center>
+</div>
 
 ---
 
@@ -192,99 +192,99 @@ x′ = 225 m
 
 Time transformation formula:
 
-<center>
+<div align="center">
 
 t′ = γ(t − vx/c²)
 
-</center>
+</div>
 
 <br>
 
 First calculate vx:
 
-<center>
+<div align="center">
 
 vx = (1.8 × 10⁸)(900)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 vx = 1.62 × 10¹¹
 
-</center>
+</div>
 
 <br>
 
 Calculate c²:
 
-<center>
+<div align="center">
 
 c² = (3 × 10⁸)²
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 c² = 9 × 10¹⁶
 
-</center>
+</div>
 
 <br>
 
 Now calculate:
 
-<center>
+<div align="center">
 
 vx/c² = (1.62 × 10¹¹) / (9 × 10¹⁶)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 vx/c² = 1.8 × 10⁻⁶ s
 
-</center>
+</div>
 
 <br>
 
 Substitute into the formula:
 
-<center>
+<div align="center">
 
 t′ = 1.25(4 × 10⁻⁶ − 1.8 × 10⁻⁶)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 t′ = 1.25(2.2 × 10⁻⁶)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 t′ = 2.75 × 10⁻⁶ s
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 t′ = 2.75 μs
 
-</center>
+</div>
 
 ---
 
@@ -292,31 +292,31 @@ t′ = 2.75 μs
 
 First event:
 
-<center>
+<div align="center">
 
 t₁′ = 0
 
-</center>
+</div>
 
 <br>
 
 Second event:
 
-<center>
+<div align="center">
 
 t₂′ = 2.75 μs
 
-</center>
+</div>
 
 <br>
 
 Since:
 
-<center>
+<div align="center">
 
 t₂′ > t₁′
 
-</center>
+</div>
 
 <br>
 
@@ -324,39 +324,39 @@ the order of events does not change.
 
 Now calculate:
 
-<center>
+<div align="center">
 
 cΔt = (3 × 10⁸)(4 × 10⁻⁶)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 cΔt = 1200 m
 
-</center>
+</div>
 
 <br>
 
 Spatial separation:
 
-<center>
+<div align="center">
 
 Δx = 900 m
 
-</center>
+</div>
 
 <br>
 
 Since:
 
-<center>
+<div align="center">
 
 cΔt > Δx
 
-</center>
+</div>
 
 <br>
 
@@ -370,65 +370,65 @@ Therefore, the order of events cannot change in any inertial frame.
 
 Spacetime interval formula:
 
-<center>
+<div align="center">
 
 s² = c²t² − x²
 
-</center>
+</div>
 
 <br>
 
 This can also be written as:
 
-<center>
+<div align="center">
 
 s² = (ct)² − x²
 
-</center>
+</div>
 
 <br>
 
 Calculate ct:
 
-<center>
+<div align="center">
 
 ct = (3 × 10⁸)(4 × 10⁻⁶)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 ct = 1200 m
 
-</center>
+</div>
 
 <br>
 
 Now calculate:
 
-<center>
+<div align="center">
 
 s² = 1200² − 900²
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 s² = 1,440,000 − 810,000
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 s² = 630,000 m²
 
-</center>
+</div>
 
 ---
 
@@ -436,73 +436,73 @@ s² = 630,000 m²
 
 In frame S′:
 
-<center>
+<div align="center">
 
 x′ = 225 m
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 t′ = 2.75 × 10⁻⁶ s
 
-</center>
+</div>
 
 <br>
 
 Calculate ct′:
 
-<center>
+<div align="center">
 
 ct′ = (3 × 10⁸)(2.75 × 10⁻⁶)
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 ct′ = 825 m
 
-</center>
+</div>
 
 <br>
 
 Now calculate:
 
-<center>
+<div align="center">
 
 s′² = 825² − 225²
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 s′² = 680,625 − 50,625
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 s′² = 630,000 m²
 
-</center>
+</div>
 
 <br>
 
 Therefore:
 
-<center>
+<div align="center">
 
 s′² = s²
 
-</center>
+</div>
 
 ---
 
@@ -510,19 +510,19 @@ s′² = s²
 
 The transformed coordinates of the second event in frame S′ are:
 
-<center>
+<div align="center">
 
 x₂′ = 225 m
 
-</center>
+</div>
 
 <br>
 
-<center>
+<div align="center">
 
 t₂′ = 2.75 μs
 
-</center>
+</div>
 
 <br>
 
@@ -530,21 +530,21 @@ The order of events does not change because the interval is timelike.
 
 The spacetime interval is:
 
-<center>
+<div align="center">
 
 s² = 630,000 m²
 
-</center>
+</div>
 
 <br>
 
 The interval is the same in both frames:
 
-<center>
+<div align="center">
 
 s′² = s²
 
-</center>
+</div>
 
 <br>
 
