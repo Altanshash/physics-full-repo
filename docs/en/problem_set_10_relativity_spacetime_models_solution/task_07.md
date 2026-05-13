@@ -4,9 +4,9 @@
 
 Relativistic total energy:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-E = γmc²
+**E = γmc²**
 
 </div>
 
@@ -14,19 +14,19 @@ E = γmc²
 
 Relativistic momentum:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-p = γmv
+**p = γmv**
 
 </div>
 
 <br>
 
-Kinetic energy:
+Relativistic kinetic energy:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-Eₖ = (γ − 1)mc²
+**Eₖ = (γ − 1)mc²**
 
 </div>
 
@@ -34,19 +34,19 @@ Eₖ = (γ − 1)mc²
 
 Energy-momentum relation:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-E² = p²c² + m²c⁴
+**E² = p²c² + m²c⁴**
 
 </div>
 
 <br>
 
-Electron speed:
+Electron velocity:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-v = 0.95c
+**v = 0.95c**
 
 </div>
 
@@ -54,9 +54,9 @@ v = 0.95c
 
 Rest energy of an electron:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-mc² = 0.511 MeV
+**mc² = 0.511 MeV**
 
 </div>
 
@@ -64,13 +64,13 @@ mc² = 0.511 MeV
 
 # Solution
 
-## 1. Calculate the Lorentz Factor
+## 1. Lorentz Factor
 
-Lorentz factor formula:
+The Lorentz factor is:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-γ = 1 / √(1 − v²/c²)
+**γ = 1 / √(1 − v²/c²)**
 
 </div>
 
@@ -78,43 +78,43 @@ Lorentz factor formula:
 
 Since:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-v = 0.95c
-
-</div>
-
-<br>
-
-we get:
-
-<div align="center">
-
-γ = 1 / √(1 − 0.95²)
+**v = 0.95c**
 
 </div>
 
 <br>
 
-<div align="center">
+substitute into the formula:
 
-γ = 1 / √(1 − 0.9025)
+<div align="center" style="font-size:24px;">
 
-</div>
-
-<br>
-
-<div align="center">
-
-γ = 1 / √0.0975
+**γ = 1 / √(1 − 0.95²)**
 
 </div>
 
 <br>
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-γ ≈ 3.20
+**γ = 1 / √(1 − 0.9025)**
+
+</div>
+
+<br>
+
+<div align="center" style="font-size:24px;">
+
+**γ = 1 / √0.0975**
+
+</div>
+
+<br>
+
+<div align="center" style="font-size:24px;">
+
+**γ ≈ 3.20**
 
 </div>
 
@@ -122,29 +122,39 @@ we get:
 
 ## 2. Total Energy of the Electron
 
-Use:
+Use the relativistic total energy formula:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-E = γmc²
-
-</div>
-
-<br>
-
-Substitute:
-
-<div align="center">
-
-E = 3.20 × 0.511 MeV
+**E = γmc²**
 
 </div>
 
 <br>
 
-<div align="center">
+Substitute the values:
 
-E ≈ 1.64 MeV
+<div align="center" style="font-size:24px;">
+
+**E = 3.20 × 0.511 MeV**
+
+</div>
+
+<br>
+
+<div align="center" style="font-size:24px;">
+
+**E ≈ 1.64 MeV**
+
+</div>
+
+<br>
+
+So, the total energy of the electron is:
+
+<div align="center" style="font-size:26px;">
+
+**E ≈ 1.64 MeV**
 
 </div>
 
@@ -152,11 +162,11 @@ E ≈ 1.64 MeV
 
 ## 3. Relativistic Kinetic Energy
 
-Use:
+Use the formula:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-Eₖ = (γ − 1)mc²
+**Eₖ = (γ − 1)mc²**
 
 </div>
 
@@ -164,161 +174,25 @@ Eₖ = (γ − 1)mc²
 
 Substitute:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-Eₖ = (3.20 − 1)(0.511 MeV)
-
-</div>
-
-<br>
-
-<div align="center">
-
-Eₖ = 2.20 × 0.511 MeV
+**Eₖ = (3.20 − 1)(0.511 MeV)**
 
 </div>
 
 <br>
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-Eₖ ≈ 1.12 MeV
-
-</div>
-
----
-
-## 4. Classical Kinetic Energy Comparison
-
-Classical kinetic energy:
-
-<div align="center">
-
-Eₖ,classical = 1/2 mv²
+**Eₖ = 2.20 × 0.511 MeV**
 
 </div>
 
 <br>
 
-Using:
+<div align="center" style="font-size:24px;">
 
-<div align="center">
-
-v = 0.95c
-
-</div>
-
-<br>
-
-we can write:
-
-<div align="center">
-
-Eₖ,classical = 1/2 m(0.95c)²
-
-</div>
-
-<br>
-
-<div align="center">
-
-Eₖ,classical = 1/2 × 0.9025 × mc²
-
-</div>
-
-<br>
-
-<div align="center">
-
-Eₖ,classical = 0.45125mc²
-
-</div>
-
-<br>
-
-Since:
-
-<div align="center">
-
-mc² = 0.511 MeV
-
-</div>
-
-<br>
-
-<div align="center">
-
-Eₖ,classical = 0.45125 × 0.511 MeV
-
-</div>
-
-<br>
-
-<div align="center">
-
-Eₖ,classical ≈ 0.231 MeV
-
-</div>
-
-<br>
-
-The relativistic kinetic energy is:
-
-<div align="center">
-
-Eₖ ≈ 1.12 MeV
-
-</div>
-
-<br>
-
-Thus, the classical result is much smaller and not accurate at:
-
-<div align="center">
-
-v = 0.95c
-
-</div>
-
----
-
-## 5. Limit When v ≪ c
-
-When:
-
-<div align="center">
-
-v ≪ c
-
-</div>
-
-<br>
-
-the Lorentz factor becomes approximately:
-
-<div align="center">
-
-γ ≈ 1 + v²/(2c²)
-
-</div>
-
-<br>
-
-Then relativistic kinetic energy becomes:
-
-<div align="center">
-
-Eₖ = (γ − 1)mc²
-
-</div>
-
-<br>
-
-Substitute the approximation:
-
-<div align="center">
-
-Eₖ ≈ [v²/(2c²)]mc²
+**Eₖ ≈ 1.12 MeV**
 
 </div>
 
@@ -326,15 +200,165 @@ Eₖ ≈ [v²/(2c²)]mc²
 
 Therefore:
 
-<div align="center">
+<div align="center" style="font-size:26px;">
 
-Eₖ ≈ 1/2 mv²
+**Eₖ ≈ 1.12 MeV**
+
+</div>
+
+---
+
+## 4. Comparison with Classical Kinetic Energy
+
+Classical kinetic energy is:
+
+<div align="center" style="font-size:24px;">
+
+**Eₖ,classical = 1/2 mv²**
 
 </div>
 
 <br>
 
-So, at low speeds, relativistic kinetic energy becomes the classical kinetic energy.
+Since:
+
+<div align="center" style="font-size:24px;">
+
+**v = 0.95c**
+
+</div>
+
+<br>
+
+we write:
+
+<div align="center" style="font-size:24px;">
+
+**Eₖ,classical = 1/2 m(0.95c)²**
+
+</div>
+
+<br>
+
+<div align="center" style="font-size:24px;">
+
+**Eₖ,classical = 1/2 × 0.9025 × mc²**
+
+</div>
+
+<br>
+
+<div align="center" style="font-size:24px;">
+
+**Eₖ,classical = 0.45125mc²**
+
+</div>
+
+<br>
+
+Using:
+
+<div align="center" style="font-size:24px;">
+
+**mc² = 0.511 MeV**
+
+</div>
+
+<br>
+
+we get:
+
+<div align="center" style="font-size:24px;">
+
+**Eₖ,classical = 0.45125 × 0.511 MeV**
+
+</div>
+
+<br>
+
+<div align="center" style="font-size:24px;">
+
+**Eₖ,classical ≈ 0.231 MeV**
+
+</div>
+
+<br>
+
+Comparison:
+
+<div align="center" style="font-size:24px;">
+
+**Relativistic: Eₖ ≈ 1.12 MeV**
+
+</div>
+
+<br>
+
+<div align="center" style="font-size:24px;">
+
+**Classical: Eₖ,classical ≈ 0.231 MeV**
+
+</div>
+
+<br>
+
+The classical value is much smaller, so it is not accurate at relativistic speeds.
+
+---
+
+## 5. Limit When v ≪ c
+
+When the velocity is much smaller than the speed of light:
+
+<div align="center" style="font-size:24px;">
+
+**v ≪ c**
+
+</div>
+
+<br>
+
+the Lorentz factor becomes approximately:
+
+<div align="center" style="font-size:24px;">
+
+**γ ≈ 1 + v²/(2c²)**
+
+</div>
+
+<br>
+
+Relativistic kinetic energy:
+
+<div align="center" style="font-size:24px;">
+
+**Eₖ = (γ − 1)mc²**
+
+</div>
+
+<br>
+
+Substitute the approximation:
+
+<div align="center" style="font-size:24px;">
+
+**Eₖ ≈ [v²/(2c²)]mc²**
+
+</div>
+
+<br>
+
+Simplify:
+
+<div align="center" style="font-size:24px;">
+
+**Eₖ ≈ 1/2 mv²**
+
+</div>
+
+<br>
+
+Thus, at low speeds, the relativistic formula becomes the classical formula.
 
 ---
 
@@ -342,9 +366,9 @@ So, at low speeds, relativistic kinetic energy becomes the classical kinetic ene
 
 The relation:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-E² = p²c² + m²c⁴
+**E² = p²c² + m²c⁴**
 
 </div>
 
@@ -354,9 +378,9 @@ connects total energy, momentum, and rest mass.
 
 If the particle is at rest:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-p = 0
+**p = 0**
 
 </div>
 
@@ -364,9 +388,9 @@ p = 0
 
 then:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-E² = m²c⁴
+**E² = m²c⁴**
 
 </div>
 
@@ -374,9 +398,9 @@ E² = m²c⁴
 
 so:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-E = mc²
+**E = mc²**
 
 </div>
 
@@ -384,33 +408,27 @@ E = mc²
 
 This is the rest energy.
 
-For a moving particle, momentum increases the total energy:
+For a moving particle:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-E > mc²
-
-</div>
-
-<br>
-
-For a massless particle such as light:
-
-<div align="center">
-
-m = 0
+**p > 0**
 
 </div>
 
 <br>
 
-so the relation becomes:
+therefore:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-E = pc
+**E > mc²**
 
 </div>
+
+<br>
+
+So, total energy increases when momentum increases.
 
 ---
 
@@ -418,9 +436,9 @@ E = pc
 
 For an electron moving at:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-v = 0.95c
+**v = 0.95c**
 
 </div>
 
@@ -428,9 +446,9 @@ v = 0.95c
 
 the Lorentz factor is:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-γ ≈ 3.20
+**γ ≈ 3.20**
 
 </div>
 
@@ -438,9 +456,9 @@ the Lorentz factor is:
 
 The total energy is:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-E ≈ 1.64 MeV
+**E ≈ 1.64 MeV**
 
 </div>
 
@@ -448,54 +466,62 @@ E ≈ 1.64 MeV
 
 The relativistic kinetic energy is:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-Eₖ ≈ 1.12 MeV
-
-</div>
-
-<br>
-
-The classical kinetic energy is:
-
-<div align="center">
-
-Eₖ,classical ≈ 0.231 MeV
+**Eₖ ≈ 1.12 MeV**
 
 </div>
 
 <br>
 
-The classical result is much smaller, so relativistic formulas must be used at speeds close to the speed of light.
+The classical kinetic energy is only:
 
-At low speeds, where:
+<div align="center" style="font-size:24px;">
 
-<div align="center">
-
-v ≪ c
+**Eₖ,classical ≈ 0.231 MeV**
 
 </div>
 
 <br>
 
-the relativistic kinetic energy reduces to the classical expression:
+Therefore, classical mechanics is not accurate for an electron moving at:
 
-<div align="center">
+<div align="center" style="font-size:24px;">
 
-Eₖ = 1/2 mv²
-
-</div>
-
-<br>
-
-The relation:
-
-<div align="center">
-
-E² = p²c² + m²c⁴
+**0.95c**
 
 </div>
 
 <br>
 
-shows that total energy includes both rest energy and energy due to momentum.
+At low speeds:
+
+<div align="center" style="font-size:24px;">
+
+**v ≪ c**
+
+</div>
+
+<br>
+
+the relativistic kinetic energy reduces to:
+
+<div align="center" style="font-size:24px;">
+
+**Eₖ = 1/2 mv²**
+
+</div>
+
+<br>
+
+The energy-momentum relation:
+
+<div align="center" style="font-size:24px;">
+
+**E² = p²c² + m²c⁴**
+
+</div>
+
+<br>
+
+shows that total energy consists of rest energy and energy associated with momentum.
