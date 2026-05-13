@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Schwarzschild Radius Animation</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#0f172a;
+    color:white;
+    font-family:Arial,sans-serif;
+    overflow-x:hidden;
+}
+
+h1{
+    text-align:center;
+    color:#7dd3fc;
+    margin-top:20px;
+}
+
+.container{
+    width:92%;
+    max-width:1150px;
+    margin:30px auto;
+    background:#111827;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(125,211,252,0.25);
+}
+
+.space{
+    position:relative;
+    height:520px;
+    background:
+        radial-gradient(circle at center,#020617,#000);
+    border-radius:15px;
+    overflow:hidden;
+    border:2px solid #334155;
+}
+
+.blackhole{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:140px;
+    height:140px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:black;
+    box-shadow:
+        0 0 50px #7c3aed,
+        0 0 120px #4c1d95;
+}
+
+.event-horizon{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:240px;
+    height:240px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    border:3px dashed #ef4444;
+    animation:pulse 2.5s infinite;
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:translate(-50%,-50%) scale(1);
+        opacity:1;
+    }
+
+    50%{
+        transform:translate(-50%,-50%) scale(1.05);
+        opacity:0.7;
+    }
+
+    100%{
+        transform:translate(-50%,-50%) scale(1);
+        opacity:1;
+    }
+}
+
+.photon{
+    position:absolute;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:#facc15;
+    box-shadow:0 0 25px #facc15;
+    left:100px;
+    top:250px;
+    animation:orbit 8s linear infinite;
+}
+
+@keyframes orbit{
+
+    0%{
+        left:100px;
+        top:250px;
+        background:#facc15;
+    }
+
+    40%{
+        left:420px;
+        top:250px;
+        background:#f97316;
+    }
+
+    65%{
+        left:510px;
+        top:250px;
+        background:#ef4444;
+    }
+
+    80%{
+        left:560px;
+        top:250px;
+        opacity:0.5;
+    }
+
+    100%{
+        left:610px;
+        top:250px;
+        opacity:0;
+    }
+}
+
+.redshift-wave{
+    position:absolute;
+    left:120px;
+    top:258px;
+    height:4px;
+    width:450px;
+    background:
+        linear-gradient(
+            to right,
+            #facc15,
+            #f97316,
+            #ef4444
+        );
+    opacity:0.6;
+}
+
+.label{
+    position:absolute;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.label1{
+    left:70px;
+    top:210px;
+    color:#facc15;
+}
+
+.label2{
+    left:420px;
+    top:210px;
+    color:#f97316;
+}
+
+.label3{
+    left:620px;
+    top:210px;
+    color:#ef4444;
+}
+
+.info-grid{
+    display:flex;
+    justify-content:space-around;
+    flex-wrap:wrap;
+    gap:20px;
+    margin-top:30px;
+}
+
+.card{
+    width:240px;
+    background:#1e293b;
+    padding:20px;
+    border-radius:12px;
+    border:1px solid #475569;
+    text-align:center;
+}
+
+.card h2{
+    color:#facc15;
+    margin-bottom:15px;
+    font-size:20px;
+}
+
+.value{
+    font-size:28px;
+    color:#38bdf8;
+    font-weight:bold;
+}
+
+.graph-box{
+    margin-top:30px;
+    background:#020617;
+    border-radius:14px;
+    border:2px solid #334155;
+    padding:20px;
+}
+
+canvas{
+    display:block;
+    margin:auto;
+    background:#020617;
+}
+
+.explanation{
+    margin-top:25px;
+    background:#1e293b;
+    padding:22px;
+    border-radius:12px;
+    border:1px solid #475569;
+    text-align:center;
+    font-size:22px;
+    line-height:1.7;
+}
+
+.highlight{
+    color:#ef4444;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Problem 9 — Schwarzschild Radius</h1>
+
+<div class="container">
+
+    <div class="space">
+
+        <div class="blackhole"></div>
+
+        <div class="event-horizon"></div>
+
+        <div class="redshift-wave"></div>
+
+        <div class="photon"></div>
+
+        <div class="label label1">
+            weak gravity
+        </div>
+
+        <div class="label label2">
+            strong redshift
+        </div>
+
+        <div class="label label3">
+            event horizon
+        </div>
+
+    </div>
+
+    <div class="info-grid">
+
+        <div class="card">
+            <h2>Sun Schwarzschild Radius</h2>
+            <div class="value">
+                2.95 km
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Earth Schwarzschild Radius</h2>
+            <div class="value">
+                8.84 mm
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Redshift at 1.5rₛ</h2>
+            <div class="value">
+                73.2%
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>At r → rₛ</h2>
+            <div class="value">
+                z → ∞
+            </div>
+        </div>
+
+    </div>
+
+    <div class="graph-box">
+
+        <canvas id="graph" width="950" height="420"></canvas>
+
+    </div>
+
+    <div class="explanation">
+
+        As light approaches the
+        <span class="highlight">event horizon</span>,
+        gravitational redshift increases dramatically.
+
+        <br><br>
+
+        Near the Schwarzschild radius,
+        time slows down relative to distant observers,
+        and light becomes infinitely redshifted.
+
+    </div>
+
+</div>
+
+<script>
+
+const canvas =
+    document.getElementById("graph");
+
+const ctx =
+    canvas.getContext("2d");
+
+function drawGraph(){
+
+    const W = canvas.width;
+    const H = canvas.height;
+
+    ctx.clearRect(0,0,W,H);
+
+    const left = 90;
+    const right = 860;
+    const bottom = 340;
+    const top = 40;
+
+    ctx.strokeStyle = "#475569";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(left,top);
+    ctx.lineTo(left,bottom);
+    ctx.lineTo(right,bottom);
+    ctx.stroke();
+
+    ctx.fillStyle = "white";
+    ctx.font = "20px Arial";
+
+    ctx.fillText(
+        "Gravitational Redshift z",
+        20,
+        30
+    );
+
+    ctx.fillText(
+        "Distance from Black Hole",
+        620,
+        390
+    );
+
+    for(let i=0;i<=5;i++){
+
+        const y =
+            bottom - i*55;
+
+        ctx.strokeStyle = "#1e293b";
+
+        ctx.beginPath();
+        ctx.moveTo(left,y);
+        ctx.lineTo(right,y);
+        ctx.stroke();
+
+        ctx.fillStyle = "#cbd5e1";
+
+        ctx.fillText(
+            i.toString(),
+            55,
+            y+5
+        );
+    }
+
+    ctx.beginPath();
+
+    for(let x=0;x<=700;x++){
+
+        const d = 1 + x/120;
+
+        let z =
+            1 / Math.sqrt(
+                1 - (1/d)
+            ) - 1;
+
+        if(z > 5){
+            z = 5;
+        }
+
+        const px =
+            left + x;
+
+        const py =
+            bottom - z*55;
+
+        if(x===0){
+            ctx.moveTo(px,py);
+        }
+        else{
+            ctx.lineTo(px,py);
+        }
+    }
+
+    ctx.strokeStyle = "#ef4444";
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    ctx.fillStyle = "#ef4444";
+
+    ctx.fillText(
+        "z → ∞ near rₛ",
+        520,
+        70
+    );
+
+    ctx.strokeStyle = "#facc15";
+    ctx.lineWidth = 2;
+
+    ctx.setLineDash([8,8]);
+
+    ctx.beginPath();
+    ctx.moveTo(left+120,top);
+    ctx.lineTo(left+120,bottom);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = "#facc15";
+
+    ctx.fillText(
+        "r = 1.5rₛ",
+        left+80,
+        bottom+35
+    );
+
+    ctx.fillText(
+        "z ≈ 0.732",
+        left+110,
+        280
+    );
+}
+
+drawGraph();
+
+</script>
+
+</body>
+</html>
