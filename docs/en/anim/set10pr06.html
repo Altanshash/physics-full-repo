@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Minkowski Diagram Animation</title>
+
+<style>
+body{
+    margin:0;
+    background:#0f172a;
+    color:white;
+    font-family:Arial, sans-serif;
+}
+
+h1{
+    text-align:center;
+    color:#7dd3fc;
+    margin-top:20px;
+}
+
+.container{
+    width:90%;
+    max-width:1100px;
+    margin:30px auto;
+    background:#111827;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(125,211,252,0.3);
+}
+
+canvas{
+    display:block;
+    margin:20px auto;
+    background:#020617;
+    border:2px solid #334155;
+    border-radius:12px;
+}
+
+.controls{
+    text-align:center;
+    margin-top:20px;
+    font-size:22px;
+}
+
+input{
+    width:350px;
+}
+
+.info{
+    text-align:center;
+    font-size:22px;
+    margin-top:20px;
+    line-height:1.8;
+}
+
+.formula{
+    background:#020617;
+    padding:20px;
+    border-radius:12px;
+    margin-top:25px;
+    text-align:center;
+    font-size:22px;
+    line-height:2;
+}
+
+.result{
+    margin-top:20px;
+    text-align:center;
+    color:#86efac;
+    font-size:22px;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Problem 6 — Minkowski Diagram</h1>
+
+<div class="container">
+
+<canvas id="canvas" width="800" height="800"></canvas>
+
+<div class="controls">
+    Velocity: v =
+    <span id="vValue">0.50</span>c
+
+    <br><br>
+
+    <input
+        type="range"
+        id="velocitySlider"
+        min="0"
+        max="0.95"
+        step="0.01"
+        value="0.5"
+    >
+</div>
+
+<div class="info">
+    Lorentz factor:
+    γ =
+    <span id="gammaValue">1.15</span>
+</div>
+
+<div class="formula">
+    ct′ = γ(ct − βx)
+    <br>
+    x′ = γ(x − βct)
+    <br><br>
+    β = v/c
+</div>
+
+<div class="result">
+    As velocity increases, the ct′ and x′ axes move closer to the light cone.
+</div>
+
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const slider = document.getElementById("velocitySlider");
+const vValue = document.getElementById("vValue");
+const gammaValue = document.getElementById("gammaValue");
+
+const W = canvas.width;
+const H = canvas.height;
+
+const originX = W / 2;
+const originY = H / 2;
+
+const scale = 70;
+
+function toCanvasX(x){
+    return originX + x * scale;
+}
+
+function toCanvasY(y){
+    return originY - y * scale;
+}
+
+function drawLine(x1, y1, x2, y2, color, width){
+    ctx.beginPath();
+    ctx.moveTo(toCanvasX(x1), toCanvasY(y1));
+    ctx.lineTo(toCanvasX(x2), toCanvasY(y2));
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.stroke();
+}
+
+function drawText(text, x, y, color, size = 18){
+    ctx.fillStyle = color;
+    ctx.font = size + "px Arial";
+    ctx.fillText(text, toCanvasX(x), toCanvasY(y));
+}
+
+function drawArrow(x1, y1, x2, y2, color, width){
+    drawLine(x1, y1, x2, y2, color, width);
+
+    const angle = Math.atan2(
+        toCanvasY(y2) - toCanvasY(y1),
+        toCanvasX(x2) - toCanvasX(x1)
+    );
+
+    const arrowLength = 14;
+
+    ctx.beginPath();
+    ctx.moveTo(toCanvasX(x2), toCanvasY(y2));
+    ctx.lineTo(
+        toCanvasX(x2) - arrowLength * Math.cos(angle - Math.PI / 6),
+        toCanvasY(y2) - arrowLength * Math.sin(angle - Math.PI / 6)
+    );
+    ctx.lineTo(
+        toCanvasX(x2) - arrowLength * Math.cos(angle + Math.PI / 6),
+        toCanvasY(y2) - arrowLength * Math.sin(angle + Math.PI / 6)
+    );
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+}
+
+function drawDiagram(beta){
+    ctx.clearRect(0, 0, W, H);
+
+    const gamma = 1 / Math.sqrt(1 - beta * beta);
+
+    vValue.textContent = beta.toFixed(2);
+    gammaValue.textContent = gamma.toFixed(2);
+
+    for(let i = -5; i <= 5; i++){
+        drawLine(i, -5, i, 5, "#1e293b", 1);
+        drawLine(-5, i, 5, i, "#1e293b", 1);
+    }
+
+    drawArrow(-5, 0, 5, 0, "#38bdf8", 3);
+    drawArrow(0, -5, 0, 5, "#38bdf8", 3);
+
+    drawText("x", 5.15, -0.2, "#38bdf8", 22);
+    drawText("ct", 0.2, 5.15, "#38bdf8", 22);
+
+    drawLine(-5, -5, 5, 5, "#facc15", 3);
+    drawLine(-5, 5, 5, -5, "#facc15", 3);
+
+    drawText("light cone", 2.2, 2.8, "#facc15", 20);
+    drawText("light cone", -4.7, 3.0, "#facc15", 20);
+
+    drawArrow(-5 * beta, -5, 5 * beta, 5, "#22c55e", 4);
+    drawArrow(-5, -5 * beta, 5, 5 * beta, "#ef4444", 4);
+
+    drawText("ct′", 5 * beta + 0.2, 4.7, "#22c55e", 22);
+    drawText("x′", 4.5, 5 * beta + 0.25, "#ef4444", 22);
+
+    const x = 2;
+    const ct = 3;
+
+    ctx.beginPath();
+    ctx.arc(toCanvasX(x), toCanvasY(ct), 7, 0, Math.PI * 2);
+    ctx.fillStyle = "white";
+    ctx.fill();
+
+    drawText("Event", x + 0.2, ct + 0.2, "white", 18);
+
+    const ctPrime = gamma * (ct - beta * x);
+    const xPrime = gamma * (x - beta * ct);
+
+    ctx.fillStyle = "white";
+    ctx.font = "18px Arial";
+
+    ctx.fillText("Matrix form:", 30, 40);
+    ctx.fillText("[ ct′ ]   [ γ   −βγ ] [ ct ]", 30, 70);
+    ctx.fillText("[ x′  ] = [ −βγ   γ ] [ x  ]", 30, 100);
+
+    ctx.fillText("For marked event:", 30, 145);
+    ctx.fillText("ct′ = " + ctPrime.toFixed(2), 30, 175);
+    ctx.fillText("x′ = " + xPrime.toFixed(2), 30, 205);
+
+    ctx.fillStyle = "#86efac";
+    ctx.fillText("Blue: ct and x axes", 30, 720);
+    ctx.fillText("Green/red: ct′ and x′ axes", 30, 750);
+    ctx.fillText("Yellow: light cone", 30, 780);
+}
+
+slider.addEventListener("input", function(){
+    drawDiagram(parseFloat(slider.value));
+});
+
+drawDiagram(parseFloat(slider.value));
+</script>
+
+</body>
+</html>
