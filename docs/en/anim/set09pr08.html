@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Orbit Perturbation and Precession</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 20px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+    .panel {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    canvas {
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #374151;
+    }
+
+    .controls {
+      max-width: 900px;
+      margin: 10px auto 30px;
+      background: #1f2937;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .control {
+      text-align: left;
+      margin: 14px 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .value {
+      color: #93c5fd;
+      font-weight: bold;
+    }
+
+    button {
+      margin: 8px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Problem 8 — Orbit Perturbation and Precession</h1>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Precessing Orbit</h2>
+      <canvas id="orbitCanvas" width="640" height="640"></canvas>
+    </div>
+
+    <div class="panel">
+      <h2>Precession Angle</h2>
+      <canvas id="angleCanvas" width="640" height="640"></canvas>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control">
+      <label>Perturbation parameter α:
+        <span id="alphaValue" class="value"></span>
+      </label>
+      <input type="range" id="alpha" min="-0.08" max="0.08" step="0.001" value="0.025">
+    </div>
+
+    <div class="control">
+      <label>Eccentricity e:
+        <span id="eValue" class="value"></span>
+      </label>
+      <input type="range" id="eccentricity" min="0.05" max="0.75" step="0.01" value="0.45">
+    </div>
+
+    <div class="control">
+      <label>Animation speed:
+        <span id="speedValue" class="value"></span>
+      </label>
+      <input type="range" id="speed" min="0.005" max="0.06" step="0.001" value="0.025">
+    </div>
+
+    <button onclick="toggleAnimation()">Pause / Play</button>
+    <button onclick="resetSimulation()">Reset</button>
+    <button onclick="clearTrace()">Clear Trace</button>
+  </div>
+
+  <script>
+    const orbitCanvas = document.getElementById("orbitCanvas");
+    const orbitCtx = orbitCanvas.getContext("2d");
+
+    const angleCanvas = document.getElementById("angleCanvas");
+    const angleCtx = angleCanvas.getContext("2d");
+
+    const alphaSlider = document.getElementById("alpha");
+    const eSlider = document.getElementById("eccentricity");
+    const speedSlider = document.getElementById("speed");
+
+    const alphaValue = document.getElementById("alphaValue");
+    const eValue = document.getElementById("eValue");
+    const speedValue = document.getElementById("speedValue");
+
+    let theta = 0;
+    let orbitNumber = 0;
+    let running = true;
+
+    let trace = [];
+    let perihelionAngles = [];
+    let angleHistory = [];
+
+    const a = 190;
+
+    function values() {
+      return {
+        alpha: Number(alphaSlider.value),
+        e: Number(eSlider.value),
+        speed: Number(speedSlider.value)
+      };
+    }
+
+    function updateLabels() {
+      const v = values();
+      alphaValue.textContent = v.alpha.toFixed(3);
+      eValue.textContent = v.e.toFixed(2);
+      speedValue.textContent = v.speed.toFixed(3);
+    }
+
+    function precessionPerOrbit() {
+      const v = values();
+
+      return v.alpha * Math.PI * 2.8;
+    }
+
+    function orbitPosition(th) {
+      const v = values();
+
+      const precession = orbitNumber * precessionPerOrbit();
+      const localTheta = th;
+
+      const r = a * (1 - v.e * v.e) / (1 + v.e * Math.cos(localTheta));
+
+      const globalTheta = localTheta + precession;
+
+      return {
+        x: r * Math.cos(globalTheta),
+        y: r * Math.sin(globalTheta),
+        r: r,
+        angle: globalTheta,
+        perihelionAngle: precession
+      };
+    }
+
+    function drawAxes(ctx, w, h, cx, cy) {
+      ctx.strokeStyle = "#e5e7eb";
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.moveTo(0, cy);
+      ctx.lineTo(w, cy);
+      ctx.moveTo(cx, 0);
+      ctx.lineTo(cx, h);
+      ctx.stroke();
+    }
+
+    function drawOrbit() {
+      const w = orbitCanvas.width;
+      const h = orbitCanvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      orbitCtx.clearRect(0, 0, w, h);
+      drawAxes(orbitCtx, w, h, cx, cy);
+
+      const v = values();
+      const pos = orbitPosition(theta);
+      const currentPrecession = orbitNumber * precessionPerOrbit();
+
+      orbitCtx.fillStyle = "#111827";
+      orbitCtx.font = "15px Arial";
+      orbitCtx.fillText("Yellow point = central mass", 20, 30);
+      orbitCtx.fillText("Blue curve = precessing orbit", 20, 52);
+      orbitCtx.fillText("Red line = ellipse axis / perihelion direction", 20, 74);
+
+      if (trace.length > 1) {
+        orbitCtx.strokeStyle = "#2563eb";
+        orbitCtx.lineWidth = 2;
+        orbitCtx.beginPath();
+
+        for (let i = 0; i < trace.length; i++) {
+          const p = trace[i];
+
+          if (i === 0) {
+            orbitCtx.moveTo(cx + p.x, cy - p.y);
+          } else {
+            orbitCtx.lineTo(cx + p.x, cy - p.y);
+          }
+        }
+
+        orbitCtx.stroke();
+      }
+
+      for (let i = 0; i < perihelionAngles.length; i++) {
+        const ang = perihelionAngles[i];
+        const px = a * (1 - v.e) * Math.cos(ang);
+        const py = a * (1 - v.e) * Math.sin(ang);
+
+        orbitCtx.fillStyle = "#dc2626";
+        orbitCtx.beginPath();
+        orbitCtx.arc(cx + px, cy - py, 4, 0, Math.PI * 2);
+        orbitCtx.fill();
+      }
+
+      orbitCtx.strokeStyle = "#dc2626";
+      orbitCtx.lineWidth = 2;
+
+      orbitCtx.beginPath();
+      orbitCtx.moveTo(cx, cy);
+      orbitCtx.lineTo(
+        cx + 260 * Math.cos(currentPrecession),
+        cy - 260 * Math.sin(currentPrecession)
+      );
+      orbitCtx.stroke();
+
+      orbitCtx.fillStyle = "#f59e0b";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx, cy, 10, 0, Math.PI * 2);
+      orbitCtx.fill();
+
+      orbitCtx.fillStyle = "#2563eb";
+      orbitCtx.beginPath();
+      orbitCtx.arc(cx + pos.x, cy - pos.y, 8, 0, Math.PI * 2);
+      orbitCtx.fill();
+
+      orbitCtx.fillStyle = "#111827";
+      orbitCtx.font = "15px Arial";
+      orbitCtx.fillText("Orbit number: " + orbitNumber, 20, h - 80);
+      orbitCtx.fillText("Current precession: " + radiansToDegrees(currentPrecession).toFixed(2) + "°", 20, h - 55);
+      orbitCtx.fillText("Precession per orbit: " + radiansToDegrees(precessionPerOrbit()).toFixed(2) + "°", 20, h - 30);
+    }
+
+    function drawAngleGraph() {
+      const w = angleCanvas.width;
+      const h = angleCanvas.height;
+      const margin = 65;
+
+      angleCtx.clearRect(0, 0, w, h);
+
+      angleCtx.strokeStyle = "#111827";
+      angleCtx.lineWidth = 2;
+
+      angleCtx.beginPath();
+      angleCtx.moveTo(margin, h - margin);
+      angleCtx.lineTo(w - margin, h - margin);
+      angleCtx.moveTo(margin, margin);
+      angleCtx.lineTo(margin, h - margin);
+      angleCtx.stroke();
+
+      angleCtx.fillStyle = "#111827";
+      angleCtx.font = "14px Arial";
+      angleCtx.fillText("orbit number", w - 150, h - margin + 35);
+      angleCtx.fillText("angle", margin - 45, margin - 20);
+
+      for (let i = 0; i <= 5; i++) {
+        const y = h - margin - i * (h - 2 * margin) / 5;
+
+        angleCtx.strokeStyle = "#e5e7eb";
+        angleCtx.lineWidth = 1;
+
+        angleCtx.beginPath();
+        angleCtx.moveTo(margin, y);
+        angleCtx.lineTo(w - margin, y);
+        angleCtx.stroke();
+
+        angleCtx.fillStyle = "#111827";
+        angleCtx.font = "12px Arial";
+        angleCtx.fillText((i * 20).toString() + "°", margin - 45, y + 4);
+      }
+
+      if (angleHistory.length > 1) {
+        const maxAngle = Math.max(...angleHistory.map(p => Math.abs(p.angleDeg)), 20);
+
+        angleCtx.strokeStyle = "#7c3aed";
+        angleCtx.lineWidth = 3;
+        angleCtx.beginPath();
+
+        for (let i = 0; i < angleHistory.length; i++) {
+          const px = margin + (i / Math.max(angleHistory.length - 1, 1)) * (w - 2 * margin);
+          const py = h - margin - (Math.abs(angleHistory[i].angleDeg) / maxAngle) * (h - 2 * margin);
+
+          if (i === 0) {
+            angleCtx.moveTo(px, py);
+          } else {
+            angleCtx.lineTo(px, py);
+          }
+        }
+
+        angleCtx.stroke();
+      }
+
+      const current = orbitNumber * radiansToDegrees(precessionPerOrbit());
+
+      angleCtx.fillStyle = "#111827";
+      angleCtx.font = "15px Arial";
+      angleCtx.fillText("Measured total precession: " + current.toFixed(2) + "°", 20, 30);
+      angleCtx.fillText("Positive α: forward precession", 20, 55);
+      angleCtx.fillText("Negative α: backward precession", 20, 80);
+    }
+
+    function radiansToDegrees(rad) {
+      return rad * 180 / Math.PI;
+    }
+
+    function animate() {
+      updateLabels();
+
+      if (running) {
+        const v = values();
+
+        theta += v.speed;
+
+        if (theta >= Math.PI * 2) {
+          theta -= Math.PI * 2;
+
+          const peri = orbitNumber * precessionPerOrbit();
+          perihelionAngles.push(peri);
+
+          angleHistory.push({
+            orbit: orbitNumber,
+            angleDeg: radiansToDegrees(peri)
+          });
+
+          orbitNumber++;
+
+          if (perihelionAngles.length > 30) {
+            perihelionAngles.shift();
+          }
+
+          if (angleHistory.length > 40) {
+            angleHistory.shift();
+          }
+        }
+
+        const pos = orbitPosition(theta);
+        trace.push(pos);
+
+        if (trace.length > 3000) {
+          trace.shift();
+        }
+      }
+
+      drawOrbit();
+      drawAngleGraph();
+
+      requestAnimationFrame(animate);
+    }
+
+    function toggleAnimation() {
+      running = !running;
+    }
+
+    function resetSimulation() {
+      theta = 0;
+      orbitNumber = 0;
+      trace = [];
+      perihelionAngles = [];
+      angleHistory = [];
+    }
+
+    function clearTrace() {
+      trace = [];
+      perihelionAngles = [];
+      angleHistory = [];
+    }
+
+    alphaSlider.addEventListener("input", resetSimulation);
+    eSlider.addEventListener("input", resetSimulation);
+    speedSlider.addEventListener("input", updateLabels);
+
+    animate();
+  </script>
+</body>
+</html>
