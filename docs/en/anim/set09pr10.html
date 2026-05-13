@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Three-Body Stability Analysis</title>
-
+  <meta charset="UTF-8">
+  <title>Problem 10 Stability Analysis</title>
   <style>
     body {
       margin: 0;
@@ -39,7 +37,7 @@
     }
 
     .controls {
-      max-width: 950px;
+      max-width: 900px;
       margin: 10px auto 30px;
       background: #1f2937;
       padding: 20px;
@@ -51,14 +49,9 @@
       margin: 14px 0;
     }
 
-    input[type="range"], select {
+    input, select {
       width: 100%;
       padding: 6px;
-    }
-
-    .value {
-      color: #93c5fd;
-      font-weight: bold;
     }
 
     button {
@@ -72,8 +65,9 @@
       font-size: 15px;
     }
 
-    button:hover {
-      background: #1d4ed8;
+    .value {
+      color: #93c5fd;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -83,66 +77,45 @@
 
   <div class="container">
     <div class="panel">
-      <h2>Three-Body Motion</h2>
+      <h2>Three-body motion</h2>
       <canvas id="orbitCanvas" width="620" height="620"></canvas>
     </div>
 
     <div class="panel">
-      <h2>Energy E(t)</h2>
-      <canvas id="energyCanvas" width="620" height="300"></canvas>
-    </div>
-
-    <div class="panel">
-      <h2>Angular Momentum L(t)</h2>
-      <canvas id="momentumCanvas" width="620" height="300"></canvas>
-    </div>
-
-    <div class="panel">
-      <h2>Center of Mass Drift</h2>
-      <canvas id="cmCanvas" width="620" height="300"></canvas>
+      <h2>Stability monitor</h2>
+      <canvas id="monitorCanvas" width="620" height="620"></canvas>
     </div>
   </div>
 
   <div class="controls">
     <div class="control">
-      <label>Time step Δt:
-        <span id="dtValue" class="value"></span>
-      </label>
+      <label>Time step Δt: <span id="dtValue" class="value"></span></label>
       <input type="range" id="dt" min="0.002" max="0.04" step="0.001" value="0.01">
     </div>
 
     <div class="control">
       <label>Integration method:</label>
       <select id="method">
-        <option value="rk4">RK4</option>
-        <option value="euler">Euler</option>
+        <option value="rk4">RK4 — more stable</option>
+        <option value="euler">Euler — less stable</option>
       </select>
     </div>
 
     <div class="control">
-      <label>Simulation speed:
-        <span id="speedValue" class="value"></span>
-      </label>
-      <input type="range" id="speed" min="1" max="10" value="4">
+      <label>Speed: <span id="speedValue" class="value"></span></label>
+      <input type="range" id="speed" min="1" max="8" value="3">
     </div>
 
     <button onclick="toggleAnimation()">Pause / Play</button>
     <button onclick="resetSimulation()">Reset</button>
-    <button onclick="clearGraphs()">Clear Graphs</button>
   </div>
 
   <script>
     const orbitCanvas = document.getElementById("orbitCanvas");
     const orbitCtx = orbitCanvas.getContext("2d");
 
-    const energyCanvas = document.getElementById("energyCanvas");
-    const energyCtx = energyCanvas.getContext("2d");
-
-    const momentumCanvas = document.getElementById("momentumCanvas");
-    const momentumCtx = momentumCanvas.getContext("2d");
-
-    const cmCanvas = document.getElementById("cmCanvas");
-    const cmCtx = cmCanvas.getContext("2d");
+    const monitorCanvas = document.getElementById("monitorCanvas");
+    const monitorCtx = monitorCanvas.getContext("2d");
 
     const dtSlider = document.getElementById("dt");
     const methodSelect = document.getElementById("method");
@@ -151,19 +124,19 @@
     const dtValue = document.getElementById("dtValue");
     const speedValue = document.getElementById("speedValue");
 
+    const G = 80;
+    const softening = 25;
+
     let bodies = [];
     let running = true;
 
-    let energyData = [];
-    let momentumData = [];
-    let cmData = [];
+    let E0 = 0;
+    let L0 = 0;
+    let CM0 = { x: 0, y: 0 };
 
-    let initialEnergy = 0;
-    let initialMomentum = 0;
-    let initialCM = { x: 0, y: 0 };
-
-    const G = 80;
-    const softening = 25;
+    let energyError = [];
+    let momentumError = [];
+    let cmDrift = [];
 
     function values() {
       return {
@@ -173,49 +146,64 @@
       };
     }
 
-    function updateLabels() {
-      const v = values();
-      dtValue.textContent = v.dt.toFixed(3);
-      speedValue.textContent = v.speed;
-    }
-
     function resetSimulation() {
       bodies = [
-        { name: "m₁", m: 12, x: -120, y: 0, vx: 0, vy: 1.15, color: "#2563eb", trace: [] },
-        { name: "m₂", m: 12, x: 120, y: 0, vx: 0, vy: -1.15, color: "#dc2626", trace: [] },
-        { name: "m₃", m: 12, x: 0, y: 150, vx: -1.25, vy: 0, color: "#16a34a", trace: [] }
+        { m: 12, x: -120, y: 0, vx: 0, vy: 1.15, color: "#2563eb", trace: [] },
+        { m: 12, x: 120, y: 0, vx: 0, vy: -1.15, color: "#dc2626", trace: [] },
+        { m: 12, x: 0, y: 150, vx: -1.25, vy: 0, color: "#16a34a", trace: [] }
       ];
 
-      removeCenterOfMassMotion();
+      removeCenterMotion();
 
-      initialEnergy = totalEnergy();
-      initialMomentum = angularMomentum();
-      initialCM = centerOfMass();
+      E0 = totalEnergy();
+      L0 = angularMomentum();
+      CM0 = centerOfMass();
 
-      energyData = [];
-      momentumData = [];
-      cmData = [];
+      energyError = [];
+      momentumError = [];
+      cmDrift = [];
       running = true;
     }
 
-    function removeCenterOfMassMotion() {
-      let totalMass = 0;
-      let px = 0;
-      let py = 0;
+    function removeCenterMotion() {
+      let M = 0, px = 0, py = 0;
 
-      for (const b of bodies) {
-        totalMass += b.m;
+      for (let b of bodies) {
+        M += b.m;
         px += b.m * b.vx;
         py += b.m * b.vy;
       }
 
-      const vxCM = px / totalMass;
-      const vyCM = py / totalMass;
+      const vxCM = px / M;
+      const vyCM = py / M;
 
-      for (const b of bodies) {
+      for (let b of bodies) {
         b.vx -= vxCM;
         b.vy -= vyCM;
       }
+    }
+
+    function acceleration(state) {
+      const acc = state.map(() => ({ ax: 0, ay: 0 }));
+
+      for (let i = 0; i < state.length; i++) {
+        for (let j = 0; j < state.length; j++) {
+          if (i === j) continue;
+
+          const dx = state[j].x - state[i].x;
+          const dy = state[j].y - state[i].y;
+
+          const r2 = dx * dx + dy * dy + softening;
+          const r = Math.sqrt(r2);
+
+          const factor = G * state[j].m / (r2 * r);
+
+          acc[i].ax += factor * dx;
+          acc[i].ay += factor * dy;
+        }
+      }
+
+      return acc;
     }
 
     function cloneState() {
@@ -228,30 +216,8 @@
       }));
     }
 
-    function accelerations(state) {
-      const acc = state.map(() => ({ ax: 0, ay: 0 }));
-
-      for (let i = 0; i < state.length; i++) {
-        for (let j = 0; j < state.length; j++) {
-          if (i === j) continue;
-
-          const dx = state[j].x - state[i].x;
-          const dy = state[j].y - state[i].y;
-
-          const r2 = dx * dx + dy * dy + softening;
-          const r = Math.sqrt(r2);
-          const factor = G * state[j].m / (r2 * r);
-
-          acc[i].ax += factor * dx;
-          acc[i].ay += factor * dy;
-        }
-      }
-
-      return acc;
-    }
-
     function derivative(state) {
-      const acc = accelerations(state);
+      const acc = acceleration(state);
 
       return state.map((b, i) => ({
         dx: b.vx,
@@ -280,16 +246,16 @@
       const k4 = derivative(addState(s0, k3, dt));
 
       for (let i = 0; i < bodies.length; i++) {
-        bodies[i].x += dt / 6 * (k1[i].dx + 2 * k2[i].dx + 2 * k3[i].dx + k4[i].dx);
-        bodies[i].y += dt / 6 * (k1[i].dy + 2 * k2[i].dy + 2 * k3[i].dy + k4[i].dy);
+        bodies[i].x += dt / 6 * (k1[i].dx + 2*k2[i].dx + 2*k3[i].dx + k4[i].dx);
+        bodies[i].y += dt / 6 * (k1[i].dy + 2*k2[i].dy + 2*k3[i].dy + k4[i].dy);
 
-        bodies[i].vx += dt / 6 * (k1[i].dvx + 2 * k2[i].dvx + 2 * k3[i].dvx + k4[i].dvx);
-        bodies[i].vy += dt / 6 * (k1[i].dvy + 2 * k2[i].dvy + 2 * k3[i].dvy + k4[i].dvy);
+        bodies[i].vx += dt / 6 * (k1[i].dvx + 2*k2[i].dvx + 2*k3[i].dvx + k4[i].dvx);
+        bodies[i].vy += dt / 6 * (k1[i].dvy + 2*k2[i].dvy + 2*k3[i].dvy + k4[i].dvy);
       }
     }
 
     function eulerStep(dt) {
-      const acc = accelerations(cloneState());
+      const acc = acceleration(cloneState());
 
       for (let i = 0; i < bodies.length; i++) {
         bodies[i].vx += acc[i].ax * dt;
@@ -301,29 +267,33 @@
     }
 
     function totalEnergy() {
-      let kinetic = 0;
-      let potential = 0;
+      let K = 0;
+      let U = 0;
 
       for (let i = 0; i < bodies.length; i++) {
         const b = bodies[i];
-        kinetic += 0.5 * b.m * (b.vx * b.vx + b.vy * b.vy);
+
+        K += 0.5 * b.m * (b.vx*b.vx + b.vy*b.vy);
 
         for (let j = i + 1; j < bodies.length; j++) {
           const c = bodies[j];
+
           const dx = c.x - b.x;
           const dy = c.y - b.y;
-          const r = Math.sqrt(dx * dx + dy * dy + softening);
-          potential += -G * b.m * c.m / r;
+
+          const r = Math.sqrt(dx*dx + dy*dy + softening);
+
+          U += -G * b.m * c.m / r;
         }
       }
 
-      return kinetic + potential;
+      return K + U;
     }
 
     function angularMomentum() {
       let L = 0;
 
-      for (const b of bodies) {
+      for (let b of bodies) {
         L += b.m * (b.x * b.vy - b.y * b.vx);
       }
 
@@ -331,23 +301,20 @@
     }
 
     function centerOfMass() {
-      let totalMass = 0;
+      let M = 0;
       let x = 0;
       let y = 0;
 
-      for (const b of bodies) {
-        totalMass += b.m;
+      for (let b of bodies) {
+        M += b.m;
         x += b.m * b.x;
         y += b.m * b.y;
       }
 
-      return {
-        x: x / totalMass,
-        y: y / totalMass
-      };
+      return { x: x / M, y: y / M };
     }
 
-    function stepSimulation() {
+    function step() {
       const v = values();
 
       if (v.method === "rk4") {
@@ -356,28 +323,25 @@
         eulerStep(v.dt);
       }
 
-      for (const b of bodies) {
+      for (let b of bodies) {
         b.trace.push({ x: b.x, y: b.y });
-        if (b.trace.length > 1000) b.trace.shift();
+
+        if (b.trace.length > 900) {
+          b.trace.shift();
+        }
       }
 
       const E = totalEnergy();
       const L = angularMomentum();
       const CM = centerOfMass();
 
-      energyData.push(E - initialEnergy);
-      momentumData.push(L - initialMomentum);
+      energyError.push(Math.abs(E - E0));
+      momentumError.push(Math.abs(L - L0));
+      cmDrift.push(Math.sqrt((CM.x - CM0.x)**2 + (CM.y - CM0.y)**2));
 
-      const cmDrift = Math.sqrt(
-        Math.pow(CM.x - initialCM.x, 2) +
-        Math.pow(CM.y - initialCM.y, 2)
-      );
-
-      cmData.push(cmDrift);
-
-      if (energyData.length > 600) energyData.shift();
-      if (momentumData.length > 600) momentumData.shift();
-      if (cmData.length > 600) cmData.shift();
+      if (energyError.length > 500) energyError.shift();
+      if (momentumError.length > 500) momentumError.shift();
+      if (cmDrift.length > 500) cmDrift.shift();
     }
 
     function drawOrbit() {
@@ -389,7 +353,6 @@
       orbitCtx.clearRect(0, 0, w, h);
 
       orbitCtx.strokeStyle = "#e5e7eb";
-      orbitCtx.lineWidth = 1;
       orbitCtx.beginPath();
       orbitCtx.moveTo(0, cy);
       orbitCtx.lineTo(w, cy);
@@ -397,19 +360,19 @@
       orbitCtx.lineTo(cx, h);
       orbitCtx.stroke();
 
-      const CM = centerOfMass();
-
       orbitCtx.fillStyle = "#111827";
       orbitCtx.font = "15px Arial";
-      orbitCtx.fillText("Method: " + values().method.toUpperCase(), 20, 30);
-      orbitCtx.fillText("Center of mass is marked in yellow.", 20, 55);
+      orbitCtx.fillText("Yellow = center of mass", 20, 30);
+      orbitCtx.fillText("Three colored curves = trajectories", 20, 55);
+
+      const CM = centerOfMass();
 
       orbitCtx.fillStyle = "#f59e0b";
       orbitCtx.beginPath();
       orbitCtx.arc(cx + CM.x, cy - CM.y, 7, 0, Math.PI * 2);
       orbitCtx.fill();
 
-      for (const b of bodies) {
+      for (let b of bodies) {
         if (b.trace.length > 1) {
           orbitCtx.strokeStyle = b.color;
           orbitCtx.lineWidth = 2;
@@ -417,6 +380,7 @@
 
           for (let i = 0; i < b.trace.length; i++) {
             const p = b.trace[i];
+
             if (i === 0) orbitCtx.moveTo(cx + p.x, cy - p.y);
             else orbitCtx.lineTo(cx + p.x, cy - p.y);
           }
@@ -424,91 +388,83 @@
           orbitCtx.stroke();
         }
 
-        const radius = 5 + Math.sqrt(b.m);
         orbitCtx.fillStyle = b.color;
         orbitCtx.beginPath();
-        orbitCtx.arc(cx + b.x, cy - b.y, radius, 0, Math.PI * 2);
+        orbitCtx.arc(cx + b.x, cy - b.y, 8, 0, Math.PI * 2);
         orbitCtx.fill();
       }
     }
 
-    function drawGraph(ctx, canvas, data, title, unitText) {
-      const w = canvas.width;
-      const h = canvas.height;
-      const margin = 50;
+    function drawMonitor() {
+      const w = monitorCanvas.width;
+      const h = monitorCanvas.height;
 
-      ctx.clearRect(0, 0, w, h);
+      monitorCtx.clearRect(0, 0, w, h);
 
-      ctx.strokeStyle = "#111827";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(margin, h / 2);
-      ctx.lineTo(w - margin, h / 2);
-      ctx.moveTo(margin, margin);
-      ctx.lineTo(margin, h - margin);
-      ctx.stroke();
+      monitorCtx.fillStyle = "#111827";
+      monitorCtx.font = "16px Arial";
 
-      ctx.fillStyle = "#111827";
-      ctx.font = "14px Arial";
-      ctx.fillText(title, 20, 25);
-      ctx.fillText("time", w - 85, h / 2 + 28);
-      ctx.fillText("0", margin - 20, h / 2 + 5);
+      const Eerr = energyError.length ? energyError[energyError.length - 1] : 0;
+      const Lerr = momentumError.length ? momentumError[momentumError.length - 1] : 0;
+      const Cerr = cmDrift.length ? cmDrift[cmDrift.length - 1] : 0;
 
-      if (data.length > 1) {
-        const maxAbs = Math.max(...data.map(v => Math.abs(v)), 1e-6);
+      monitorCtx.fillText("Numerical stability indicators", 20, 30);
+      monitorCtx.fillText("Smaller values mean better conservation.", 20, 55);
 
-        ctx.strokeStyle = "#7c3aed";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
+      drawBar("Energy error |E - E₀|", Eerr, 0, 100, 110);
+      drawBar("Angular momentum error |L - L₀|", Lerr, 0, 100, 210);
+      drawBar("Center of mass drift", Cerr, 0, 50, 310);
 
-        for (let i = 0; i < data.length; i++) {
-          const x = margin + (i / 600) * (w - 2 * margin);
-          const y = h / 2 - (data[i] / maxAbs) * (h / 2 - margin - 15);
+      monitorCtx.fillStyle = "#111827";
+      monitorCtx.font = "15px Arial";
+      monitorCtx.fillText("Method: " + values().method.toUpperCase(), 20, 440);
+      monitorCtx.fillText("Δt = " + values().dt.toFixed(3), 20, 465);
 
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-
-        ctx.stroke();
-
-        const current = data[data.length - 1];
-
-        ctx.fillStyle = "#111827";
-        ctx.font = "14px Arial";
-        ctx.fillText(unitText + ": " + current.toExponential(3), 20, 50);
+      if (values().method === "rk4") {
+        monitorCtx.fillText("RK4 usually keeps errors small.", 20, 500);
+      } else {
+        monitorCtx.fillText("Euler usually grows errors faster.", 20, 500);
       }
     }
 
+    function drawBar(label, value, min, max, y) {
+      const x = 40;
+      const width = 520;
+      const height = 28;
+
+      const ratio = Math.min(value / max, 1);
+
+      monitorCtx.fillStyle = "#111827";
+      monitorCtx.font = "15px Arial";
+      monitorCtx.fillText(label + ": " + value.toFixed(4), x, y - 15);
+
+      monitorCtx.strokeStyle = "#111827";
+      monitorCtx.strokeRect(x, y, width, height);
+
+      monitorCtx.fillStyle = "#7c3aed";
+      monitorCtx.fillRect(x, y, width * ratio, height);
+    }
+
     function animate() {
-      updateLabels();
+      const v = values();
+
+      dtValue.textContent = v.dt.toFixed(3);
+      speedValue.textContent = v.speed;
 
       if (running) {
-        const v = values();
         for (let i = 0; i < v.speed; i++) {
-          stepSimulation();
+          step();
         }
       }
 
       drawOrbit();
-      drawGraph(energyCtx, energyCanvas, energyData, "Energy error: E(t) - E(0)", "ΔE");
-      drawGraph(momentumCtx, momentumCanvas, momentumData, "Angular momentum error: L(t) - L(0)", "ΔL");
-      drawGraph(cmCtx, cmCanvas, cmData, "Center of mass drift", "drift");
+      drawMonitor();
 
       requestAnimationFrame(animate);
     }
 
     function toggleAnimation() {
       running = !running;
-    }
-
-    function clearGraphs() {
-      energyData = [];
-      momentumData = [];
-      cmData = [];
-
-      for (const b of bodies) {
-        b.trace = [];
-      }
     }
 
     dtSlider.addEventListener("input", resetSimulation);
