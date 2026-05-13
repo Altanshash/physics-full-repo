@@ -46,7 +46,7 @@
 
     .scene {
       width: 94%;
-      height: 570px;
+      height: 640px;
       margin: auto;
       position: relative;
       border: 2px solid #334155;
@@ -75,10 +75,10 @@
 
     .space-area {
       position: absolute;
-      left: 380px;
-      top: 95px;
-      width: 520px;
-      height: 280px;
+      left: 390px;
+      top: 80px;
+      width: 500px;
+      height: 260px;
       border: 1px solid #475569;
       border-radius: 18px;
       background: rgba(15, 23, 42, 0.35);
@@ -163,15 +163,51 @@
 
     @keyframes lightMove {
       0% { transform: translateX(0); opacity: 1; }
-      100% { transform: translateX(380px); opacity: 0; }
+      100% { transform: translateX(360px); opacity: 0; }
+    }
+
+    .gamma-bar {
+      position: absolute;
+      left: 390px;
+      top: 365px;
+      width: 500px;
+      padding: 14px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid #475569;
+      border-radius: 14px;
+      text-align: left;
+      font-size: 17px;
+      z-index: 15;
+      box-sizing: border-box;
+    }
+
+    .bar {
+      margin-top: 10px;
+      width: 100%;
+      height: 13px;
+      border-radius: 20px;
+      background: #334155;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      width: 67%;
+      height: 100%;
+      background: #22c55e;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.65; }
+      50% { opacity: 1; }
     }
 
     .clock-panel {
       position: absolute;
       left: 390px;
-      bottom: 35px;
-      width: 510px;
-      height: 130px;
+      top: 455px;
+      width: 500px;
+      height: 145px;
       display: flex;
       gap: 18px;
       z-index: 10;
@@ -194,7 +230,7 @@
       border: 3px solid #94a3b8;
       border-radius: 50%;
       position: relative;
-      margin-top: 8px;
+      margin-top: 10px;
       display: inline-block;
     }
 
@@ -209,13 +245,8 @@
       transform-origin: bottom center;
     }
 
-    .earth-hand {
-      animation: rotateFast 1.2s linear infinite;
-    }
-
-    .rocket-hand {
-      animation: rotateSlow 2.0s linear infinite;
-    }
+    .earth-hand { animation: rotateFast 1.2s linear infinite; }
+    .rocket-hand { animation: rotateSlow 2.0s linear infinite; }
 
     @keyframes rotateFast {
       from { transform: rotate(0deg); }
@@ -225,37 +256,6 @@
     @keyframes rotateSlow {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
-    }
-
-    .gamma-bar {
-      position: absolute;
-      left: 405px;
-      top: 395px;
-      width: 470px;
-      text-align: left;
-      font-size: 17px;
-      z-index: 15;
-    }
-
-    .bar {
-      margin-top: 8px;
-      width: 100%;
-      height: 13px;
-      border-radius: 20px;
-      background: #334155;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      width: 67%;
-      height: 100%;
-      background: #22c55e;
-      animation: pulse 1.8s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.65; }
-      50% { opacity: 1; }
     }
 
     .info-box {
@@ -364,7 +364,7 @@
 
   <div class="info-box">
     In special relativity, the speed of light is constant for all observers.
-    When an object moves very fast, close to the speed of light, time dilation occurs:
+    When an object moves close to the speed of light, time dilation occurs:
     the moving clock runs slower. At the same time, the moving object appears shorter
     in the direction of motion. For <span class="blue">v = 0.8c</span>,
     the Lorentz factor is <span class="green">γ ≈ 1.67</span>.
@@ -383,9 +383,6 @@
 
     function resetAnimation() {
       scene.classList.remove("paused");
-      scene.style.animation = "none";
-      void scene.offsetWidth;
-      scene.style.animation = "";
     }
   </script>
 </body>
