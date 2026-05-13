@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quantum Tunneling Animation</title>
+
+  <style>
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:#0f172a;
+      color:white;
+      text-align:center;
+    }
+
+    h1{
+      color:#38bdf8;
+      margin:15px 0 5px;
+    }
+
+    .subtitle{
+      color:#cbd5e1;
+      font-size:18px;
+      margin-bottom:12px;
+    }
+
+    .controls{
+      margin-bottom:12px;
+    }
+
+    button{
+      padding:10px 28px;
+      margin:0 10px;
+      font-size:17px;
+      font-weight:bold;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      color:white;
+    }
+
+    .start{
+      background:#22c55e;
+    }
+
+    .stop{
+      background:#ef4444;
+    }
+
+    .scene{
+      width:94%;
+      height:560px;
+      margin:auto;
+      position:relative;
+      border:2px solid #334155;
+      border-radius:20px;
+      background:linear-gradient(to bottom,#020617,#1e293b);
+      overflow:hidden;
+    }
+
+    .formula-box{
+      position:absolute;
+      left:25px;
+      top:30px;
+      width:300px;
+      padding:18px;
+      text-align:left;
+      background:rgba(15,23,42,0.95);
+      border:1px solid #475569;
+      border-radius:16px;
+      font-size:18px;
+      line-height:1.7;
+      z-index:20;
+    }
+
+    .result-box{
+      position:absolute;
+      right:25px;
+      top:30px;
+      width:320px;
+      padding:18px;
+      text-align:left;
+      background:rgba(15,23,42,0.95);
+      border:1px solid #475569;
+      border-radius:16px;
+      font-size:18px;
+      line-height:1.7;
+      z-index:20;
+    }
+
+    .barrier-area{
+      position:absolute;
+      left:350px;
+      top:150px;
+      width:520px;
+      height:260px;
+    }
+
+    .ground{
+      position:absolute;
+      bottom:45px;
+      width:100%;
+      height:4px;
+      background:#94a3b8;
+    }
+
+    .barrier{
+      position:absolute;
+      left:210px;
+      bottom:49px;
+      width:90px;
+      height:180px;
+      background:linear-gradient(to top,#ef4444,#f87171);
+      border-radius:10px 10px 0 0;
+      box-shadow:0 0 20px rgba(239,68,68,0.5);
+      z-index:8;
+    }
+
+    .barrier-label{
+      position:absolute;
+      left:205px;
+      top:10px;
+      color:#ef4444;
+      font-size:18px;
+      font-weight:bold;
+    }
+
+    .particle{
+      position:absolute;
+      left:40px;
+      bottom:105px;
+      width:28px;
+      height:28px;
+      background:#38bdf8;
+      border-radius:50%;
+      box-shadow:0 0 25px #38bdf8;
+      animation:tunnelMove 4s linear infinite;
+      z-index:10;
+    }
+
+    @keyframes tunnelMove{
+
+      0%{
+        left:40px;
+        opacity:1;
+      }
+
+      35%{
+        left:190px;
+        opacity:1;
+      }
+
+      50%{
+        left:245px;
+        opacity:0.35;
+      }
+
+      65%{
+        left:320px;
+        opacity:0.15;
+      }
+
+      85%{
+        left:430px;
+        opacity:1;
+      }
+
+      100%{
+        left:480px;
+        opacity:0;
+      }
+    }
+
+    .wave{
+      position:absolute;
+      left:40px;
+      top:70px;
+      width:440px;
+      height:120px;
+      z-index:6;
+    }
+
+    .wave path{
+      fill:none;
+      stroke:#22c55e;
+      stroke-width:4;
+      stroke-linecap:round;
+      stroke-dasharray:12;
+      animation:waveFlow 1.5s linear infinite;
+    }
+
+    @keyframes waveFlow{
+      from{
+        stroke-dashoffset:0;
+      }
+
+      to{
+        stroke-dashoffset:-80;
+      }
+    }
+
+    .fade-wave{
+      position:absolute;
+      left:220px;
+      top:70px;
+      width:160px;
+      height:120px;
+      opacity:0.35;
+      z-index:7;
+    }
+
+    .fade-wave path{
+      fill:none;
+      stroke:#38bdf8;
+      stroke-width:4;
+      stroke-linecap:round;
+      stroke-dasharray:10;
+      animation:waveFlow 1.5s linear infinite;
+    }
+
+    .energy-line{
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:135px;
+      height:3px;
+      background:#22c55e;
+      opacity:0.8;
+    }
+
+    .energy-label{
+      position:absolute;
+      left:20px;
+      bottom:145px;
+      color:#22c55e;
+      font-weight:bold;
+    }
+
+    .barrier-energy{
+      position:absolute;
+      left:220px;
+      bottom:240px;
+      color:#ef4444;
+      font-weight:bold;
+    }
+
+    .info-box{
+      width:90%;
+      margin:16px auto;
+      padding:18px;
+      border:2px solid #334155;
+      border-radius:18px;
+      background:#020617;
+      text-align:left;
+      font-size:18px;
+      line-height:1.6;
+    }
+
+    .yellow{
+      color:#facc15;
+      font-weight:bold;
+    }
+
+    .green{
+      color:#22c55e;
+      font-weight:bold;
+    }
+
+    .blue{
+      color:#38bdf8;
+      font-weight:bold;
+    }
+
+    .red{
+      color:#ef4444;
+      font-weight:bold;
+    }
+
+    .paused .particle,
+    .paused .wave path,
+    .paused .fade-wave path{
+      animation-play-state:paused;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <h1>Quantum Tunneling</h1>
+
+  <div class="subtitle">
+    A particle tunnels through a potential barrier
+  </div>
+
+  <div class="controls">
+    <button class="start" onclick="startAnimation()">
+      START
+    </button>
+
+    <button class="stop" onclick="stopAnimation()">
+      STOP
+    </button>
+  </div>
+
+  <div class="scene" id="scene">
+
+    <div class="formula-box">
+
+      <span class="blue">Particle energy:</span><br>
+      E = 3 eV
+      <br><br>
+
+      <span class="red">Barrier height:</span><br>
+      U₀ = 5 eV
+      <br><br>
+
+      <span class="green">Barrier width:</span><br>
+      a = 0.5 nm
+
+    </div>
+
+    <div class="result-box">
+
+      Since:
+
+      <span class="blue">E &lt; U₀</span>
+
+      <br><br>
+
+      Classically:
+      particle cannot cross the barrier.
+      <br><br>
+
+      Quantum mechanically:
+      particle has a probability to
+      <span class="green">tunnel through</span>.
+      <br><br>
+
+      Example:
+      <span class="yellow">
+        Scanning Tunneling Microscope
+      </span>
+
+    </div>
+
+    <div class="barrier-area">
+
+      <div class="ground"></div>
+
+      <div class="energy-line"></div>
+
+      <div class="energy-label">
+        E = 3 eV
+      </div>
+
+      <div class="barrier"></div>
+
+      <div class="barrier-label">
+        U₀ = 5 eV
+      </div>
+
+      <div class="barrier-energy">
+        potential barrier
+      </div>
+
+      <svg class="wave" viewBox="0 0 440 120">
+
+        <path
+          d="M0 60
+             Q20 20 40 60
+             T80 60
+             T120 60
+             T160 60
+             T200 60
+             T240 60
+             T280 60
+             T320 60
+             T360 60
+             T400 60
+             T440 60"
+        />
+
+      </svg>
+
+      <svg class="fade-wave" viewBox="0 0 160 120">
+
+        <path
+          d="M0 60
+             Q15 35 30 60
+             T60 60
+             T90 60
+             T120 60
+             T150 60"
+        />
+
+      </svg>
+
+      <div class="particle"></div>
+
+    </div>
+
+  </div>
+
+  <div class="info-box">
+
+    The blue particle approaches a
+    <span class="red">potential barrier</span>.
+
+    Even though the particle energy
+
+    <span class="blue">E = 3 eV</span>
+
+    is smaller than the barrier height
+
+    <span class="red">U₀ = 5 eV</span>,
+
+    quantum mechanics allows a probability that the particle can appear on the other side.
+
+    This phenomenon is called
+
+    <span class="green">quantum tunneling</span>.
+
+  </div>
+
+  <script>
+
+    const scene = document.getElementById("scene");
+
+    function stopAnimation(){
+      scene.classList.add("paused");
+    }
+
+    function startAnimation(){
+      scene.classList.remove("paused");
+    }
+
+  </script>
+
+</body>
+</html>
