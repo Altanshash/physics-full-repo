@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nuclear Fission and Binding Energy</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      color: #38bdf8;
+      margin: 14px 0 5px;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .controls {
+      margin-bottom: 12px;
+    }
+
+    button {
+      padding: 10px 26px;
+      margin: 0 8px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .start { background: #22c55e; }
+    .stop { background: #ef4444; }
+    .reset { background: #38bdf8; }
+
+    .scene {
+      width: 94%;
+      height: 570px;
+      margin: auto;
+      position: relative;
+      border: 2px solid #334155;
+      border-radius: 20px;
+      background: linear-gradient(to bottom, #020617, #1e293b);
+      overflow: hidden;
+    }
+
+    .formula-box, .result-box {
+      position: absolute;
+      top: 25px;
+      width: 330px;
+      padding: 18px;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #475569;
+      border-radius: 16px;
+      font-size: 18px;
+      line-height: 1.65;
+      z-index: 20;
+    }
+
+    .formula-box { left: 25px; }
+    .result-box { right: 25px; }
+
+    .fission-area {
+      position: absolute;
+      left: 380px;
+      top: 70px;
+      width: 500px;
+      height: 300px;
+      z-index: 5;
+    }
+
+    .nucleus {
+      position: absolute;
+      left: 210px;
+      top: 110px;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #facc15;
+      color: #020617;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 35px #facc15;
+      animation: shake 1.2s infinite;
+      z-index: 10;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(3px, -2px); }
+      50% { transform: translate(-3px, 2px); }
+      75% { transform: translate(2px, 3px); }
+    }
+
+    .neutron {
+      position: absolute;
+      left: 10px;
+      top: 145px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 20px #38bdf8;
+      animation: neutronMove 4s linear infinite;
+      z-index: 12;
+    }
+
+    @keyframes neutronMove {
+      0% { left: 10px; opacity: 1; }
+      45% { left: 210px; opacity: 1; }
+      55% { left: 210px; opacity: 0; }
+      100% { left: 210px; opacity: 0; }
+    }
+
+    .fragment {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #020617;
+      font-weight: bold;
+      animation: split 4s linear infinite;
+      z-index: 11;
+    }
+
+    .frag1 {
+      left: 230px;
+      top: 125px;
+      background: #22c55e;
+      box-shadow: 0 0 25px #22c55e;
+      --x: -120px;
+      --y: -80px;
+    }
+
+    .frag2 {
+      left: 230px;
+      top: 125px;
+      background: #f97316;
+      box-shadow: 0 0 25px #f97316;
+      --x: 140px;
+      --y: 85px;
+    }
+
+    @keyframes split {
+      0%, 48% {
+        opacity: 0;
+        transform: translate(0, 0);
+      }
+      55% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 1;
+        transform: translate(var(--x), var(--y));
+      }
+    }
+
+    .energy-flash {
+      position: absolute;
+      left: 205px;
+      top: 105px;
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.35);
+      box-shadow: 0 0 60px #ef4444;
+      opacity: 0;
+      animation: flash 4s linear infinite;
+      z-index: 9;
+    }
+
+    @keyframes flash {
+      0%, 48% { opacity: 0; transform: scale(0.5); }
+      55% { opacity: 1; transform: scale(1.2); }
+      100% { opacity: 0; transform: scale(2.6); }
+    }
+
+    .energy-text {
+      position: absolute;
+      left: 165px;
+      top: 20px;
+      color: #ef4444;
+      font-weight: bold;
+      font-size: 20px;
+      opacity: 0;
+      animation: energyText 4s linear infinite;
+      z-index: 15;
+    }
+
+    @keyframes energyText {
+      0%, 48% { opacity: 0; }
+      55%, 90% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .graph-area {
+      position: absolute;
+      left: 380px;
+      bottom: 35px;
+      width: 500px;
+      height: 150px;
+      border-left: 3px solid #94a3b8;
+      border-bottom: 3px solid #94a3b8;
+      z-index: 5;
+    }
+
+    .curve {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 500px;
+      height: 150px;
+    }
+
+    .iron-dot {
+      position: absolute;
+      left: 250px;
+      top: 25px;
+      width: 16px;
+      height: 16px;
+      background: #facc15;
+      border-radius: 50%;
+      box-shadow: 0 0 18px #facc15;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.35); }
+    }
+
+    .iron-label {
+      position: absolute;
+      left: 220px;
+      top: 0px;
+      color: #facc15;
+      font-weight: bold;
+    }
+
+    .axis-x {
+      position: absolute;
+      right: 5px;
+      bottom: -30px;
+      color: #cbd5e1;
+    }
+
+    .axis-y {
+      position: absolute;
+      left: -70px;
+      top: -20px;
+      color: #cbd5e1;
+    }
+
+    .info-box {
+      width: 90%;
+      margin: 16px auto;
+      padding: 18px;
+      border: 2px solid #334155;
+      border-radius: 18px;
+      background: #020617;
+      text-align: left;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .yellow { color: #facc15; font-weight: bold; }
+    .green { color: #22c55e; font-weight: bold; }
+    .blue { color: #38bdf8; font-weight: bold; }
+    .red { color: #ef4444; font-weight: bold; }
+
+    .paused .nucleus,
+    .paused .neutron,
+    .paused .fragment,
+    .paused .energy-flash,
+    .paused .energy-text,
+    .paused .iron-dot {
+      animation-play-state: paused;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Nuclear Fission and Binding Energy</h1>
+
+  <div class="subtitle">
+    Mass defect is converted into released energy
+  </div>
+
+  <div class="controls">
+    <button class="start" onclick="startAnimation()">START</button>
+    <button class="stop" onclick="stopAnimation()">STOP</button>
+    <button class="reset" onclick="resetAnimation()">RESET</button>
+  </div>
+
+  <div class="scene" id="scene">
+    <div class="formula-box">
+      <span class="yellow">Mass defect:</span><br>
+      Δm = m<sub>nucleons</sub> − m<sub>nucleus</sub><br><br>
+
+      <span class="green">Energy released:</span><br>
+      E = Δmc²<br><br>
+
+      <span class="blue">Given:</span><br>
+      Δm = 0.2 u
+    </div>
+
+    <div class="result-box">
+      Since 1 u = 931.5 MeV:<br><br>
+
+      E = 0.2 × 931.5<br>
+      <span class="red">E = 186.3 MeV</span><br><br>
+
+      Nuclear energy is millions of times larger than chemical energy.
+    </div>
+
+    <div class="fission-area">
+      <div class="energy-text">Energy released: 186.3 MeV</div>
+      <div class="neutron"></div>
+      <div class="nucleus">heavy<br>nucleus</div>
+      <div class="energy-flash"></div>
+      <div class="fragment frag1">fragment</div>
+      <div class="fragment frag2">fragment</div>
+    </div>
+
+    <div class="graph-area">
+      <div class="axis-y">binding energy</div>
+      <svg class="curve" viewBox="0 0 500 150">
+        <path
+          d="M 10 130 C 90 60, 180 25, 260 35 C 340 45, 420 75, 490 105"
+          fill="none"
+          stroke="#22c55e"
+          stroke-width="4"
+        />
+      </svg>
+      <div class="iron-dot"></div>
+      <div class="iron-label">Iron region: maximum stability</div>
+      <div class="axis-x">mass number</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    A heavy nucleus absorbs a neutron and splits into two smaller fragments.
+    The missing mass, called <span class="yellow">mass defect</span>, is converted into energy by
+    <span class="green">E = Δmc²</span>. For <span class="blue">Δm = 0.2 u</span>, the released energy is
+    <span class="red">186.3 MeV</span>. The binding energy per nucleon is greatest near iron,
+    which is why nuclei around iron are the most stable.
+  </div>
+
+  <script>
+    const scene = document.getElementById("scene");
+
+    function stopAnimation() {
+      scene.classList.add("paused");
+    }
+
+    function startAnimation() {
+      scene.classList.remove("paused");
+    }
+
+    function resetAnimation() {
+      scene.classList.remove("paused");
+      scene.style.animation = "none";
+      void scene.offsetWidth;
+      scene.style.animation = "";
+    }
+  </script>
+</body>
+</html>
