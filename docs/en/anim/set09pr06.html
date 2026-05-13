@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Two-Body Motion and the Barycenter</title>
+
+  <style>
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:#111827;
+      color:white;
+      text-align:center;
+    }
+
+    h1{
+      margin:20px;
+    }
+
+    .container{
+      display:flex;
+      justify-content:center;
+      gap:25px;
+      flex-wrap:wrap;
+      padding:20px;
+    }
+
+    .panel{
+      background:#1f2937;
+      padding:15px;
+      border-radius:12px;
+    }
+
+    canvas{
+      background:white;
+      border-radius:8px;
+      border:2px solid #374151;
+    }
+
+    .controls{
+      max-width:850px;
+      margin:10px auto 30px;
+      background:#1f2937;
+      padding:20px;
+      border-radius:12px;
+    }
+
+    .control{
+      text-align:left;
+      margin:14px 0;
+    }
+
+    input[type="range"]{
+      width:100%;
+    }
+
+    .value{
+      color:#93c5fd;
+      font-weight:bold;
+    }
+
+    button{
+      margin:8px;
+      padding:10px 18px;
+      border:none;
+      border-radius:8px;
+      background:#2563eb;
+      color:white;
+      cursor:pointer;
+      font-size:15px;
+    }
+
+    button:hover{
+      background:#1d4ed8;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Problem 6 — Two-Body Motion and the Barycenter</h1>
+
+<div class="container">
+
+  <div class="panel">
+    <h2>Two-Body Orbits</h2>
+    <canvas id="orbitCanvas" width="620" height="620"></canvas>
+  </div>
+
+  <div class="panel">
+    <h2>Distance From Barycenter</h2>
+    <canvas id="graphCanvas" width="620" height="620"></canvas>
+  </div>
+
+</div>
+
+<div class="controls">
+
+  <div class="control">
+    <label>Mass m₁:
+      <span id="m1Value" class="value"></span>
+    </label>
+    <input type="range" id="m1" min="1" max="20" value="12">
+  </div>
+
+  <div class="control">
+    <label>Mass m₂:
+      <span id="m2Value" class="value"></span>
+    </label>
+    <input type="range" id="m2" min="1" max="20" value="5">
+  </div>
+
+  <div class="control">
+    <label>Angular speed:
+      <span id="speedValue" class="value"></span>
+    </label>
+    <input type="range" id="speed" min="0.005" max="0.05" step="0.001" value="0.018">
+  </div>
+
+  <button onclick="toggleAnimation()">Pause / Play</button>
+  <button onclick="resetSimulation()">Reset</button>
+  <button onclick="clearTrace()">Clear Trace</button>
+
+</div>
+
+<script>
+
+const orbitCanvas = document.getElementById("orbitCanvas");
+const orbitCtx = orbitCanvas.getContext("2d");
+
+const graphCanvas = document.getElementById("graphCanvas");
+const graphCtx = graphCanvas.getContext("2d");
+
+const m1Slider = document.getElementById("m1");
+const m2Slider = document.getElementById("m2");
+const speedSlider = document.getElementById("speed");
+
+const m1Value = document.getElementById("m1Value");
+const m2Value = document.getElementById("m2Value");
+const speedValue = document.getElementById("speedValue");
+
+let t = 0;
+let running = true;
+
+let trace1 = [];
+let trace2 = [];
+
+let graphData1 = [];
+let graphData2 = [];
+
+const totalDistance = 240;
+
+function values(){
+  return{
+    m1:Number(m1Slider.value),
+    m2:Number(m2Slider.value),
+    speed:Number(speedSlider.value)
+  };
+}
+
+function updateLabels(){
+  const v = values();
+
+  m1Value.textContent = v.m1;
+  m2Value.textContent = v.m2;
+  speedValue.textContent = v.speed.toFixed(3);
+}
+
+function positions(time){
+
+  const v = values();
+
+  const r1 = totalDistance * v.m2 / (v.m1 + v.m2);
+  const r2 = totalDistance * v.m1 / (v.m1 + v.m2);
+
+  return{
+
+    body1:{
+      x:r1*Math.cos(time),
+      y:r1*Math.sin(time),
+      r:r1
+    },
+
+    body2:{
+      x:-r2*Math.cos(time),
+      y:-r2*Math.sin(time),
+      r:r2
+    }
+
+  };
+}
+
+function drawAxes(ctx,w,h,cx,cy){
+
+  ctx.strokeStyle="#d1d5db";
+  ctx.lineWidth=1;
+
+  ctx.beginPath();
+  ctx.moveTo(0,cy);
+  ctx.lineTo(w,cy);
+
+  ctx.moveTo(cx,0);
+  ctx.lineTo(cx,h);
+
+  ctx.stroke();
+}
+
+function drawOrbit(){
+
+  const w = orbitCanvas.width;
+  const h = orbitCanvas.height;
+
+  const cx = w/2;
+  const cy = h/2;
+
+  orbitCtx.clearRect(0,0,w,h);
+
+  drawAxes(orbitCtx,w,h,cx,cy);
+
+  const pos = positions(t);
+
+  orbitCtx.fillStyle="#111827";
+  orbitCtx.font="15px Arial";
+
+  orbitCtx.fillText("Yellow point = barycenter",20,28);
+  orbitCtx.fillText("Blue orbit = body 1",20,50);
+  orbitCtx.fillText("Red orbit = body 2",20,72);
+
+  orbitCtx.strokeStyle="#2563eb";
+  orbitCtx.lineWidth=2;
+
+  orbitCtx.beginPath();
+
+  for(let i=0;i<trace1.length;i++){
+
+    const p = trace1[i];
+
+    if(i===0){
+      orbitCtx.moveTo(cx+p.x,cy-p.y);
+    }else{
+      orbitCtx.lineTo(cx+p.x,cy-p.y);
+    }
+  }
+
+  orbitCtx.stroke();
+
+  orbitCtx.strokeStyle="#dc2626";
+
+  orbitCtx.beginPath();
+
+  for(let i=0;i<trace2.length;i++){
+
+    const p = trace2[i];
+
+    if(i===0){
+      orbitCtx.moveTo(cx+p.x,cy-p.y);
+    }else{
+      orbitCtx.lineTo(cx+p.x,cy-p.y);
+    }
+  }
+
+  orbitCtx.stroke();
+
+  orbitCtx.strokeStyle="#9ca3af";
+  orbitCtx.lineWidth=1.5;
+
+  orbitCtx.beginPath();
+  orbitCtx.arc(cx,cy,pos.body1.r,0,Math.PI*2);
+  orbitCtx.stroke();
+
+  orbitCtx.beginPath();
+  orbitCtx.arc(cx,cy,pos.body2.r,0,Math.PI*2);
+  orbitCtx.stroke();
+
+  orbitCtx.fillStyle="#f59e0b";
+
+  orbitCtx.beginPath();
+  orbitCtx.arc(cx,cy,8,0,Math.PI*2);
+  orbitCtx.fill();
+
+  orbitCtx.fillStyle="#111827";
+  orbitCtx.fillText("Barycenter",cx+12,cy-10);
+
+  orbitCtx.fillStyle="#2563eb";
+
+  orbitCtx.beginPath();
+  orbitCtx.arc(cx+pos.body1.x,cy-pos.body1.y,10,0,Math.PI*2);
+  orbitCtx.fill();
+
+  orbitCtx.fillStyle="#111827";
+  orbitCtx.fillText("m₁",cx+pos.body1.x+12,cy-pos.body1.y);
+
+  orbitCtx.fillStyle="#dc2626";
+
+  orbitCtx.beginPath();
+  orbitCtx.arc(cx+pos.body2.x,cy-pos.body2.y,10,0,Math.PI*2);
+  orbitCtx.fill();
+
+  orbitCtx.fillStyle="#111827";
+  orbitCtx.fillText("m₂",cx+pos.body2.x+12,cy-pos.body2.y);
+}
+
+function drawGraph(){
+
+  const w = graphCanvas.width;
+  const h = graphCanvas.height;
+
+  const margin = 60;
+
+  graphCtx.clearRect(0,0,w,h);
+
+  graphCtx.strokeStyle="#111827";
+  graphCtx.lineWidth=2;
+
+  graphCtx.beginPath();
+
+  graphCtx.moveTo(margin,h-margin);
+  graphCtx.lineTo(w-margin,h-margin);
+
+  graphCtx.moveTo(margin,margin);
+  graphCtx.lineTo(margin,h-margin);
+
+  graphCtx.stroke();
+
+  graphCtx.fillStyle="#111827";
+  graphCtx.font="15px Arial";
+
+  graphCtx.fillText("time",w-85,h-margin+35);
+  graphCtx.fillText("distance",margin-50,margin-20);
+
+  if(graphData1.length>1){
+
+    graphCtx.strokeStyle="#2563eb";
+    graphCtx.lineWidth=2;
+
+    graphCtx.beginPath();
+
+    for(let i=0;i<graphData1.length;i++){
+
+      const x = margin + (i/500)*(w-2*margin);
+
+      const y =
+        h-margin-
+        graphData1[i];
+
+      if(i===0){
+        graphCtx.moveTo(x,y);
+      }else{
+        graphCtx.lineTo(x,y);
+      }
+    }
+
+    graphCtx.stroke();
+  }
+
+  if(graphData2.length>1){
+
+    graphCtx.strokeStyle="#dc2626";
+    graphCtx.lineWidth=2;
+
+    graphCtx.beginPath();
+
+    for(let i=0;i<graphData2.length;i++){
+
+      const x = margin + (i/500)*(w-2*margin);
+
+      const y =
+        h-margin-
+        graphData2[i];
+
+      if(i===0){
+        graphCtx.moveTo(x,y);
+      }else{
+        graphCtx.lineTo(x,y);
+      }
+    }
+
+    graphCtx.stroke();
+  }
+
+  const v = values();
+
+  const r1 = totalDistance*v.m2/(v.m1+v.m2);
+  const r2 = totalDistance*v.m1/(v.m1+v.m2);
+
+  graphCtx.fillStyle="#111827";
+  graphCtx.font="16px Arial";
+
+  graphCtx.fillText(
+    "r₁ / r₂ = " + (r1/r2).toFixed(3),
+    20,
+    32
+  );
+
+  graphCtx.fillText(
+    "m₂ / m₁ = " + (v.m2/v.m1).toFixed(3),
+    20,
+    56
+  );
+
+  graphCtx.fillText(
+    "The ratios are equal.",
+    20,
+    82
+  );
+}
+
+function animate(){
+
+  updateLabels();
+
+  if(running){
+
+    const v = values();
+
+    t += v.speed;
+
+    const pos = positions(t);
+
+    trace1.push(pos.body1);
+    trace2.push(pos.body2);
+
+    graphData1.push(pos.body1.r);
+    graphData2.push(pos.body2.r);
+
+    if(trace1.length>1800) trace1.shift();
+    if(trace2.length>1800) trace2.shift();
+
+    if(graphData1.length>500) graphData1.shift();
+    if(graphData2.length>500) graphData2.shift();
+  }
+
+  drawOrbit();
+  drawGraph();
+
+  requestAnimationFrame(animate);
+}
+
+function toggleAnimation(){
+  running = !running;
+}
+
+function resetSimulation(){
+
+  t = 0;
+
+  clearTrace();
+}
+
+function clearTrace(){
+
+  trace1 = [];
+  trace2 = [];
+
+  graphData1 = [];
+  graphData2 = [];
+}
+
+m1Slider.addEventListener("input",resetSimulation);
+m2Slider.addEventListener("input",resetSimulation);
+
+animate();
+
+</script>
+
+</body>
+</html>
