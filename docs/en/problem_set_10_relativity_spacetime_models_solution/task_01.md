@@ -15,27 +15,27 @@ $$
 
 where:
 
-- $v$ — velocity of the spacecraft  
-- $c$ — speed of light  
+- \(v\) — velocity of the spacecraft  
+- \(c\) — speed of light  
 
-The Lorentz factor is:
+The Lorentz factor is given by:
 
 $$
 \gamma = \frac{1}{\sqrt{1-\frac{v^2}{c^2}}}
 $$
 
-Proper time measured on the spacecraft:
+The proper time measured on the spacecraft is:
 
 $$
 \Delta t_0 = 5 \text{ years}
 $$
 
-Find:
+### Find:
 
-1. The Lorentz factor $\gamma$
+1. The Lorentz factor \(\gamma\)
 2. How much time passes on Earth
 3. The percentage effect of time dilation
-4. What happens in the limit $v \to c$
+4. What happens in the limit \(v \to c\)
 5. Physical interpretation of the result
 
 ---
@@ -56,7 +56,7 @@ $$
 \gamma = \frac{1}{\sqrt{1-\frac{(0.8c)^2}{c^2}}}
 $$
 
-Simplify:
+Simplify the expression:
 
 $$
 \gamma = \frac{1}{\sqrt{1-0.64}}
@@ -74,10 +74,10 @@ $$
 \gamma \approx 1.67
 $$
 
-Therefore, the Lorentz factor is:
+Therefore:
 
 $$
-\boxed{\gamma \approx 1.67}
+\gamma \approx 1.67
 $$
 
 ---
@@ -103,7 +103,7 @@ $$
 Therefore, when 5 years pass on the spacecraft, approximately:
 
 $$
-\boxed{8.33 \text{ years}}
+8.33 \text{ years}
 $$
 
 pass on Earth.
@@ -132,17 +132,17 @@ $$
 \approx 66.7\%
 $$
 
-Therefore, the time measured on Earth is:
+Therefore, the time measured on Earth is approximately:
 
 $$
-\boxed{66.7\%}
+66.7\%
 $$
 
 greater than the time measured on the spacecraft.
 
 ---
 
-## 4. Limit as $v \to c$
+## 4. Limit as \(v \to c\)
 
 As the spacecraft velocity approaches the speed of light:
 
@@ -188,13 +188,13 @@ As the spacecraft speed gets closer to the speed of light:
 - the Lorentz factor grows rapidly,
 - and much more time passes for stationary observers than for travelers inside the spacecraft.
 
-Because the Lorentz factor approaches infinity at:
+Because the Lorentz factor approaches infinity when:
 
 $$
 v = c
 $$
 
-a massive object would require infinite energy to reach the speed of light. Therefore, objects with mass cannot travel at exactly the speed of light.
+a massive object would require infinite energy to reach the speed of light. Therefore, objects with mass cannot travel exactly at the speed of light.
 
 ---
 
@@ -226,4 +226,4 @@ $$
 66.7\%
 $$
 
-This problem demonstrates how time slows down for objects moving at relativistic speeds, and how relativistic effects become extremely large as velocity approaches the speed of light.
+This demonstrates that time slows down for objects moving at relativistic speeds, and the effect becomes extremely large as velocity approaches the speed of light.
