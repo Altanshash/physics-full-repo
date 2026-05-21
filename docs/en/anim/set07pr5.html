@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Current Split Circuit</title>
+<title>Correct Current Split</title>
 
 <style>
 body{
@@ -24,10 +24,10 @@ h1{
     left:20px;
     top:80px;
     width:300px;
-    background:rgba(255,255,255,0.05);
     padding:15px;
-    border-radius:10px;
+    background:rgba(255,255,255,0.05);
     border:1px solid cyan;
+    border-radius:10px;
 }
 
 button{
@@ -45,18 +45,41 @@ svg{
     height:100vh;
 }
 
+/* WIRES */
 .wire{
     stroke:#00d9ff;
     stroke-width:5;
     fill:none;
 }
 
-.node{
-    fill:#00e5ff;
+/* MOVING CURRENT */
+.dot{
+    width:10px;
+    height:10px;
+    background:cyan;
+    border-radius:50%;
+    position:absolute;
+    box-shadow:0 0 10px cyan;
 }
 
-.dot{
-    fill:cyan;
+/* PATHS */
+.top{
+    position:absolute;
+    offset-path:path("M350 350 H500 V150 H900 V350");
+}
+
+.bottom{
+    position:absolute;
+    offset-path:path("M350 350 H500 V550 H900 V350");
+}
+
+.run{
+    animation:move 3s linear infinite;
+}
+
+@keyframes move{
+    from{ offset-distance:0%; }
+    to{ offset-distance:100%; }
 }
 
 </style>
@@ -64,104 +87,57 @@ svg{
 
 <body>
 
-<h1>Current Splitting Circuit</h1>
+<h1>Current Split Circuit (Fixed)</h1>
 
 <div class="panel">
 
 <h3>Берілгені:</h3>
-<p>R1 = 10 Ω (жоғарғы)</p>
-<p>R2 = 10 Ω</p>
-<p>R3 = 10 Ω</p>
+<p>R1 = 10Ω</p>
+<p>R2 = 10Ω</p>
+<p>R3 = 10Ω</p>
 
-<p>Параллель: 10Ω || 10Ω = 5Ω</p>
-<p>Жалпы: 5Ω + 5Ω = 10Ω</p>
+<p>R параллель = 5Ω</p>
+<p>R жалпы = 10Ω</p>
 
 <p><b>U = 10V</b></p>
-<p><b>I = U / R = 10 / 10 = 1A</b></p>
+<p><b>I = 1A</b></p>
+<p>I бөлінеді: 0.5A + 0.5A</p>
 
 <button onclick="start()">Start</button>
 <button onclick="stop()">Stop</button>
 
 </div>
 
-<svg viewBox="0 0 1200 700">
+<!-- CURRENT DOTS -->
+<div id="t1" class="dot top"></div>
+<div id="t2" class="dot top"></div>
 
-<!-- WIRES -->
-<path class="wire" d="M200 350 H350"/>
-<circle cx="350" cy="350" r="5" class="node"/>
-
-<path id="topPath" class="wire"
-d="M350 350 H500 V150 H900 V350"/>
-
-<path id="bottomPath" class="wire"
-d="M350 350 H500 V550 H900 V350"/>
-
-<path class="wire" d="M900 350 H1050"/>
-
-<!-- RESISTORS -->
-<rect x="550" y="120" width="80" height="30" fill="none" stroke="cyan"/>
-<text x="550" y="110" fill="white">10Ω</text>
-
-<rect x="550" y="520" width="80" height="30" fill="none" stroke="cyan"/>
-<text x="550" y="510" fill="white">10Ω</text>
-
-<!-- CURRENT TEXT -->
-<text x="420" y="80" fill="cyan" font-size="18">
-I = 1A (splits into 0.5A + 0.5A)
-</text>
-
-</svg>
+<div id="b1" class="dot bottom"></div>
+<div id="b2" class="dot bottom"></div>
 
 <script>
 
-let running = false;
-
-function createDot(pathId, delay){
-
-    const dot = document.createElementNS("http://www.w3.org/2000/svg","circle");
-
-    dot.setAttribute("r",5);
-    dot.setAttribute("fill","cyan");
-
-    const anim = document.createElementNS("http://www.w3.org/2000/svg","animateMotion");
-    anim.setAttribute("dur","3s");
-    anim.setAttribute("repeatCount","indefinite");
-    anim.setAttribute("begin",delay+"s");
-
-    const mpath = document.createElementNS("http://www.w3.org/2000/svg","mpath");
-    mpath.setAttribute("href","#"+pathId);
-
-    anim.appendChild(mpath);
-    dot.appendChild(anim);
-
-    document.querySelector("svg").appendChild(dot);
-
-    return dot;
-}
-
-let dots = [];
+let topDots = [t1,t2];
+let bottomDots = [b1,b2];
 
 function start(){
 
-    if(running) return;
-    running = true;
+    topDots.forEach((d,i)=>{
+        d.classList.add("run");
+        d.style.animationDelay = (i*1.2)+"s";
+    });
 
-    // TOP branch (0.5A)
-    dots.push(createDot("topPath",0));
-    dots.push(createDot("topPath",1));
-    dots.push(createDot("topPath",2));
-
-    // BOTTOM branch (0.5A)
-    dots.push(createDot("bottomPath",0));
-    dots.push(createDot("bottomPath",1));
-    dots.push(createDot("bottomPath",2));
+    bottomDots.forEach((d,i)=>{
+        d.classList.add("run");
+        d.style.animationDelay = (i*1.2)+"s";
+    });
 }
 
 function stop(){
 
-    dots.forEach(d => d.remove());
-    dots = [];
-    running = false;
+    [...topDots,...bottomDots].forEach(d=>{
+        d.classList.remove("run");
+    });
 }
 
 </script>
