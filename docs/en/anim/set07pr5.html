@@ -2,42 +2,64 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Correct Current Split</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Problem 5 — Advanced Circuit Animation</title>
 
 <style>
+
 body{
     margin:0;
     background:#050816;
-    font-family:Arial;
-    color:white;
+    font-family:Arial, sans-serif;
     overflow:hidden;
+    color:white;
 }
 
 h1{
     text-align:center;
     color:#00e5ff;
-    text-shadow:0 0 10px cyan;
+    margin-top:15px;
+    text-shadow:0 0 15px cyan;
 }
 
 .panel{
     position:absolute;
     left:20px;
-    top:80px;
-    width:300px;
-    padding:15px;
+    top:90px;
+    width:280px;
     background:rgba(255,255,255,0.05);
-    border:1px solid cyan;
-    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:15px;
+    padding:20px;
+    backdrop-filter:blur(8px);
+    box-shadow:0 0 20px rgba(0,255,255,0.2);
+}
+
+.panel h2{
+    color:#00e5ff;
+}
+
+.panel p{
+    color:#ddd;
+    line-height:1.6;
 }
 
 button{
     width:100%;
-    padding:10px;
+    padding:12px;
     margin-top:10px;
-    background:#00cfff;
     border:none;
+    border-radius:10px;
+    background:#00cfff;
     color:white;
+    font-size:16px;
     cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
 }
 
 svg{
@@ -45,41 +67,93 @@ svg{
     height:100vh;
 }
 
-/* WIRES */
 .wire{
     stroke:#00d9ff;
     stroke-width:5;
     fill:none;
+    filter:drop-shadow(0 0 10px cyan);
 }
 
-/* MOVING CURRENT */
+.resistor{
+    fill:#111;
+    stroke:#00e5ff;
+    stroke-width:3;
+    rx:10;
+    filter:drop-shadow(0 0 12px cyan);
+}
+
+.label{
+    fill:white;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.formula{
+    fill:#00e5ff;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.ammeter{
+    fill:#111;
+    stroke:#00e5ff;
+    stroke-width:4;
+    filter:drop-shadow(0 0 12px cyan);
+}
+
+.glow{
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    0%{opacity:0.5;}
+    50%{opacity:1;}
+    100%{opacity:0.5;}
+}
+
+/* CURRENT DOTS */
+
 .dot{
     width:10px;
     height:10px;
-    background:cyan;
+    background:#00ffff;
     border-radius:50%;
     position:absolute;
-    box-shadow:0 0 10px cyan;
+    box-shadow:0 0 15px cyan;
 }
 
-/* PATHS */
+/* TOP BRANCH CURRENT */
+
 .top{
-    position:absolute;
-    offset-path:path("M350 350 H500 V150 H900 V350");
+    offset-path:path("M350 500 H450 V220 H950 V500 H1150");
+    offset-distance:0%;
 }
+
+/* LOWER BRANCH CURRENT */
 
 .bottom{
-    position:absolute;
-    offset-path:path("M350 350 H500 V550 H900 V350");
+    offset-path:path("M350 500 H450 H700 V450 H950 V500 H1150");
+    offset-distance:0%;
 }
 
-.run{
-    animation:move 3s linear infinite;
+.runTop{
+    animation:moveTop 5s linear infinite;
 }
 
-@keyframes move{
-    from{ offset-distance:0%; }
-    to{ offset-distance:100%; }
+.runBottom{
+    animation:moveBottom 5s linear infinite;
+}
+
+@keyframes moveTop{
+    to{
+        offset-distance:100%;
+    }
+}
+
+@keyframes moveBottom{
+    to{
+        offset-distance:100%;
+    }
 }
 
 </style>
@@ -87,60 +161,205 @@ svg{
 
 <body>
 
-<h1>Current Split Circuit (Fixed)</h1>
+<h1>Problem 5 — Current Splitting Animation</h1>
 
 <div class="panel">
 
-<h3>Берілгені:</h3>
-<p>R1 = 10Ω</p>
-<p>R2 = 10Ω</p>
-<p>R3 = 10Ω</p>
+    <h2>Explanation</h2>
 
-<p>R параллель = 5Ω</p>
-<p>R жалпы = 10Ω</p>
+    <p>
+        Two lower resistors are connected in parallel,
+        so they become 5 Ω.
+    </p>
 
-<p><b>U = 10V</b></p>
-<p><b>I = 1A</b></p>
-<p>I бөлінеді: 0.5A + 0.5A</p>
+    <p>
+        Then in series with another 5 Ω,
+        the branch becomes 10 Ω.
+    </p>
 
-<button onclick="start()">Start</button>
-<button onclick="stop()">Stop</button>
+    <p>
+        Both branches are equal,
+        therefore current splits equally.
+    </p>
+
+    <button onclick="startAnimation()">Start Animation</button>
+
+    <button onclick="stopAnimation()">Stop Animation</button>
 
 </div>
 
-<!-- CURRENT DOTS -->
-<div id="t1" class="dot top"></div>
-<div id="t2" class="dot top"></div>
+<svg viewBox="0 0 1400 800">
 
-<div id="b1" class="dot bottom"></div>
-<div id="b2" class="dot bottom"></div>
+<!-- MAIN OUTER WIRES -->
+
+<path class="wire"
+d="M350 500 H450"/>
+
+<path class="wire"
+d="M450 500 V220"/>
+
+<path class="wire"
+d="M450 220 H950"/>
+
+<path class="wire"
+d="M950 220 V500"/>
+
+<path class="wire"
+d="M450 500 H950"/>
+
+<path class="wire"
+d="M950 500 H1150"/>
+
+<!-- MIDDLE BRANCH -->
+
+<path class="wire"
+d="M450 350 H700 H950"/>
+
+<!-- LOWER INNER -->
+
+<path class="wire"
+d="M700 350 V450 H950"/>
+
+<!-- RESISTORS -->
+
+<!-- TOP RESISTOR -->
+<rect class="resistor glow"
+x="650"
+y="200"
+width="120"
+height="40"/>
+
+<!-- LEFT RESISTOR -->
+<rect class="resistor glow"
+x="540"
+y="330"
+width="120"
+height="40"/>
+
+<!-- CENTER RESISTOR -->
+<rect class="resistor glow"
+x="760"
+y="330"
+width="120"
+height="40"/>
+
+<!-- LOWER RESISTOR -->
+<rect class="resistor glow"
+x="760"
+y="430"
+width="120"
+height="40"/>
+
+<!-- LABELS -->
+
+<text x="685" y="190" class="label">
+10 Ω
+</text>
+
+<text x="570" y="320" class="label">
+5 Ω
+</text>
+
+<text x="790" y="320" class="label">
+10 Ω
+</text>
+
+<text x="790" y="420" class="label">
+10 Ω
+</text>
+
+<!-- AMMETER -->
+
+<circle class="ammeter"
+cx="950"
+cy="400"
+r="35"/>
+
+<text x="938"
+y="410"
+font-size="32"
+fill="#00e5ff"
+font-weight="bold">
+A
+</text>
+
+<!-- FORMULAS -->
+
+<text x="400" y="650" class="formula">
+R₃₄ = (10 × 10) / (10 + 10) = 5 Ω
+</text>
+
+<text x="400" y="700" class="formula">
+Req = 5 Ω
+</text>
+
+<text x="400" y="750" class="formula">
+IA = U / 10
+</text>
+
+</svg>
+
+<!-- CURRENT PARTICLES -->
+
+<!-- TOP CURRENT -->
+<div id="top1" class="dot top"></div>
+<div id="top2" class="dot top"></div>
+
+<!-- BOTTOM CURRENT -->
+<div id="bottom1" class="dot bottom"></div>
+<div id="bottom2" class="dot bottom"></div>
 
 <script>
 
-let topDots = [t1,t2];
-let bottomDots = [b1,b2];
+const topDots = [
+document.getElementById("top1"),
+document.getElementById("top2")
+];
 
-function start(){
+const bottomDots = [
+document.getElementById("bottom1"),
+document.getElementById("bottom2")
+];
 
-    topDots.forEach((d,i)=>{
-        d.classList.add("run");
-        d.style.animationDelay = (i*1.2)+"s";
+function startAnimation(){
+
+    topDots.forEach((dot,index)=>{
+
+        dot.classList.add("runTop");
+
+        dot.style.animationDelay =
+        `${index * 1.5}s`;
+
     });
 
-    bottomDots.forEach((d,i)=>{
-        d.classList.add("run");
-        d.style.animationDelay = (i*1.2)+"s";
+    bottomDots.forEach((dot,index)=>{
+
+        dot.classList.add("runBottom");
+
+        dot.style.animationDelay =
+        `${index * 1.5}s`;
+
     });
+
 }
 
-function stop(){
+function stopAnimation(){
 
-    [...topDots,...bottomDots].forEach(d=>{
-        d.classList.remove("run");
+    topDots.forEach(dot=>{
+
+        dot.classList.remove("runTop");
+
     });
+
+    bottomDots.forEach(dot=>{
+
+        dot.classList.remove("runBottom");
+
+    });
+
 }
 
 </script>
 
 </body>
-</html>
+</html>  мына анимацияда менде сұрақ болып тұр неге нүкте тек бір ғана жолмен яғни 10 Ом ғана жүреді соны түсінбей жатырмын
