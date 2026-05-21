@@ -1,68 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Problem 5 Animation</title>
+<title>Problem 5 Advanced Animation</title>
 
 <style>
 
 body{
-    background:#f5f5f5;
-    font-family:Arial;
-    text-align:center;
+    margin:0;
+    background:#050816;
+    font-family:Arial, sans-serif;
+    overflow:hidden;
+    color:white;
 }
 
 h1{
-    margin-top:20px;
+    text-align:center;
+    color:#00e5ff;
+    margin-top:15px;
+    text-shadow:0 0 15px cyan;
+}
+
+.panel{
+    position:absolute;
+    left:20px;
+    top:90px;
+    width:260px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:15px;
+    padding:20px;
+    backdrop-filter:blur(8px);
+    box-shadow:0 0 20px rgba(0,255,255,0.2);
+}
+
+.panel h2{
+    color:#00e5ff;
+    font-size:18px;
+}
+
+.panel p{
+    line-height:1.6;
+    color:#ddd;
 }
 
 button{
-    padding:10px 20px;
-    font-size:18px;
-    margin:10px;
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:10px;
+    background:#00c3ff;
+    color:white;
+    font-size:16px;
     cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+    background:#00e5ff;
 }
 
 svg{
-    background:white;
-    border:2px solid #ccc;
-    margin-top:20px;
+    width:100vw;
+    height:100vh;
 }
 
 .wire{
-    stroke:black;
-    stroke-width:4;
+    stroke:#00d9ff;
+    stroke-width:5;
     fill:none;
+    filter:drop-shadow(0 0 10px cyan);
 }
 
 .resistor{
-    fill:#eeeeee;
-    stroke:black;
+    fill:#111;
+    stroke:#00e5ff;
     stroke-width:3;
+    rx:10;
+    filter:drop-shadow(0 0 12px cyan);
 }
 
 .label{
-    font-size:18px;
+    fill:white;
+    font-size:20px;
     font-weight:bold;
 }
 
 .formula{
+    fill:#00e5ff;
     font-size:22px;
     font-weight:bold;
-    fill:darkblue;
+}
+
+.current{
+    fill:#00ffff;
+    filter:drop-shadow(0 0 10px cyan);
+}
+
+.ammeter{
+    fill:#111;
+    stroke:#00e5ff;
+    stroke-width:4;
+    filter:drop-shadow(0 0 12px cyan);
+}
+
+.glow{
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    0%{opacity:0.5;}
+    50%{opacity:1;}
+    100%{opacity:0.5;}
 }
 
 .dot{
-    fill:red;
-    offset-path:path("M100 420 H180 V120 H700 V420 H820");
+    fill:#00ffff;
+    r:6;
+    offset-path:path("M350 500 H450 V220 H950 V500 H1150");
     offset-distance:0%;
 }
 
 .run{
-    animation:move 6s linear infinite;
+    animation:move 5s linear infinite;
 }
 
 @keyframes move{
@@ -76,123 +140,125 @@ svg{
 
 <body>
 
-<h1>Problem 5 — Ammeter Current</h1>
+<h1>Problem 5 — Current Splitting Animation</h1>
 
-<h2>Resistors: 5 Ω and 10 Ω</h2>
+<div class="panel">
+    <h2>Explanation</h2>
 
-<button onclick="startAnimation()">Start</button>
-<button onclick="stopAnimation()">Stop</button>
+    <p>
+        Two lower resistors are connected in parallel,
+        so they become 5 Ω.
+    </p>
 
-<svg width="950" height="650">
+    <p>
+        Then in series with another 5 Ω,
+        the branch becomes 10 Ω.
+    </p>
 
-<!-- LEFT SIDE -->
+    <p>
+        Both branches are equal,
+        therefore current splits equally.
+    </p>
+
+    <button onclick="start()">Start Animation</button>
+    <button onclick="stop()">Stop Animation</button>
+</div>
+
+<svg viewBox="0 0 1400 800">
+
+<!-- MAIN WIRES -->
+
 <path class="wire"
-d="M100 420 H180"/>
+d="M350 500 H450"/>
 
 <path class="wire"
-d="M180 420 V120"/>
+d="M450 500 V220"/>
 
-<!-- TOP -->
 <path class="wire"
-d="M180 120 H700"/>
+d="M450 220 H950"/>
 
-<!-- RIGHT -->
 <path class="wire"
-d="M700 120 V420"/>
+d="M950 220 V500"/>
 
-<!-- BOTTOM -->
 <path class="wire"
-d="M180 420 H700"/>
+d="M450 500 H950"/>
 
-<!-- OUTPUT -->
 <path class="wire"
-d="M700 420 H820"/>
+d="M950 500 H1150"/>
 
 <!-- MIDDLE BRANCH -->
+
 <path class="wire"
-d="M180 250 H420 H700"/>
+d="M450 350 H700 H950"/>
 
 <!-- LOWER INNER -->
+
 <path class="wire"
-d="M420 250 V350 H700"/>
+d="M700 350 V450 H950"/>
 
 <!-- RESISTORS -->
 
 <!-- TOP -->
-<rect class="resistor"
-x="410" y="105"
-width="90" height="30"/>
+<rect class="resistor glow"
+x="650" y="200"
+width="120" height="40"/>
 
 <!-- LEFT -->
-<rect class="resistor"
-x="280" y="235"
-width="90" height="30"/>
+<rect class="resistor glow"
+x="540" y="330"
+width="120" height="40"/>
 
 <!-- CENTER -->
-<rect class="resistor"
-x="500" y="235"
-width="90" height="30"/>
+<rect class="resistor glow"
+x="760" y="330"
+width="120" height="40"/>
 
 <!-- LOWER -->
-<rect class="resistor"
-x="500" y="335"
-width="90" height="30"/>
+<rect class="resistor glow"
+x="760" y="430"
+width="120" height="40"/>
+
+<!-- LABELS -->
+
+<text x="680" y="190" class="label">10 Ω</text>
+
+<text x="570" y="320" class="label">5 Ω</text>
+
+<text x="790" y="320" class="label">10 Ω</text>
+
+<text x="790" y="420" class="label">10 Ω</text>
 
 <!-- AMMETER -->
-<circle cx="700" cy="310"
-r="28"
-fill="white"
-stroke="black"
-stroke-width="3"/>
 
-<text x="690" y="320"
-font-size="28"
+<circle class="ammeter"
+cx="950"
+cy="400"
+r="35"/>
+
+<text x="938" y="410"
+font-size="32"
+fill="#00e5ff"
 font-weight="bold">
 A
 </text>
 
-<!-- LABELS -->
-<text x="435" y="98" class="label">10 Ω</text>
+<!-- CURRENT PARTICLES -->
 
-<text x="305" y="228" class="label">5 Ω</text>
-
-<text x="520" y="228" class="label">10 Ω</text>
-
-<text x="520" y="328" class="label">10 Ω</text>
-
-<!-- CONNECTION DOTS -->
-<circle cx="180" cy="250" r="7"/>
-<circle cx="420" cy="250" r="7"/>
-<circle cx="700" cy="250" r="7"/>
-<circle cx="700" cy="350" r="7"/>
-
-<!-- CURRENT DOT -->
-<circle id="dot"
-class="dot"
-r="10"/>
+<circle id="dot1" class="dot current"></circle>
+<circle id="dot2" class="dot current"></circle>
+<circle id="dot3" class="dot current"></circle>
 
 <!-- FORMULAS -->
-<text x="40" y="520" class="formula">
+
+<text x="420" y="650" class="formula">
 R₃₄ = (10 × 10) / (10 + 10) = 5 Ω
 </text>
 
-<text x="40" y="560" class="formula">
-R₁₃₄ = 5 + 5 = 10 Ω
-</text>
-
-<text x="40" y="600" class="formula">
-Req = (10 × 10) / (10 + 10)
-</text>
-
-<text x="500" y="520" class="formula">
+<text x="420" y="690" class="formula">
 Req = 5 Ω
 </text>
 
-<text x="500" y="560" class="formula">
-I = U / 5
-</text>
-
-<text x="500" y="600" class="formula">
+<text x="420" y="730" class="formula">
 IA = U / 10
 </text>
 
@@ -200,14 +266,33 @@ IA = U / 10
 
 <script>
 
-const dot = document.getElementById("dot");
+const dots = [
+document.getElementById("dot1"),
+document.getElementById("dot2"),
+document.getElementById("dot3")
+];
 
-function startAnimation(){
-    dot.classList.add("run");
+function start(){
+
+    dots.forEach((dot,index)=>{
+
+        dot.classList.add("run");
+
+        dot.style.animationDelay =
+        `${index * 1}s`;
+
+    });
+
 }
 
-function stopAnimation(){
-    dot.classList.remove("run");
+function stop(){
+
+    dots.forEach(dot=>{
+
+        dot.classList.remove("run");
+
+    });
+
 }
 
 </script>
