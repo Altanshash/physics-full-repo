@@ -2,108 +2,169 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Current Split Correct Animation</title>
+<title>Current Split Circuit</title>
 
 <style>
-body {
-    margin: 0;
-    background: #050816;
-    overflow: hidden;
-    font-family: Arial;
-    color: white;
+body{
+    margin:0;
+    background:#050816;
+    font-family:Arial;
+    color:white;
+    overflow:hidden;
 }
 
-h1 {
-    text-align: center;
-    color: #00e5ff;
-    text-shadow: 0 0 10px cyan;
+h1{
+    text-align:center;
+    color:#00e5ff;
+    text-shadow:0 0 10px cyan;
 }
 
-svg {
-    width: 100vw;
-    height: 100vh;
+.panel{
+    position:absolute;
+    left:20px;
+    top:80px;
+    width:300px;
+    background:rgba(255,255,255,0.05);
+    padding:15px;
+    border-radius:10px;
+    border:1px solid cyan;
 }
 
-.wire {
-    stroke: #00d9ff;
-    stroke-width: 5;
-    fill: none;
-    filter: drop-shadow(0 0 8px cyan);
+button{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    background:#00cfff;
+    border:none;
+    color:white;
+    cursor:pointer;
 }
 
-.node {
-    fill: #00e5ff;
+svg{
+    width:100vw;
+    height:100vh;
 }
 
-.dot {
-    fill: cyan;
-    filter: drop-shadow(0 0 8px cyan);
+.wire{
+    stroke:#00d9ff;
+    stroke-width:5;
+    fill:none;
 }
+
+.node{
+    fill:#00e5ff;
+}
+
+.dot{
+    fill:cyan;
+}
+
 </style>
 </head>
 
 <body>
 
-<h1>Correct Current Splitting Animation</h1>
+<h1>Current Splitting Circuit</h1>
+
+<div class="panel">
+
+<h3>Берілгені:</h3>
+<p>R1 = 10 Ω (жоғарғы)</p>
+<p>R2 = 10 Ω</p>
+<p>R3 = 10 Ω</p>
+
+<p>Параллель: 10Ω || 10Ω = 5Ω</p>
+<p>Жалпы: 5Ω + 5Ω = 10Ω</p>
+
+<p><b>U = 10V</b></p>
+<p><b>I = U / R = 10 / 10 = 1A</b></p>
+
+<button onclick="start()">Start</button>
+<button onclick="stop()">Stop</button>
+
+</div>
 
 <svg viewBox="0 0 1200 700">
 
-<!-- MAIN WIRE -->
-<path id="start" class="wire" d="M200 350 H350"/>
+<!-- WIRES -->
+<path class="wire" d="M200 350 H350"/>
+<circle cx="350" cy="350" r="5" class="node"/>
 
-<!-- SPLIT POINT -->
-<circle cx="350" cy="350" r="6" class="node"/>
-
-<!-- TOP PATH -->
 <path id="topPath" class="wire"
 d="M350 350 H500 V150 H900 V350"/>
 
-<!-- BOTTOM PATH -->
 <path id="bottomPath" class="wire"
 d="M350 350 H500 V550 H900 V350"/>
 
-<!-- MERGE -->
 <path class="wire" d="M900 350 H1050"/>
 
-<!-- ===== MOVING CHARGES (TOP) ===== -->
-<circle r="6" class="dot">
-    <animateMotion dur="4s" repeatCount="indefinite">
-        <mpath href="#topPath"/>
-    </animateMotion>
-</circle>
+<!-- RESISTORS -->
+<rect x="550" y="120" width="80" height="30" fill="none" stroke="cyan"/>
+<text x="550" y="110" fill="white">10Ω</text>
 
-<circle r="6" class="dot">
-    <animateMotion dur="4s" begin="1s" repeatCount="indefinite">
-        <mpath href="#topPath"/>
-    </animateMotion>
-</circle>
+<rect x="550" y="520" width="80" height="30" fill="none" stroke="cyan"/>
+<text x="550" y="510" fill="white">10Ω</text>
 
-<circle r="6" class="dot">
-    <animateMotion dur="4s" begin="2s" repeatCount="indefinite">
-        <mpath href="#topPath"/>
-    </animateMotion>
-</circle>
-
-<!-- ===== MOVING CHARGES (BOTTOM) ===== -->
-<circle r="6" class="dot">
-    <animateMotion dur="4s" repeatCount="indefinite">
-        <mpath href="#bottomPath"/>
-    </animateMotion>
-</circle>
-
-<circle r="6" class="dot">
-    <animateMotion dur="4s" begin="1s" repeatCount="indefinite">
-        <mpath href="#bottomPath"/>
-    </animateMotion>
-</circle>
-
-<circle r="6" class="dot">
-    <animateMotion dur="4s" begin="2s" repeatCount="indefinite">
-        <mpath href="#bottomPath"/>
-    </animateMotion>
-</circle>
+<!-- CURRENT TEXT -->
+<text x="420" y="80" fill="cyan" font-size="18">
+I = 1A (splits into 0.5A + 0.5A)
+</text>
 
 </svg>
+
+<script>
+
+let running = false;
+
+function createDot(pathId, delay){
+
+    const dot = document.createElementNS("http://www.w3.org/2000/svg","circle");
+
+    dot.setAttribute("r",5);
+    dot.setAttribute("fill","cyan");
+
+    const anim = document.createElementNS("http://www.w3.org/2000/svg","animateMotion");
+    anim.setAttribute("dur","3s");
+    anim.setAttribute("repeatCount","indefinite");
+    anim.setAttribute("begin",delay+"s");
+
+    const mpath = document.createElementNS("http://www.w3.org/2000/svg","mpath");
+    mpath.setAttribute("href","#"+pathId);
+
+    anim.appendChild(mpath);
+    dot.appendChild(anim);
+
+    document.querySelector("svg").appendChild(dot);
+
+    return dot;
+}
+
+let dots = [];
+
+function start(){
+
+    if(running) return;
+    running = true;
+
+    // TOP branch (0.5A)
+    dots.push(createDot("topPath",0));
+    dots.push(createDot("topPath",1));
+    dots.push(createDot("topPath",2));
+
+    // BOTTOM branch (0.5A)
+    dots.push(createDot("bottomPath",0));
+    dots.push(createDot("bottomPath",1));
+    dots.push(createDot("bottomPath",2));
+}
+
+function stop(){
+
+    dots.forEach(d => d.remove());
+    dots = [];
+    running = false;
+}
+
+</script>
 
 </body>
 </html>
