@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Problem 5 — Current Splitting Animation</title>
+<title>Problem 5 — Advanced Circuit Animation</title>
 
 <style>
 
@@ -36,6 +36,15 @@ h1{
     box-shadow:0 0 20px rgba(0,255,255,0.2);
 }
 
+.panel h2{
+    color:#00e5ff;
+}
+
+.panel p{
+    color:#ddd;
+    line-height:1.6;
+}
+
 button{
     width:100%;
     padding:12px;
@@ -46,6 +55,11 @@ button{
     color:white;
     font-size:16px;
     cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
 }
 
 svg{
@@ -87,7 +101,18 @@ svg{
     filter:drop-shadow(0 0 12px cyan);
 }
 
-/* DOTS */
+.glow{
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    0%{opacity:0.5;}
+    50%{opacity:1;}
+    100%{opacity:0.5;}
+}
+
+/* CURRENT DOTS */
+
 .dot{
     width:10px;
     height:10px;
@@ -97,34 +122,38 @@ svg{
     box-shadow:0 0 15px cyan;
 }
 
-/* PATHS */
+/* TOP BRANCH CURRENT */
+
 .top{
     offset-path:path("M350 500 H450 V220 H950 V500 H1150");
     offset-distance:0%;
 }
+
+/* LOWER BRANCH CURRENT */
 
 .bottom{
     offset-path:path("M350 500 H450 H700 V450 H950 V500 H1150");
     offset-distance:0%;
 }
 
-/* ANIMATION */
 .runTop{
-    animation:moveTop 4s linear infinite;
+    animation:moveTop 5s linear infinite;
 }
 
 .runBottom{
-    animation:moveBottom 4s linear infinite;
+    animation:moveBottom 5s linear infinite;
 }
 
 @keyframes moveTop{
-    from{ offset-distance:0%; }
-    to{ offset-distance:100%; }
+    to{
+        offset-distance:100%;
+    }
 }
 
 @keyframes moveBottom{
-    from{ offset-distance:0%; }
-    to{ offset-distance:100%; }
+    to{
+        offset-distance:100%;
+    }
 }
 
 </style>
@@ -138,69 +167,145 @@ svg{
 
     <h2>Explanation</h2>
 
-    <p>R1 = 10 Ω</p>
-    <p>R2 = 10 Ω</p>
-    <p>R3 = 10 Ω</p>
+    <p>
+        Two lower resistors are connected in parallel,
+        so they become 5 Ω.
+    </p>
 
-    <p>Parallel: 10Ω || 10Ω = 5Ω</p>
-    <p>Total: 5Ω + 5Ω = 10Ω</p>
+    <p>
+        Then in series with another 5 Ω,
+        the branch becomes 10 Ω.
+    </p>
 
-    <p><b>I = 1A</b> → splits equally</p>
+    <p>
+        Both branches are equal,
+        therefore current splits equally.
+    </p>
 
     <button onclick="startAnimation()">Start Animation</button>
+
     <button onclick="stopAnimation()">Stop Animation</button>
 
 </div>
 
 <svg viewBox="0 0 1400 800">
 
-<!-- WIRES -->
-<path class="wire" d="M350 500 H450"/>
-<path class="wire" d="M450 500 V220"/>
-<path class="wire" d="M450 220 H950"/>
-<path class="wire" d="M950 220 V500"/>
-<path class="wire" d="M450 500 H950"/>
-<path class="wire" d="M950 500 H1150"/>
+<!-- MAIN OUTER WIRES -->
 
-<!-- BRANCH -->
-<path class="wire" d="M450 350 H700 H950"/>
-<path class="wire" d="M700 350 V450 H950"/>
+<path class="wire"
+d="M350 500 H450"/>
+
+<path class="wire"
+d="M450 500 V220"/>
+
+<path class="wire"
+d="M450 220 H950"/>
+
+<path class="wire"
+d="M950 220 V500"/>
+
+<path class="wire"
+d="M450 500 H950"/>
+
+<path class="wire"
+d="M950 500 H1150"/>
+
+<!-- MIDDLE BRANCH -->
+
+<path class="wire"
+d="M450 350 H700 H950"/>
+
+<!-- LOWER INNER -->
+
+<path class="wire"
+d="M700 350 V450 H950"/>
 
 <!-- RESISTORS -->
-<rect class="resistor glow" x="650" y="200" width="120" height="40"/>
-<rect class="resistor glow" x="540" y="330" width="120" height="40"/>
-<rect class="resistor glow" x="760" y="330" width="120" height="40"/>
-<rect class="resistor glow" x="760" y="430" width="120" height="40"/>
+
+<!-- TOP RESISTOR -->
+<rect class="resistor glow"
+x="650"
+y="200"
+width="120"
+height="40"/>
+
+<!-- LEFT RESISTOR -->
+<rect class="resistor glow"
+x="540"
+y="330"
+width="120"
+height="40"/>
+
+<!-- CENTER RESISTOR -->
+<rect class="resistor glow"
+x="760"
+y="330"
+width="120"
+height="40"/>
+
+<!-- LOWER RESISTOR -->
+<rect class="resistor glow"
+x="760"
+y="430"
+width="120"
+height="40"/>
 
 <!-- LABELS -->
-<text x="680" y="190" class="label">10 Ω</text>
-<text x="560" y="320" class="label">5 Ω</text>
-<text x="790" y="320" class="label">10 Ω</text>
-<text x="790" y="420" class="label">10 Ω</text>
+
+<text x="685" y="190" class="label">
+10 Ω
+</text>
+
+<text x="570" y="320" class="label">
+5 Ω
+</text>
+
+<text x="790" y="320" class="label">
+10 Ω
+</text>
+
+<text x="790" y="420" class="label">
+10 Ω
+</text>
 
 <!-- AMMETER -->
-<circle class="ammeter" cx="950" cy="400" r="35"/>
-<text x="938" y="410" font-size="32" fill="#00e5ff">A</text>
+
+<circle class="ammeter"
+cx="950"
+cy="400"
+r="35"/>
+
+<text x="938"
+y="410"
+font-size="32"
+fill="#00e5ff"
+font-weight="bold">
+A
+</text>
 
 <!-- FORMULAS -->
+
 <text x="400" y="650" class="formula">
-R₃₄ = (10×10)/(10+10) = 5Ω
+R₃₄ = (10 × 10) / (10 + 10) = 5 Ω
 </text>
 
 <text x="400" y="700" class="formula">
-Req = 10Ω
+Req = 5 Ω
 </text>
 
 <text x="400" y="750" class="formula">
-I = U / R
+IA = U / 10
 </text>
 
 </svg>
 
-<!-- CURRENT DOTS -->
+<!-- CURRENT PARTICLES -->
+
+<!-- TOP CURRENT -->
 <div id="top1" class="dot top"></div>
 <div id="top2" class="dot top"></div>
 
+<!-- BOTTOM CURRENT -->
 <div id="bottom1" class="dot bottom"></div>
 <div id="bottom2" class="dot bottom"></div>
 
@@ -218,27 +323,40 @@ document.getElementById("bottom2")
 
 function startAnimation(){
 
-    topDots.forEach((dot,i)=>{
-        dot.classList.remove("runTop");
-        void dot.offsetWidth;
+    topDots.forEach((dot,index)=>{
+
         dot.classList.add("runTop");
-        dot.style.animationDelay = (i*1.2)+"s";
+
+        dot.style.animationDelay =
+        `${index * 1.5}s`;
+
     });
 
-    bottomDots.forEach((dot,i)=>{
-        dot.classList.remove("runBottom");
-        void dot.offsetWidth;
+    bottomDots.forEach((dot,index)=>{
+
         dot.classList.add("runBottom");
-        dot.style.animationDelay = (i*1.2)+"s";
+
+        dot.style.animationDelay =
+        `${index * 1.5}s`;
+
     });
+
 }
 
 function stopAnimation(){
 
-    [...topDots, ...bottomDots].forEach(dot=>{
+    topDots.forEach(dot=>{
+
         dot.classList.remove("runTop");
-        dot.classList.remove("runBottom");
+
     });
+
+    bottomDots.forEach(dot=>{
+
+        dot.classList.remove("runBottom");
+
+    });
+
 }
 
 </script>
